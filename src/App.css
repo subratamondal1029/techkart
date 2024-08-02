@@ -1,0 +1,8 @@
+#root {
+  min-height: 100vh;
+}
+
+.toastBody {
+  font-family: "Atlas Grotesk Web", Arial, Helvetica, sans-serif;
+  font-size: 0.875rem !important;
+}
