@@ -3,25 +3,52 @@ import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
 import { ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+  RouterProvider,
+} from "react-router-dom";
+import { Home, Seller, ProtectedRoute, Login, Error, SignUp } from "./pages";
+import { Provider } from "react-redux";
+import { store } from "./store/store.js";
+
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path="/" element={<App />} errorElement={<Error />}>
+      <Route path="" element={<Home />} />
+      <Route
+        path="seller" element={
+          <ProtectedRoute authontication isSignUp={false} label="seller">
+            <Seller />
+          </ProtectedRoute>
+        }
+      />
+      <Route path="login" element={<Login />} />
+      <Route path="signup" element={<SignUp />} />
+    </Route>
+  )
+);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <App />
-
-    <ToastContainer
-      position="top-right"
-      autoClose={3000}
-      hideProgressBar={false}
-      newestOnTop={false}
-      closeOnClick
-       bodyClassName="toastBody"
-      rtl={false}
-      pauseOnFocusLoss
-      draggable
-      pauseOnHover
-      theme="colored"
-      transition:Bounce
-    />
-  </React.StrictMode>
+  <Provider store={store}>
+    <React.StrictMode>
+      <RouterProvider router={router} />
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        bodyClassName="toastBody"
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+        transition:Bounce
+      />
+    </React.StrictMode>
+  </Provider>
 );

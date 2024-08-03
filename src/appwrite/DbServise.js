@@ -3,7 +3,7 @@ import {
   appwriteEndpoint,
   projectId,
   dataBaseId,
-  collectionId,
+  productCollectionId,
 } from "../config";
 
 class appWriteDbConfig {
@@ -19,7 +19,7 @@ class appWriteDbConfig {
     try {
       const document = await this.dataBase.createDocument(
         dataBaseId,
-        collectionId,
+        productCollectionId,
         ID.unique(),
         {...data}
       );

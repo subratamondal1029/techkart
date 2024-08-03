@@ -77,7 +77,7 @@ const Seller = () => {
           label="Price"
           required
           error={errors.price && true}
-          placeholder="Price"
+          placeholder="Price (1-99,999)"
           {...register("price", { required: true, validate: (value) => Number(value) !== 0})}
         />
         <Input

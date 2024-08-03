@@ -1,7 +1,8 @@
-import Seller from "./Seller/Seller";
 import Input from "./formComp/Input";
 import TextArea from "./formComp/TextArea";
 import Button from "./Button";
 import ButtonLoading from "./ButtonLoading";
+import ProtectedRoute from "../pages/ProtectedRoute"
+import Header from "./Header";
 
-export { Seller, Input, TextArea, Button, ButtonLoading };
+export { Input, TextArea, Button, ButtonLoading, Header, ProtectedRoute};
