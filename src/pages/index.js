@@ -4,5 +4,6 @@ import ProtectedRoute from "./ProtectedRoute";
 import Login from "../components/auth/Login";
 import SignUp from "../components/auth/SignUp";
 import Error from "./Error";
+import ProductDetail from "./ProductDetail";
 
-export {Home, Seller, ProtectedRoute, Login, SignUp, Error}
+export {Home, Seller, ProtectedRoute, Login, SignUp, Error, ProductDetail}

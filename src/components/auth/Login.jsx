@@ -22,6 +22,7 @@ const Login = () => {
     formState: { errors },
   } = useForm();
 
+
   const handleLogin = async (data) => {
     setIsLoading(true);
     setError("");
@@ -40,8 +41,8 @@ const Login = () => {
             })
             dispatch(login({ userData }));
 
-            if (state?.label) {
-              navigate(`/${state.label}`);
+            if (state?.redirect) {
+              navigate(`/${state.redirect}`);
             } else navigate("/"); //TODO: change the route as per user preference
           }
     } catch (error) {

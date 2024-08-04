@@ -73,6 +73,13 @@ const Seller = () => {
           {...register("name", { required: true, minLength: 3 })}
         />
         <Input
+          label="Company Name"
+          required
+          placeholder="Enter Your Company Name"
+          error={errors.company && true}
+          {...register("company", { required: true, minLength: 3 })}
+        />
+        <Input
           type="number"
           label="Price"
           required

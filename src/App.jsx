@@ -1,6 +1,6 @@
 import "./App.css";
 import { Outlet, useNavigate } from "react-router-dom";
-import { Header } from "./components";
+import { Footer, Header, MainLoader } from "./components";
 import { useDispatch } from "react-redux";
 import appwriteAuth from "./appwrite/authService";
 import { useEffect, useState } from "react";
@@ -9,28 +9,36 @@ import { login, logout } from "./store/authSlice";
 function App() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  
+  const currentLocation = window.location.pathname;
 
+  
   useEffect(() => {
+    setIsLoading(true)
     appwriteAuth.getCurrentUser().then((userData) => {
       if (userData) {
-        console.log(userData);
         dispatch(login({ userData }));
-        if (userData.labels.length !== 0) {
-          navigate(`/${userData.labels[0]}`);
-        } else navigate("/");
+        if (currentLocation !== "/login" || currentLocation !== "/signup") {
+          navigate(currentLocation);
+        }else navigate("/");
       } else dispatch(logout());
+      setIsLoading(false)
     })
-    .catch((err) => console.log(err.message))
+    .catch((err) => {
+      console.warn(err.message)
+      setIsLoading(false)
+    })
   }, []);
 
   return (
     <>
     {
-      isLoading ? "loading..." : (
+      isLoading ? <MainLoader /> : (
         <>
         <Header />
         <Outlet />
+        <Footer />
         </>
       )
     }

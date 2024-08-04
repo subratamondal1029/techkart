@@ -10,7 +10,7 @@ import {
   Route,
   RouterProvider,
 } from "react-router-dom";
-import { Home, Seller, ProtectedRoute, Login, Error, SignUp } from "./pages";
+import { Home, Seller, ProtectedRoute, Login, Error, SignUp, ProductDetail } from "./pages";
 import { Provider } from "react-redux";
 import { store } from "./store/store.js";
 
@@ -20,13 +20,15 @@ const router = createBrowserRouter(
       <Route path="" element={<Home />} />
       <Route
         path="seller" element={
-          <ProtectedRoute authontication isSignUp={false} label="seller">
+          <ProtectedRoute authontication isSignUp={false} redirect="seller">
             <Seller />
           </ProtectedRoute>
         }
       />
       <Route path="login" element={<Login />} />
       <Route path="signup" element={<SignUp />} />
+     <Route path="product/:productId" element={<ProductDetail />} />
+     <Route path="account" element={<ProtectedRoute authontication redirect="account">Account</ProtectedRoute>} />
     </Route>
   )
 );

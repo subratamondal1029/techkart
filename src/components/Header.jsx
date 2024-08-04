@@ -1,161 +1,157 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/authSlice";
-import { NavLink, useNavigate } from "react-router-dom";
-import { Menu, X } from "lucide-react";
-import { Button } from "./index";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  ChevronDown,
+  Menu,
+  SearchIcon,
+  ShoppingCartIcon,
+  User,
+  X,
+} from "lucide-react";
+import { Button, Input, Logo } from "./index";
 import appwriteAuth from "../appwrite/authService";
 import { toast } from "react-toastify";
 
 const Header = () => {
-  const isLogin = useSelector((state) => state.auth.isLogin);
+  const { isLogin, otherData } = useSelector((state) => state.auth);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const menuList = [
-    {
-      name: "Home",
-      link: "/",
-      isOpen: false,
-    },
-    {
-      name: "Account",
-      link: "/account",
-      isOpen: !isLogin,
-    },
-  ];
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
 
   const handleLogout = async () => {
     try {
-     const res = await appwriteAuth.logout()
-        if(res){
-          dispatch(logout()) 
-          navigate("/")
-          toast.success("Logged out successfully")
-        }
+      const res = await appwriteAuth.logout();
+      if (res) {
+        dispatch(logout());
+        navigate("/");
+        toast.success("Logged out successfully");
+      }
     } catch (error) {
-      toast.error("Failed to Logout")
+      toast.error("Failed to Logout");
       console.log("handleLogout :: error", error);
     }
   };
 
+  const handleSearch = (value) => {
+    console.log(value);
+  };
+
   return (
-    <header className="relative w-full border-b bg-white py-2">
-      <div className="mx-auto h-full flex max-w-7xl items-center justify-between px-4 py-2">
-        <div className="inline-flex items-center space-x-2">
-          <span>
-            <svg
-              width="30"
-              height="30"
-              viewBox="0 0 50 56"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
+    <header className="z-10">
+      <div className="flex justify-between items-center shadow-md py-4 px-8">
+        <Link to="/">
+          <Logo classname="w-10" width="200px" />
+        </Link>
+
+        <div className="hidden justify-center items-center md:flex">
+          <Input
+            required={false}
+            placeholder="Search"
+            classname="min-w-80 rounded-r-none"
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value) }
+            onKeyPress={(e) => e.key==="Enter" && handleSearch(searchValue)}
+          />
+          <div className="relative flex items-start justify-center">
+            <select
+              className="bg-transparent mt-1 appearance-none border border-gray-300 py-[9px] pl-3 pr-10 text-sm  focus:outline-none select-none rounded-r-lg"
+              id="category"
+              name="category"
             >
-              <path
-                d="M23.2732 0.2528C20.8078 1.18964 2.12023 12.2346 1.08477 13.3686C0 14.552 0 14.7493 0 27.7665C0 39.6496 0.0986153 41.1289 0.83823 42.0164C2.12023 43.5449 23.2239 55.4774 24.6538 55.5267C25.9358 55.576 46.1027 44.3832 48.2229 42.4602C49.3077 41.474 49.3077 41.3261 49.3077 27.8158C49.3077 14.3055 49.3077 14.1576 48.2229 13.1714C46.6451 11.7415 27.1192 0.450027 25.64 0.104874C24.9497 -0.0923538 23.9142 0.00625992 23.2732 0.2528ZM20.2161 21.8989C20.2161 22.4906 18.9835 23.8219 17.0111 25.3997C15.2361 26.7803 13.8061 27.9637 13.8061 28.0623C13.8061 28.1116 15.2361 29.0978 16.9618 30.2319C18.6876 31.3659 20.2655 32.6479 20.4134 33.0917C20.8078 34.0286 19.871 35.2119 18.8355 35.2119C17.8001 35.2119 9.0233 29.3936 8.67815 28.5061C8.333 27.6186 9.36846 26.5338 14.3485 22.885C17.6521 20.4196 18.4904 20.0252 19.2793 20.4196C19.7724 20.7155 20.2161 21.3565 20.2161 21.8989ZM25.6893 27.6679C23.4211 34.9161 23.0267 35.7543 22.1391 34.8668C21.7447 34.4723 22.1391 32.6479 23.6677 27.9637C26.2317 20.321 26.5275 19.6307 27.2671 20.3703C27.6123 20.7155 27.1685 22.7864 25.6893 27.6679ZM36.0932 23.2302C40.6788 26.2379 41.3198 27.0269 40.3337 28.1609C39.1503 29.5909 31.6555 35.2119 30.9159 35.2119C29.9298 35.2119 28.9436 33.8806 29.2394 33.0424C29.3874 32.6479 30.9652 31.218 32.7403 29.8867L35.9946 27.4706L32.5431 25.1532C30.6201 23.9205 29.0915 22.7371 29.0915 22.5892C29.0915 21.7509 30.2256 20.4196 30.9159 20.4196C31.3597 20.4196 33.6771 21.7016 36.0932 23.2302Z"
-                fill="black"
-              />
-            </svg>
-          </span>
-          <span className="font-bold">Tech Kart</span>
+              <option value="" hidden>
+                All Category
+              </option>
+              <option value="mobile">Mobile</option>
+              <option value="laptop">Laptop</option>
+            </select>
+            <span className="pointer-events-none absolute right-0 top-0 flex h-full w-10 items-center justify-center text-center text-gray-600">
+              <ChevronDown size={16} />
+            </span>
+          </div>
         </div>
-        <div className="hidden lg:block">
-          <ul className="inline-flex space-x-8">
-            {menuList.map((item) => (
-            item.isOpen || <li key={item.name}>
-                <NavLink
-                  to={item.link}
-                  className={({ isActive }) =>
-                    `${
-                      isActive ? "text-gray-600" : "text-black"
-                    } text-lg font-semibold hover:text-gray-900`
-                  }
-                >
-                  {item.name}
-                </NavLink>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="hidden lg:block">
+
+        <div className="hidden justify-center items-center space-x-7 md:flex">
+          <Link to="/account" className="flex justify-center items-center">
+            <User size={20} />
+            Account
+          </Link>
+
+          <Link className="relative" to="/">
+            {otherData?.cart?.length > 0 ? (
+              <div className="absolute -top-2 -right-2 w-4 h-4 p-2 rounded-full bg-black text-white flex justify-center items-center">
+                {otherData.cart.length}
+              </div>
+            ) : null}
+            <ShoppingCartIcon size={20} />
+          </Link>
+
           <Button
             type="button"
             onClick={isLogin ? handleLogout : () => navigate("/login")}
           >
-            {isLogin ? "Logout" : "Sign in"}
+            {isLogin ? "Logout" : "Login"}
           </Button>
         </div>
-        <div className="lg:hidden">
-          <Menu onClick={toggleMenu} className="h-6 w-6 cursor-pointer" />
+
+        <div className="md:hidden">
+          <Menu size={20} onClick={() => setIsMenuOpen((prev) => !prev)} />
         </div>
-        {isMenuOpen && (
-          <div className="absolute inset-x-0 top-0 z-50 origin-top-right transform p-2 transition lg:hidden">
-            <div className="divide-y-2 divide-gray-50 rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5">
-              <div className="px-5 pb-6 pt-5">
-                <div className="flex items-center justify-between">
-                  <div className="inline-flex items-center space-x-2">
-                    <span>
-                      <svg
-                        width="30"
-                        height="30"
-                        viewBox="0 0 50 56"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M23.2732 0.2528C20.8078 1.18964 2.12023 12.2346 1.08477 13.3686C0 14.552 0 14.7493 0 27.7665C0 39.6496 0.0986153 41.1289 0.83823 42.0164C2.12023 43.5449 23.2239 55.4774 24.6538 55.5267C25.9358 55.576 46.1027 44.3832 48.2229 42.4602C49.3077 41.474 49.3077 41.3261 49.3077 27.8158C49.3077 14.3055 49.3077 14.1576 48.2229 13.1714C46.6451 11.7415 27.1192 0.450027 25.64 0.104874C24.9497 -0.0923538 23.9142 0.00625992 23.2732 0.2528ZM20.2161 21.8989C20.2161 22.4906 18.9835 23.8219 17.0111 25.3997C15.2361 26.7803 13.8061 27.9637 13.8061 28.0623C13.8061 28.1116 15.2361 29.0978 16.9618 30.2319C18.6876 31.3659 20.2655 32.6479 20.4134 33.0917C20.8078 34.0286 19.871 35.2119 18.8355 35.2119C17.8001 35.2119 9.0233 29.3936 8.67815 28.5061C8.333 27.6186 9.36846 26.5338 14.3485 22.885C17.6521 20.4196 18.4904 20.0252 19.2793 20.4196C19.7724 20.7155 20.2161 21.3565 20.2161 21.8989ZM25.6893 27.6679C23.4211 34.9161 23.0267 35.7543 22.1391 34.8668C21.7447 34.4723 22.1391 32.6479 23.6677 27.9637C26.2317 20.321 26.5275 19.6307 27.2671 20.3703C27.6123 20.7155 27.1685 22.7864 25.6893 27.6679ZM36.0932 23.2302C40.6788 26.2379 41.3198 27.0269 40.3337 28.1609C39.1503 29.5909 31.6555 35.2119 30.9159 35.2119C29.9298 35.2119 28.9436 33.8806 29.2394 33.0424C29.3874 32.6479 30.9652 31.218 32.7403 29.8867L35.9946 27.4706L32.5431 25.1532C30.6201 23.9205 29.0915 22.7371 29.0915 22.5892C29.0915 21.7509 30.2256 20.4196 30.9159 20.4196C31.3597 20.4196 33.6771 21.7016 36.0932 23.2302Z"
-                          fill="black"
-                        />
-                      </svg>
-                    </span>
-                    <span className="font-bold">Tech kart</span>
-                  </div>
-                  <div className="-mr-2">
-                    <Button
-                      type="button"
-                      onClick={toggleMenu}
-                      className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
-                    >
-                      <span className="sr-only">Close menu</span>
-                      <X className="h-6 w-6" aria-hidden="true" />
-                    </Button>
-                  </div>
-                </div>
-                <div className="mt-6">
-                  <nav className="grid gap-y-4">
-                    {menuList.map((item) => (
-                      <NavLink
-                        key={item.name}
-                        to={item.link}
-                        className={({ isActive }) =>
-                          `${
-                            isActive ? "bg-gray-500 text-white" : ""
-                          } -m-3 flex items-center rounded-md p-3 text-3xl font-semibold`
-                        }
-                      >
-                        <span className="ml-3 text-base font-medium">
-                          {item.name}
-                        </span>
-                      </NavLink>
-                    ))}
-                  </nav>
-                </div>
+      </div>
+      {isMenuOpen && (
+        <div className="z-20 absolute top-2 w-full min-h-10">
+          <div className="relative w-11/12 flex flex-col justify-center items-start bg-gray-100 mx-auto shadow-lg rounded-md p-3">
+            <Link to="/" className="w-full">
+              <Logo classname="w-[50px] mx-auto" />
+            </Link>
+
+            <X
+              size={20}
+              className="absolute right-12 top-4"
+              onClick={() => setIsMenuOpen((prev) => !prev)}
+            />
+
+            <div className="w-full mt-5 px-10">
+              <Link className="w-full flex">
+                <User size={20} />
+                Account
+              </Link>
+
+              <form
+                className="w-full flex items-center justify-center mt-4"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSearch(searchValue.trim());
+                }}
+              >
+                <Input
+                  required={false}
+                  placeholder="Search"
+                  classname="rounded-r-none w-full"
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                />
                 <Button
-                  type="button"
-                  className="mt-4 block  text-center w-full rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
-                  onClick={isLogin ? handleLogout : () => navigate("/login")}
+                  type="submit"
+                  classname="w-1/4 flex items-center justify-center py-[10px] mt-1 rounded-l-none"
                 >
-                  {isLogin ? "Logout" : "Login"}
+                  <SearchIcon size={20} />
                 </Button>
-              </div>
+              </form>
+
+              <Button
+                type="button"
+                classname="w-full mt-10"
+                onClick={isLogin ? handleLogout : () => navigate("/login")}
+              >
+                {isLogin ? "Logout" : "Login"}
+              </Button>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </header>
   );
 };
