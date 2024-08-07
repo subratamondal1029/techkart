@@ -4,11 +4,26 @@ import { useForm } from "react-hook-form";
 import appWriteStorage from "../../appwrite/storageService";
 import appWriteDb from "../../appwrite/DbServise";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 
 const Seller = () => {
   const { register, handleSubmit, formState: { errors }, reset} = useForm();
   const [isLoading, setIsLoading] = useState(false);
+  const userData = useSelector((state) => state.auth.userData)
   
+   if (userData?.labels[0] !== "seller") {
+    return <div className="text-center flex justify-center items-center flex-col">
+      <h1 className="font-bold text-3xl pt-20 min-h-64">To access this page you need to be a seller</h1>
+          <Link
+            to="/"
+            type="button"
+            className="inline-flex items-center rounded-md border border-black px-3 py-2 text-sm font-semibold text-black shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+          ><ArrowLeft size={16} className="mr-2" />Go back</Link>
+    </div>
+   }
+
 
   const submit = (data) => {
     const toastId = toast.loading("Uploading...");
@@ -77,7 +92,7 @@ const Seller = () => {
           required
           placeholder="Enter Your Company Name"
           error={errors.company && true}
-          {...register("company", { required: true, minLength: 3 })}
+          {...register("company", { required: true, minLength: 2 })}
         />
         <Input
           type="number"

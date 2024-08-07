@@ -14,14 +14,15 @@ import { Button, Input, Logo } from "./index";
 import appwriteAuth from "../appwrite/authService";
 import { toast } from "react-toastify";
 
+
 const Header = () => {
   const { isLogin, otherData } = useSelector((state) => state.auth);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const handleLogout = async () => {
+  
+   const handleLogout = async () => {
     try {
       const res = await appwriteAuth.logout();
       if (res) {
@@ -36,7 +37,7 @@ const Header = () => {
   };
 
   const handleSearch = (value) => {
-    console.log(value);
+    navigate(`/search/${value}`);
   };
 
   return (
@@ -80,7 +81,7 @@ const Header = () => {
           </Link>
 
           <Link className="relative" to="/">
-            {otherData?.cart?.length > 0 ? (
+            {otherData.cart.length > 0 ? (
               <div className="absolute -top-2 -right-2 w-4 h-4 p-2 rounded-full bg-black text-white flex justify-center items-center">
                 {otherData.cart.length}
               </div>

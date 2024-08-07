@@ -1,21 +1,32 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import landingImage from "../assets/landingImage.png";
 import { ProductCard } from "../components";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import appWriteDb from "../appwrite/DbServise";
+import { storeProducts } from "../store/productSlice";
+import appWriteStorage from "../appwrite/storageService";
 
 const Home = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { isLogin } = useSelector((state) => state.auth);
-
-  const handleProductView = (productId) => {
-    if (isLogin) {
-      navigate(`/product/${productId}`);
-    } else {
-      navigate("/login");
+  const products = useSelector((state) => state.products.products);
+  
+  useEffect(() => {
+    if (products.length <= 1) {
+      appWriteDb
+        .getProducts()
+        .then((res) => {
+          res.documents.forEach((product) => {
+            const imageUrl = appWriteStorage.getImage(product.image);
+            product.image = imageUrl.href;
+          });
+  
+          dispatch(storeProducts(res.documents));
+        })
+        .catch((err) => console.error(err));
     }
-  };
+  }, []);
 
   return (
     <main>
@@ -27,13 +38,16 @@ const Home = () => {
           What's New
         </h1>
 
-        <div className="w-full flex flex-wrap items-center justify-start">
-          <ProductCard
-            name="macbook Air m1"
-            price={200000}
-            image="https://media.croma.com/image/upload/v1690293464/Croma%20Assets/Computers%20Peripherals/Laptop/Images/273880_g6cpks.png"
-            openProduct={() => navigate(`/product/${1}`)}
-          />
+        <div className="w-full flex flex-wrap items-start justify-evenly gap-3 gap-y-10">
+          {products.map((product) => (
+            <ProductCard
+              key={product.$id}
+              name={product.name}
+              price={product.price}
+              image={product.image}
+              openProduct={() => navigate(`/product/${product.$id}`)}
+            />
+          ))}
         </div>
       </div>
     </main>

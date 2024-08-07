@@ -36,7 +36,7 @@ const handleSignup = async(data) =>{
       })
       if (state?.redirect) {
         navigate(`/${state.redirect}`);
-      } else navigate("/"); //TODO: change as per user preference
+      } else navigate("/");
     }
    } catch (error) {
        toast.update(toastId, {

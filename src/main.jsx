@@ -10,25 +10,22 @@ import {
   Route,
   RouterProvider,
 } from "react-router-dom";
-import { Home, Seller, ProtectedRoute, Login, Error, SignUp, ProductDetail } from "./pages";
+import { Home, Seller, ProtectedRoute, Login, Error, SignUp, ProductDetail, Account, Orders, Search } from "./pages";
 import { Provider } from "react-redux";
 import { store } from "./store/store.js";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<App />} errorElement={<Error />}>
+    <Route path="/" element={<App />} >
+      <Route path="*" element={<Error />} />
       <Route path="" element={<Home />} />
-      <Route
-        path="seller" element={
-          <ProtectedRoute authontication isSignUp={false} redirect="seller">
-            <Seller />
-          </ProtectedRoute>
-        }
-      />
       <Route path="login" element={<Login />} />
       <Route path="signup" element={<SignUp />} />
+      <Route path="/search/:searchValue" element={<Search />} />
+      <Route path="seller" element={<ProtectedRoute authontication isSignUp={false} redirect="seller"><Seller /></ProtectedRoute>}/>
      <Route path="product/:productId" element={<ProductDetail />} />
-     <Route path="account" element={<ProtectedRoute authontication redirect="account">Account</ProtectedRoute>} />
+     <Route path="account" element={<ProtectedRoute authontication redirect="account"><Account /></ProtectedRoute>} />
+     <Route path="orders/:orderId" element={<ProtectedRoute authontication redirect="account"><Orders /></ProtectedRoute>} />
     </Route>
   )
 );

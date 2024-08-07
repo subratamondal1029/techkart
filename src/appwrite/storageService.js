@@ -34,6 +34,18 @@ class appwriteStorageconfig {
             return false
         }
     }
+
+    getImage(imageId) {
+        try {
+            const image = this.storage.getFilePreview(storageId, imageId);
+            if (image) {
+                return image;
+            }else return false
+        } catch (error) {
+            console.log("getImage :: error", error);
+            return false
+        }
+    }
 }
 
 const appWriteStorage = new appwriteStorageconfig();

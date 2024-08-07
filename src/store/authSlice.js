@@ -3,7 +3,10 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     isLogin: false,
     userData: null,
-    otherData: null
+    otherData: {
+        orders: [],
+        cart: []
+    }
 }
 
 const authSlice = createSlice({
@@ -14,15 +17,17 @@ const authSlice = createSlice({
             if (action.payload.userData) {
                 state.isLogin = true
                 state.userData = action.payload.userData
-            }else if(action.payload.otherData) {
-                state.otherData = action.payload.otherData
-            }
+                if (action.payload.otherData) state.otherData = action.payload.otherData
+            }else if (action.payload.otherData) state.otherData = action.payload.otherData
         },
 
         logout: (state) => {
             state.isLogin = false
             state.userData = null
-            state.otherData = null
+            state.otherData = {
+                orders: [],
+                cart: []
+            }
         }
     }
 })

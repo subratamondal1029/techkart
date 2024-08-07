@@ -4,6 +4,7 @@ import {
   projectId,
   dataBaseId,
   productCollectionId,
+  usersCollectionId,
 } from "../config";
 
 class appWriteDbConfig {
@@ -21,7 +22,7 @@ class appWriteDbConfig {
         dataBaseId,
         productCollectionId,
         ID.unique(),
-        {...data}
+        { ...data }
       );
 
       if (document) {
@@ -32,7 +33,77 @@ class appWriteDbConfig {
       return false;
     }
   }
+
+  async getProducts(query = []) {
+    try {
+      const products = await this.dataBase.listDocuments(
+        dataBaseId,
+        productCollectionId,
+        query
+      );
+      if (products) {
+        return products;
+      } else return null;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getProduct(productId) {
+    try {
+      const product = await this.dataBase.getDocument(
+        dataBaseId,
+        productCollectionId,
+        productId
+      );
+      if (product) {
+        return product;
+      } else return null;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async addToCart(cart, userId, type) {
+    try {
+      let document;
+      if (type === "create") {
+       document = await this.dataBase.createDocument(dataBaseId, usersCollectionId, userId, {
+          cart: JSON.stringify(cart),
+        });
+      } else if(type === "update") {
+        document = await this.dataBase.updateDocument(dataBaseId, usersCollectionId, userId, {
+            cart: JSON.stringify(cart),
+          }
+        );
+      }
+
+      if (document) {
+        return document;
+      } else return null;
+    } catch (error) {
+      console.error("addToCart :: error", error);
+
+      throw error;
+    }
+  }
+
+  async getCart(userId) {
+    try {
+      const cart = await this.dataBase.getDocument(
+        dataBaseId,
+        usersCollectionId,
+        userId
+      );
+      if (cart) {
+        return JSON.parse(cart.cart);
+      } else return null;
+    } catch (error) {
+      console.warn(error.message);
+      return null;
+    }
+  }
 }
 
 const appWriteDb = new appWriteDbConfig();
-export default appWriteDb
+export default appWriteDb;
