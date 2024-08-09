@@ -22,7 +22,7 @@ function App() {
         if (userData) {
           const cart = await appWriteDb.getCart(userData.$id);
           if (cart) {
-            dispatch(login({ userData, otherData: { cart } }));
+            dispatch(login({ userData, isCartCreated: true, otherData: { cart } }));
           }else dispatch(login({ userData }));
           if (currentLocation !== "/login" || currentLocation !== "/signup") {
             navigate(currentLocation);

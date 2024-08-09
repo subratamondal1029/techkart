@@ -65,21 +65,19 @@ class appWriteDbConfig {
   }
 
   async addToCart(cart, userId, type) {
+  cart = cart.map((product) => JSON.stringify(product))
+  
     try {
       let document;
       if (type === "create") {
-       document = await this.dataBase.createDocument(dataBaseId, usersCollectionId, userId, {
-          cart: JSON.stringify(cart),
-        });
+       document = await this.dataBase.createDocument(dataBaseId, usersCollectionId, userId, {cart});
       } else if(type === "update") {
-        document = await this.dataBase.updateDocument(dataBaseId, usersCollectionId, userId, {
-            cart: JSON.stringify(cart),
-          }
+        document = await this.dataBase.updateDocument(dataBaseId, usersCollectionId, userId, {cart}
         );
       }
 
       if (document) {
-        return document;
+        return document.cart.map((product) => JSON.parse(product))
       } else return null;
     } catch (error) {
       console.error("addToCart :: error", error);
@@ -96,7 +94,7 @@ class appWriteDbConfig {
         userId
       );
       if (cart) {
-        return JSON.parse(cart.cart);
+        return cart.map((product) => JSON.parse(product))
       } else return null;
     } catch (error) {
       console.warn(error.message);

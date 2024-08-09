@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { json, Link, useNavigate, useParams } from "react-router-dom";
+import {  Link, useNavigate, useParams } from "react-router-dom";
 import { Button, ButtonLoading } from "../components";
 import {
   ArrowLeft,
   Check,
-  Contact,
   Minus,
   Plus,
   ShoppingCart,
@@ -22,7 +21,7 @@ const ProductDetail = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [addingToCart, setAddingToCart] = useState(false);
-  const { isLogin, otherData, userData } = useSelector((state) => state.auth);
+  const { isLogin, isCartCreated, otherData, userData } = useSelector((state) => state.auth);
   const product = useSelector((state) =>
     state.products.products.find((product) => product.$id === productId)
   );
@@ -62,15 +61,16 @@ const ProductDetail = () => {
       const newData = { productId, quantity };
       const createdCart = [...otherData.cart, newData];
       try {
-        let type = otherData.cart.length === 0 ? "create" : "update";
+        
+        let type = !isCartCreated ? "create" : "update";
 
-        // const cart = await appWriteDb.addToCart(
-        //   createdCart,
-        //   userData.$id,
-        //   type
-        // ); //TODO: complete cart ui and come back
-        const cart = true;
+        const cart = await appWriteDb.addToCart(
+          createdCart,
+          userData.$id,
+          type
+        ); 
         if (cart) {
+          if(!isCartCreated) dispatch(login({ isCartCreated: true }));
           dispatch(login({ otherData: { ...otherData, cart: createdCart } }));
           console.log(`Cart ${type}d successfully`, cart);
           setAddingToCart(false);

@@ -1,39 +1,57 @@
 import { ArrowLeft, CreditCard, Trash } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Button } from "../components";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../store/authSlice";
+import appWriteDb from "../appwrite/DbServise";
 
 export default function Cart() {
   const [products, setProducts] = useState([]);
-  const { cart } = useSelector((state) => state.auth.otherData);
+  const [loadingClass, setLoadingClass] = useState("");
+  const { otherData, userData } = useSelector((state) => state.auth);
   const { products: allProducts } = useSelector((state) => state.products);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
 
   useEffect(() => {
-    const createProducts = cart.map((cartProduct) => {
-      const productDetails = allProducts.find(
-        (product) => product.$id === cartProduct.productId
-      );
+    if(allProducts.length === 0) {
+      navigate("/")
+    }else{
+      const createProducts = otherData.cart.map((cartProduct) => {
+        const productDetails = allProducts.find(
+          (product) => product.$id === cartProduct.productId
+        );
+  
+        return {
+          id: productDetails.$id,
+          name: productDetails.name,
+          price: productDetails.price,
+          image: productDetails.image,
+          quantity: cartProduct.quantity,
+        };
+      });
+  
+      setProducts(createProducts.reverse());
+    }
+  }, [otherData.cart, allProducts]);
 
-      return {
-        id: productDetails.$id,
-        name: productDetails.name,
-        price: productDetails.price,
-        image: productDetails.image,
-        quantity: cartProduct.quantity,
-      };
-    });
-
-    setProducts(createProducts.reverse());
-  }, [cart, allProducts]);
-
-  const handleDelete = (productId) => {
-    const filteredProducts = cart
+  const handleDelete = async(productId) => {
+    setLoadingClass("cursor-wait");
+    const filteredProducts = otherData.cart
       .filter((product) => product.productId !== productId)
 
-    dispatch(login({ otherData: { cart: filteredProducts } }));
+      try {
+      const cart = await appWriteDb.addToCart(filteredProducts, userData.$id, "update");
+      if (cart) {
+        dispatch(login({ otherData: { cart } }));
+        setLoadingClass("");
+      }
+    } catch (error) {
+      console.warn(error.message);
+      setLoadingClass("");
+    }
   };
 
   const handleQuantityChange = (productId, quantity) => {
@@ -41,13 +59,16 @@ export default function Cart() {
       handleDelete(productId);
       return;
     }else{
-    const updatedProducts = cart.map((product) =>
+    setLoadingClass("cursor-wait");
+    const updatedProducts = otherData.cart.map((product) =>
       product.productId === productId
         ? { ...product, quantity }
         : product
     );
 
+    // TODO: add backend quantity update
     dispatch(login({ otherData: { cart: updatedProducts } }));
+    setLoadingClass("");
   }
   };
 
@@ -130,7 +151,7 @@ export default function Cart() {
                     <div className="ml-6 flex text-sm">
                       <button
                         type="button"
-                        className="flex items-center space-x-1 px-2 py-1 pl-0"
+                        className={`flex items-center space-x-1 px-2 py-1 pl-0 ${loadingClass}`}
                         onClick={() => handleDelete(product.id)}
                       >
                         <Trash size={12} className="text-red-500" />

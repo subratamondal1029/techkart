@@ -4,13 +4,16 @@ import { useDispatch, useSelector } from "react-redux";
 import Button from "./Button";
 import { Link, useNavigate } from "react-router-dom";
 import { login } from "../store/authSlice";
+import appWriteDb from "../appwrite/DbServise";
 
 
 export default function CartPop({ setIsCartOpen }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
+  const [loadingClass, setLoadingClass] = useState("");
   const { cart } = useSelector((state) => state.auth.otherData);
+  const userData = useSelector((state) => state.auth.userData);
   const { products: allProducts } = useSelector((state) => state.products);
 
   useEffect(() => {
@@ -31,7 +34,8 @@ export default function CartPop({ setIsCartOpen }) {
     setProducts(createProducts.reverse());
   }, [cart, allProducts]);
 
-  const handleDeleteProduct = (productId) => {
+  const handleDeleteProduct = async(productId) => {
+    setLoadingClass("cursor-wait");
     const filteredProducts = products
       .filter((product) => product.id !== productId)
       .map((product) => ({
@@ -39,8 +43,16 @@ export default function CartPop({ setIsCartOpen }) {
         quantity: product.quantity,
       }));
 
-      // TODO: add backend Delete
-    dispatch(login({ otherData: { cart: filteredProducts } }));
+      try {
+        const cart = await appWriteDb.addToCart(filteredProducts, userData.$id, "update");
+        if (cart) {
+          dispatch(login({ otherData: { cart } }));
+          setLoadingClass("");
+        }
+      } catch (error) {
+        console.warn(error.message);
+        setLoadingClass("");
+      }
   };
 
   return (
@@ -76,7 +88,7 @@ export default function CartPop({ setIsCartOpen }) {
                     </div>
                   </dl>
                 </div>
-                <div className="absolute right-0 top-1/4 text-white hover:text-gray-300 bg-black p-1 rounded-md">
+                <div className={`absolute right-0 top-1/4 text-white hover:text-gray-300 bg-black p-1 rounded-md ${loadingClass}`}>
                   <X
                     size={24}
                     onClick={(e) => {
