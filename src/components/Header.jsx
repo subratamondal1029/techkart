@@ -10,7 +10,7 @@ import {
   User,
   X,
 } from "lucide-react";
-import { Button, Input, Logo } from "./index";
+import { Button, CartPop, Input, Logo } from "./index";
 import appwriteAuth from "../appwrite/authService";
 import { toast } from "react-toastify";
 
@@ -19,6 +19,7 @@ const Header = () => {
   const { isLogin, otherData } = useSelector((state) => state.auth);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   
@@ -80,14 +81,14 @@ const Header = () => {
             Account
           </Link>
 
-          <Link className="relative" to="/">
+          <span className="relative cursor-pointer" onClick={() => setIsCartOpen(true)}>
             {otherData.cart.length > 0 ? (
               <div className="absolute -top-2 -right-2 w-4 h-4 p-2 rounded-full bg-black text-white flex justify-center items-center">
                 {otherData.cart.length}
               </div>
             ) : null}
             <ShoppingCartIcon size={20} />
-          </Link>
+          </span>
 
           <Button
             type="button"
@@ -119,6 +120,14 @@ const Header = () => {
                 <User size={20} />
                 Account
               </Link>
+              <span className="relative cursor-pointer flex mt-4 gap-2" onClick={() => setIsCartOpen(true)}>
+              {otherData.cart.length > 0 ? (
+                <div className="absolute -top-2 -right-2 w-4 h-4 p-2 rounded-full bg-black text-white flex justify-center items-center">
+                  {otherData.cart.length}
+                </div>
+              ) : null}
+              <ShoppingCartIcon size={20} /> Open cart
+            </span>
 
               <form
                 className="w-full flex items-center justify-center mt-4"
@@ -153,6 +162,11 @@ const Header = () => {
           </div>
         </div>
       )}
+
+      {
+        isCartOpen && <CartPop setIsCartOpen={setIsCartOpen} />
+      }
+     
     </header>
   );
 };

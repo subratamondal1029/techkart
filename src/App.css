@@ -14,3 +14,13 @@
   font-family: "Atlas Grotesk Web", Arial, Helvetica, sans-serif;
   font-size: 0.875rem !important;
 }
+
+.hide-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.hide-scroll {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}

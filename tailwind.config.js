@@ -8,7 +8,10 @@ export default {
     extend: {
       animation: {
         'bounce-slow': 'bounce 2s linear infinite',
-      }
+      },
+      backgroundImage: {
+        'custom-gradient': 'linear-gradient(to right, #abbaab, #ffffff);',
+      },
     },
   },
   plugins: [

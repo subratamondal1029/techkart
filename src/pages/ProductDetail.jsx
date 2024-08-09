@@ -26,9 +26,11 @@ const ProductDetail = () => {
   const product = useSelector((state) =>
     state.products.products.find((product) => product.$id === productId)
   );
-  const [isInCart, setIsInCart] = useState(
-    otherData.cart.some((item) => item.productId === productId)
-  );
+  const [isInCart, setIsInCart] = useState(false);
+
+  useEffect(() =>{
+    setIsInCart(otherData.cart.some((item) => item.productId === productId))
+  },[otherData.cart, productId])
 
   useEffect(() => {
     if (!product) {
@@ -71,7 +73,6 @@ const ProductDetail = () => {
         if (cart) {
           dispatch(login({ otherData: { ...otherData, cart: createdCart } }));
           console.log(`Cart ${type}d successfully`, cart);
-          setIsInCart(true);
           setAddingToCart(false);
         }
       } catch (error) {
@@ -164,7 +165,7 @@ const ProductDetail = () => {
           <Button
             classname="w-3/4 max-h-11 flex items-center justify-between py-3 px-3 select-none xl:px-5"
             onClick={() =>
-              isInCart ? console.log("Already in cart") : handleAddToCart()
+              isInCart ? navigate("/cart") : handleAddToCart()
             }
           >
             {addingToCart ? (

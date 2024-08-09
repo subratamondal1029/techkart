@@ -1,78 +1,91 @@
-import React from 'react'
-import { X } from 'lucide-react'
+import React, { useEffect, useState } from "react";
+import { X } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import Button from "./Button";
+import { Link, useNavigate } from "react-router-dom";
+import { login } from "../store/authSlice";
 
-const products = [
-  {
-    id: 1,
-    name: 'Nike Air Force 1 07 LV8',
-    href: '#',
-    price: '₹47,199',
-    originalPrice: '₹48,900',
-    discount: '5% Off',
-    color: 'Orange',
-    size: '8 UK',
-    imageSrc:
-      'https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/54a510de-a406-41b2-8d62-7f8c587c9a7e/air-force-1-07-lv8-shoes-9KwrSk.png',
-  },
-  {
-    id: 2,
-    name: 'Nike Blazer Low 77 SE',
-    href: '#',
-    price: '₹1,549',
-    originalPrice: '₹2,499',
-    discount: '38% off',
-    color: 'White',
-    leadTime: '3-4 weeks',
-    size: '8 UK',
-    imageSrc:
-      'https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/e48d6035-bd8a-4747-9fa1-04ea596bb074/blazer-low-77-se-shoes-0w2HHV.png',
-  },
-  {
-    id: 3,
-    name: 'Nike Air Max 90',
-    href: '#',
-    price: '₹2219 ',
-    originalPrice: '₹999',
-    discount: '78% off',
-    color: 'Black',
-    imageSrc:
-      'https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/fd17b420-b388-4c8a-aaaa-e0a98ddf175f/dunk-high-retro-shoe-DdRmMZ.png',
-  },
-]
 
-export default function CartPop() {
+export default function CartPop({ setIsCartOpen }) {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [products, setProducts] = useState([]);
+  const { cart } = useSelector((state) => state.auth.otherData);
+  const { products: allProducts } = useSelector((state) => state.products);
+
+  useEffect(() => {
+    const createProducts = cart.map((cartProduct) => {
+      const productDetails = allProducts.find(
+        (product) => product.$id === cartProduct.productId
+      );
+
+      return {
+        id: productDetails.$id,
+        name: productDetails.name,
+        price: productDetails.price,
+        image: productDetails.image,
+        quantity: cartProduct.quantity,
+      };
+    });
+
+    setProducts(createProducts.reverse());
+  }, [cart, allProducts]);
+
+  const handleDeleteProduct = (productId) => {
+    const filteredProducts = products
+      .filter((product) => product.id !== productId)
+      .map((product) => ({
+        productId: product.id,
+        quantity: product.quantity,
+      }));
+
+      // TODO: add backend Delete
+    dispatch(login({ otherData: { cart: filteredProducts } }));
+  };
+
   return (
     <div
-      className="m-auto my-6 w-screen max-w-sm rounded-lg border border-gray-200 p-4 pt-4 shadow-sm sm:p-6 lg:p-8"
+      className="z-30 m-auto absolute top-10 right-0 bg-custom-gradient my-6 w-screen max-w-sm rounded-lg border border-gray-200 p-4 pt-4 shadow-sm sm:p-6 lg:p-8"
       aria-modal="true"
       role="dialog"
       tabIndex={-1}
     >
       <button className="relative ml-auto block text-gray-600 transition hover:scale-110">
         <span className="sr-only">Close cart</span>
-        <X size={24} />
+        <X size={24} onClick={() => setIsCartOpen(false)} />
       </button>
       <div className="mt-6 space-y-6">
-        <ul className="space-y-4">
+        <ul className="space-y-4 overflow-y-auto max-h-72 hide-scroll">
           {products.map((product) => (
-            <li key={product.id} className="flex items-center gap-4">
-              <img
-                src={product.imageSrc}
-                alt={product.name}
-                className="h-16 w-16 rounded object-contain"
-              />
-              <div>
-                <h3 className="text-sm text-gray-900">{product.name}</h3>
-                <dl className="mt-0.5 space-y-px text-[10px] text-gray-600">
-                  <div>
-                    <dd className="inline font-bold">{product.price}</dd>
-                  </div>
-                  <div>
-                    <dt className="inline">Color:</dt>
-                    <dd className="inline">{product.color}</dd>
-                  </div>
-                </dl>
-              </div>
+            <li key={product.id}>
+              <Link
+                to={`/product/${product.id}`}
+                className="flex items-center gap-4 relative"
+              >
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="h-16 w-16 rounded object-contain"
+                />
+                <div>
+                  <h3 className="text-sm text-gray-900">{product.name}</h3>
+                  <dl className="mt-0.5 space-y-px text-[10px] text-gray-600">
+                    <div>
+                      <dd className="inline font-bold">₹{product.price}</dd>
+                      <dd className="inline"> x {product.quantity}</dd>
+                    </div>
+                  </dl>
+                </div>
+                <div className="absolute right-0 top-1/4 text-white hover:text-gray-300 bg-black p-1 rounded-md">
+                  <X
+                    size={24}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleDeleteProduct(product.id);
+                    }}
+                  />
+                </div>
+              </Link>
             </li>
           ))}
         </ul>
@@ -80,23 +93,25 @@ export default function CartPop() {
           <button
             type="button"
             className="w-full rounded-md border border-black px-3 py-2 text-sm font-semibold text-black shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+            onClick={() => {
+              navigate("/cart")
+               setIsCartOpen(false)
+              }}
           >
-            View Cart (3)
+            View Cart ({products.length})
           </button>
-          <button
-            type="button"
-            className="w-full rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
-          >
+          <Button classname="w-full" type="button">
             Checkout
-          </button>
-          <a
-            href="#"
+          </Button>
+          <Link
+            to="/"
+            onClick={() => setIsCartOpen(false)}
             className="inline-block text-sm text-gray-600 transition hover:text-gray-700 hover:underline hover:underline-offset-4"
           >
             Continue shopping &rarr;
-          </a>
+          </Link>
         </div>
       </div>
     </div>
-  )
+  );
 }

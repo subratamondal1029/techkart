@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Button, ButtonLoading, Input, TextArea } from "../index";
+import { Button, ButtonLoading, Input, TextArea } from "../components";
 import { useForm } from "react-hook-form";
-import appWriteStorage from "../../appwrite/storageService";
-import appWriteDb from "../../appwrite/DbServise";
+import appWriteStorage from "../appwrite/storageService";
+import appWriteDb from "../appwrite/DbServise";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";

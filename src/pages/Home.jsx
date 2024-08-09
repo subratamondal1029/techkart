@@ -34,7 +34,7 @@ const Home = () => {
         <img src={landingImage} alt="landing image" className="w-full" />
       </div>
       <div className="w-full px-10 pb-5">
-        <h1 className="text-center font-bold text-3xl my-10 uppercase">
+        <h1 className="text-center font-bold text-3xl my-10 uppercase" id="products">
           What's New
         </h1>
 
