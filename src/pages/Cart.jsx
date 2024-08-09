@@ -8,6 +8,7 @@ import appWriteDb from "../appwrite/DbServise";
 
 export default function Cart() {
   const [products, setProducts] = useState([]);
+  const [total, setTotal] = useState(0);
   const [loadingClass, setLoadingClass] = useState("");
   const { otherData, userData } = useSelector((state) => state.auth);
   const { products: allProducts } = useSelector((state) => state.products);
@@ -34,6 +35,7 @@ export default function Cart() {
       });
   
       setProducts(createProducts.reverse());
+      setTotal(createProducts.reduce((acc, curr) => acc + curr.price * curr.quantity, 0).toLocaleString("en-IN"));
     }
   }, [otherData.cart, allProducts]);
 
@@ -54,7 +56,7 @@ export default function Cart() {
     }
   };
 
-  const handleQuantityChange = (productId, quantity) => {
+  const handleQuantityChange = async(productId, quantity) => {
     if (quantity < 1) {
       handleDelete(productId);
       return;
@@ -66,9 +68,16 @@ export default function Cart() {
         : product
     );
 
-    // TODO: add backend quantity update
-    dispatch(login({ otherData: { cart: updatedProducts } }));
-    setLoadingClass("");
+    try {
+      const cart = await appWriteDb.addToCart(updatedProducts, userData.$id, "update");
+      if (cart) {
+        dispatch(login({ otherData: { cart } }));
+        setLoadingClass("");
+      }
+    } catch (error) {
+      console.warn(error.message);
+      setLoadingClass("");
+    }
   }
   };
 
@@ -125,7 +134,7 @@ export default function Cart() {
                     <div className="min-w-24 flex">
                       <button
                         type="button"
-                        className="h-7 w-7"
+                        className={`h-7 w-7 ${loadingClass}`}
                         onClick={() =>
                           handleQuantityChange(product.id, product.quantity - 1)
                         }
@@ -140,7 +149,7 @@ export default function Cart() {
                       />
                       <button
                         type="button"
-                        className="flex h-7 w-7 items-center justify-center"
+                        className={`flex h-7 w-7 items-center justify-center ${loadingClass}`}
                         onClick={() =>
                           handleQuantityChange(product.id, product.quantity + 1)
                         }
@@ -184,9 +193,7 @@ export default function Cart() {
                   </dt>
                   <dd className="text-sm font-medium text-gray-900">
                     ₹{" "}
-                    {products
-                      .reduce((acc, product) => acc + product.price, 0)
-                      .toLocaleString("en-IN")}
+                    {total}
                   </dd>
                 </div>
 
@@ -202,9 +209,7 @@ export default function Cart() {
                   </dt>
                   <dd className="text-base font-medium text-gray-900">
                     ₹{" "}
-                    {products
-                      .reduce((acc, product) => acc + product.price, 0)
-                      .toLocaleString("en-IN")}
+                    {total}
                   </dd>
                 </div>
               </dl>

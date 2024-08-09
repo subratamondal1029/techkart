@@ -29,6 +29,7 @@ const ProductDetail = () => {
 
   useEffect(() =>{
     setIsInCart(otherData.cart.some((item) => item.productId === productId))
+    setQuantity(otherData.cart.find((item) => item.productId === productId)?.quantity || 1)
   },[otherData.cart, productId])
 
   useEffect(() => {
@@ -72,7 +73,6 @@ const ProductDetail = () => {
         if (cart) {
           if(!isCartCreated) dispatch(login({ isCartCreated: true }));
           dispatch(login({ otherData: { ...otherData, cart: createdCart } }));
-          console.log(`Cart ${type}d successfully`, cart);
           setAddingToCart(false);
         }
       } catch (error) {
@@ -152,14 +152,14 @@ const ProductDetail = () => {
           <div className="w-full bg-gray-200 flex justify-between items-center text-2xl py-1 rounded-lg px-2">
             <Minus
               size={30}
-              className="cursor-pointer hover:text-gray-700"
-              onClick={() => setQuantity((prev) => (prev !== 1 ? prev - 1 : 1))}
+              className={`${isInCart? "cursor-not-allowed" : "cursor-pointer"} hover:text-gray-700`}
+              onClick={() => !isInCart ? setQuantity((prev) => (prev !== 1 ? prev - 1 : 1)) : null}
             />
             <p className="select-none">{quantity}</p>
             <Plus
               size={30}
-              className="cursor-pointer hover:text-gray-700"
-              onClick={() => setQuantity((prev) => prev + 1)}
+              className={`${isInCart? "cursor-not-allowed" : "cursor-pointer"} hover:text-gray-700`}
+              onClick={() => !isInCart ? setQuantity((prev) => prev + 1) : null}
             />
           </div>
           <Button
