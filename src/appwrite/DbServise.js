@@ -94,7 +94,7 @@ class appWriteDbConfig {
         userId
       );
       if (cart) {
-        return cart.map((product) => JSON.parse(product))
+        return cart.cart.map((product) => JSON.parse(product))
       } else return null;
     } catch (error) {
       console.warn(error.message);
