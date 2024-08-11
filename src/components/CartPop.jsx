@@ -5,6 +5,7 @@ import Button from "./Button";
 import { Link, useNavigate } from "react-router-dom";
 import { login } from "../store/authSlice";
 import appWriteDb from "../appwrite/DbServise";
+import { storeProducts } from "../store/productSlice";
 
 
 export default function CartPop({ setIsCartOpen }) {
@@ -17,6 +18,9 @@ export default function CartPop({ setIsCartOpen }) {
   const { products: allProducts } = useSelector((state) => state.products);
 
   useEffect(() => {
+    if (allProducts.length === 0) {
+      appWriteDb.getProducts().then(res => dispatch(storeProducts(res.documents)))
+    }else{
     const createProducts = cart.map((cartProduct) => {
       const productDetails = allProducts.find(
         (product) => product.$id === cartProduct.productId
@@ -32,6 +36,7 @@ export default function CartPop({ setIsCartOpen }) {
     });
 
     setProducts(createProducts.reverse());
+  }
   }, [cart, allProducts]);
 
   const handleDeleteProduct = async(productId) => {
@@ -80,7 +85,7 @@ export default function CartPop({ setIsCartOpen }) {
                   className="h-16 w-16 rounded object-contain"
                 />
                 <div>
-                  <h3 className="text-sm text-gray-900">{product.name}</h3>
+                  <h3 className="text-sm text-gray-900 truncate max-w-40">{product.name}</h3>
                   <dl className="mt-0.5 space-y-px text-[10px] text-gray-600">
                     <div>
                       <dd className="inline font-bold">₹{product.price}</dd>
@@ -112,7 +117,7 @@ export default function CartPop({ setIsCartOpen }) {
           >
             View Cart ({products.length})
           </button>
-          <Button classname="w-full" type="button">
+          <Button classname="w-full" type="button" onClick={() => {navigate("/checkout"); setIsCartOpen(false)}}>
             Checkout
           </Button>
           <Link

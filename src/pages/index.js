@@ -9,5 +9,6 @@ import Account from "./Account"
 import Orders from "./Orders";
 import Search from "./Search";
 import Cart from "./Cart";
+import Checkout from "./Checkout";
 
-export {Home, Seller, ProtectedRoute, Login, SignUp, Error, ProductDetail, Account, Orders, Search, Cart}
+export {Home, Seller, ProtectedRoute, Login, SignUp, Error, ProductDetail, Account, Orders, Search, Cart, Checkout}

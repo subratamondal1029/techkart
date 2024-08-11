@@ -220,7 +220,7 @@ export default function Cart() {
                 >
                   <ArrowLeft size={16} className="mr-2" /> continue shopping
                 </Link>
-                <Button classname="w-full flex items-center justify-center">
+                <Button classname="w-full flex items-center justify-center" onClick={() => navigate("/checkout")}>
                   Checkout <CreditCard size={16} className="ml-2" />{" "}
                 </Button>
               </div>
