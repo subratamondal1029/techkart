@@ -5,6 +5,7 @@ import {
   dataBaseId,
   productCollectionId,
   usersCollectionId,
+  ordersCollectionId,
 } from "../config";
 
 class appWriteDbConfig {
@@ -65,19 +66,28 @@ class appWriteDbConfig {
   }
 
   async addToCart(cart, userId, type) {
-  cart = cart.map((product) => JSON.stringify(product))
-  
+    cart = cart.map((product) => JSON.stringify(product));
+
     try {
       let document;
       if (type === "create") {
-       document = await this.dataBase.createDocument(dataBaseId, usersCollectionId, userId, {cart});
-      } else if(type === "update") {
-        document = await this.dataBase.updateDocument(dataBaseId, usersCollectionId, userId, {cart}
+        document = await this.dataBase.createDocument(
+          dataBaseId,
+          usersCollectionId,
+          userId,
+          { cart }
+        );
+      } else if (type === "update") {
+        document = await this.dataBase.updateDocument(
+          dataBaseId,
+          usersCollectionId,
+          userId,
+          { cart }
         );
       }
 
       if (document) {
-        return document.cart.map((product) => JSON.parse(product))
+        return document.cart.map((product) => JSON.parse(product));
       } else return null;
     } catch (error) {
       console.error("addToCart :: error", error);
@@ -94,10 +104,28 @@ class appWriteDbConfig {
         userId
       );
       if (cart) {
-        return cart.cart.map((product) => JSON.parse(product))
+        return cart.cart.map((product) => JSON.parse(product));
       } else return null;
     } catch (error) {
       console.warn(error.message);
+      return null;
+    }
+  }
+
+  async createOrder(data, orderId) {
+    try {
+      const order = await this.dataBase.createDocument(
+        dataBaseId,
+        ordersCollectionId,
+        orderId,
+        { ...data }
+      );
+
+      if (order) {
+        return order;
+      } else return null;
+    } catch (error) {
+      console.error("createOrder :: error", error.message);
       return null;
     }
   }

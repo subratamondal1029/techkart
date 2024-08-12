@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { Button, Input } from "../components";
+import { useDispatch, useSelector } from "react-redux";
+import { Button, ButtonLoading, Input } from "../components";
 import { CheckCircle, IndianRupee, InfoIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import razorpayImage from "../assets/razorpay.png";
 import { useNavigate } from "react-router-dom";
+import { createOrder } from "../components/payment";
+import { toast } from "react-toastify";
+import appWriteDb from "../appwrite/DbServise";
+import { login } from "../store/authSlice";
 
 const countryCodes = [
   { code: "91", country: "India" },
@@ -24,7 +28,8 @@ const countryCodes = [
 ];
 
 const Checkout = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { otherData, userData } = useSelector((state) => state.auth);
   const { products: allProducts } = useSelector((state) => state.products);
 
@@ -38,6 +43,10 @@ const Checkout = () => {
   const [countryCode, setCountryCode] = useState("91");
   const [products, setProducts] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  useEffect(() => {
+    if (otherData.cart.length === 0) navigate("/");
+  }, []);
 
   useEffect(() => {
     const products = otherData.cart.map((cartProduct) => {
@@ -55,9 +64,10 @@ const Checkout = () => {
       };
     });
     setProducts(products);
-    setTotalAmount(products.reduce((acc, curr) => acc + curr.price * curr.quantity, 0));
-    
-  }, []);
+    setTotalAmount(
+      products.reduce((acc, curr) => acc + curr.price * curr.quantity, 0)
+    );
+  }, [allProducts, otherData.cart]);
 
   const initAddress = () => {
     let pincodeCashe;
@@ -95,6 +105,36 @@ const Checkout = () => {
   const addAddress = initAddress();
 
   const checkout = async (data) => {
+    setIsLoading(true);
+    const order = await createOrder(totalAmount);
+    if (order) {
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY,
+        amount: order.amount,
+        currency: "INR",
+        name: "Tech Kart",
+        description: "Tech Kart - Place Order",
+        order_id: order.id,
+        handler: (res) => addOrder(res, data),
+        prefill: {
+          name: "Subrata Mondal",
+          email: "subratamondal@outlook.com",
+          contact: "9999999999",
+        },
+        theme: {
+          color: "#0f4fd1",
+        },
+      };
+
+      const razorPopup = new window.Razorpay(options);
+      razorPopup.open();
+    } else toast.error("Something went wrong");
+
+    setIsLoading(false);
+  };
+
+  async function addOrder(res, data) {
+    setIsLoading(true);
     const orderObj = {
       userId: userData.$id,
       name: data.name,
@@ -102,8 +142,23 @@ const Checkout = () => {
       cart: otherData.cart.map((product) => JSON.stringify(product)),
       address: data.address,
     };
-    console.log(orderObj);
-  };
+    const orderId = res.razorpay_order_id.split("_")[1];
+
+    try {
+      const order = await appWriteDb.createOrder(orderObj, orderId);
+      await appWriteDb.addToCart([], userData.$id, "update");
+      dispatch(login({ otherData: { cart: [] } }));
+
+      if (order) {
+        navigate("/placed", { state: orderId });
+      } else toast.error("Something went wrong");
+      setIsLoading(false);
+    } catch (error) {
+      console.error(error.message);
+      toast.error("Something went wrong");
+      setIsLoading(false);
+    }
+  }
 
   return (
     <>
@@ -163,7 +218,7 @@ const Checkout = () => {
               </label>
               <Input
                 classname="w-full "
-                style={{paddingLeft: "60px"}}
+                style={{ paddingLeft: "60px" }}
                 type="number"
                 placeholder="Enter Phone"
                 label="Phone"
@@ -186,7 +241,7 @@ const Checkout = () => {
                 minLength: 6,
               })}
               error={errors.pincode}
-              onChange={addAddress}
+              onKeyUp={addAddress}
             />
 
             <Input
@@ -194,7 +249,7 @@ const Checkout = () => {
               placeholder="landmark"
               required={false}
               {...register("landmark")}
-              onKeyDown={addAddress}
+              onKeyUp={addAddress}
             />
             <Input
               label="Address Line 1"
@@ -215,7 +270,11 @@ const Checkout = () => {
               style={{ marginTop: "42px" }}
               type="submit"
             >
-                Place Order
+              {isLoading ? (
+                <ButtonLoading fillColor="fill-black" />
+              ) : (
+                "Place Order"
+              )}
             </Button>
           </form>
         </div>
@@ -224,8 +283,11 @@ const Checkout = () => {
             Order Summary
           </h1>
           <ul className="py-6 border-b space-y-6 px-8">
-          {products.map((product) => (
-                <li className="grid grid-cols-6 gap-2 border-b-1" key={product.id}>
+            {products.map((product) => (
+              <li
+                className="grid grid-cols-6 gap-2 border-b-1"
+                key={product.id}
+              >
                 <div className="col-span-1 self-center">
                   <img
                     src={product.imageSrc}
@@ -247,12 +309,14 @@ const Checkout = () => {
                   </div>
                 </div>
               </li>
-          ))}
+            ))}
           </ul>
           <div className="px-8 border-b">
             <div className="flex justify-between py-4 text-gray-600">
               <span>Subtotal</span>
-              <span className="font-semibold text-black">₹{totalAmount.toLocaleString("en-IN")}</span>
+              <span className="font-semibold text-black">
+                ₹{totalAmount.toLocaleString("en-IN")}
+              </span>
             </div>
             <div className="flex justify-between py-4 text-gray-600">
               <span>Shipping</span>
