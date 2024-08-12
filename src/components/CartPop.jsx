@@ -18,9 +18,6 @@ export default function CartPop({ setIsCartOpen }) {
   const { products: allProducts } = useSelector((state) => state.products);
 
   useEffect(() => {
-    if (allProducts.length === 0) {
-      appWriteDb.getProducts().then(res => dispatch(storeProducts(res.documents)))
-    }else{
     const createProducts = cart.map((cartProduct) => {
       const productDetails = allProducts.find(
         (product) => product.$id === cartProduct.productId
@@ -36,7 +33,6 @@ export default function CartPop({ setIsCartOpen }) {
     });
 
     setProducts(createProducts.reverse());
-  }
   }, [cart, allProducts]);
 
   const handleDeleteProduct = async(productId) => {

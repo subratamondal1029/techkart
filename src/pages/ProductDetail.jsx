@@ -10,8 +10,6 @@ import {
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import appWriteDb from "../appwrite/DbServise";
-import appWriteStorage from "../appwrite/storageService";
-import { addProduct } from "../store/productSlice";
 import { login } from "../store/authSlice";
 
 const ProductDetail = () => {
@@ -19,7 +17,6 @@ const ProductDetail = () => {
   const { productId } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(true);
   const [addingToCart, setAddingToCart] = useState(false);
   const { isLogin, isCartCreated, otherData, userData } = useSelector((state) => state.auth);
   const product = useSelector((state) =>
@@ -31,28 +28,6 @@ const ProductDetail = () => {
     setIsInCart(otherData.cart.some((item) => item.productId === productId))
     setQuantity(otherData.cart.find((item) => item.productId === productId)?.quantity || 1)
   },[otherData.cart, productId])
-
-  useEffect(() => {
-    if (!product) {
-      setIsLoading(true);
-      appWriteDb
-        .getProduct(productId)
-        .then((res) => {
-          if (res) {
-            const imageData = appWriteStorage.getImage(res.image);
-            if (imageData) {
-              res.image = imageData.href;
-              dispatch(addProduct(res));
-              setIsLoading(false);
-            } else console.log("image not found");
-          } else console.log("product not found");
-        })
-        .catch((err) => {
-          console.log(err);
-          setIsLoading(false);
-        });
-    } else setIsLoading(false);
-  }, []);
 
   const handleAddToCart = async () => {
     if (!isLogin) {
@@ -82,14 +57,12 @@ const ProductDetail = () => {
     }
   };
 
-  if (isLoading) return <h1>Loading...</h1>;
-
   return (
     <div className="w-full min-h-[80vh] flex items-center justify-center gap-20 p-5 px-5 sm:px-20 mt-5 xl:flex-row flex-col lg:items-center">
       <Button
         type="button"
         classname="flex items-center justify-start absolute top-20 left-4"
-        onClick={() => window.history.back()}
+      onClick={() => navigate('/')}
       >
         <ArrowLeft size={20} />
         Go back

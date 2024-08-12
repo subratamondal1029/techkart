@@ -17,9 +17,6 @@ export default function Cart() {
 
 
   useEffect(() => {
-    if(allProducts.length === 0) {
-      navigate("/")
-    }else{
       const createProducts = otherData.cart.map((cartProduct) => {
         const productDetails = allProducts.find(
           (product) => product.$id === cartProduct.productId
@@ -36,7 +33,6 @@ export default function Cart() {
   
       setProducts(createProducts.reverse());
       setTotal(createProducts.reduce((acc, curr) => acc + curr.price * curr.quantity, 0).toLocaleString("en-IN"));
-    }
   }, [otherData.cart, allProducts]);
 
   const handleDelete = async(productId) => {

@@ -6,6 +6,8 @@ import appwriteAuth from "./appwrite/authService";
 import { useEffect, useState } from "react";
 import { login, logout } from "./store/authSlice";
 import appWriteDb from "./appwrite/DbServise";
+import { storeProducts } from "./store/productSlice";
+import appWriteStorage from "./appwrite/storageService";
 
 function App() {
   const dispatch = useDispatch();
@@ -14,20 +16,30 @@ function App() {
   const currentLocation = window.location.pathname;
 
   useEffect(() => {
-
     async function fetchUser() {
       setIsLoading(true);
       try {
+        const products = await appWriteDb.getProducts();
+        if (products) {
+          const getWithImage = products.map((product) => ({
+            ...product,
+            image: appWriteStorage.getImage(product.image).href,
+          }));
+
+          dispatch(storeProducts(getWithImage));
+        }
+
         const userData = await appwriteAuth.getCurrentUser();
         if (userData) {
           const cart = await appWriteDb.getCart(userData.$id);
           if (cart) {
-            dispatch(login({ userData, isCartCreated: true, otherData: { cart } }));
-          }else dispatch(login({ userData }));
+            dispatch(
+              login({ userData, isCartCreated: true, otherData: { cart } })
+            );
+          } else dispatch(login({ userData }));
           if (currentLocation !== "/login" || currentLocation !== "/signup") {
             navigate(currentLocation);
           } else navigate("/");
-  
         } else dispatch(logout());
         setIsLoading(false);
       } catch (err) {
@@ -36,7 +48,7 @@ function App() {
       }
     }
 
-    fetchUser()
+    fetchUser();
   }, []);
 
   return (

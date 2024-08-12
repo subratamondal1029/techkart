@@ -42,7 +42,7 @@ class appWriteDbConfig {
         query
       );
       if (products) {
-        return products;
+        return products.documents;
       } else return null;
     } catch (error) {
       throw error;

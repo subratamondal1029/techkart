@@ -9,24 +9,7 @@ import appWriteStorage from "../appwrite/storageService";
 
 const Home = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const products = useSelector((state) => state.products.products);
-  
-  useEffect(() => {
-    if (products.length <= 1) {
-      appWriteDb
-        .getProducts()
-        .then((res) => {
-          res.documents.forEach((product) => {
-            const imageUrl = appWriteStorage.getImage(product.image);
-            product.image = imageUrl.href;
-          });
-  
-          dispatch(storeProducts(res.documents));
-        })
-        .catch((err) => console.error(err));
-    }
-  }, []);
 
   return (
     <main>
