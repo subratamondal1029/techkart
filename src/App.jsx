@@ -14,6 +14,7 @@ function App() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const currentLocation = window.location.pathname;
+  window.scrollTo(0, 0);
 
   useEffect(() => {
     async function fetchUser() {
@@ -32,9 +33,11 @@ function App() {
         const userData = await appwriteAuth.getCurrentUser();
         if (userData) {
           const cart = await appWriteDb.getCart(userData.$id);
-          if (cart) {
+          const orders = await appWriteDb.getOrders(userData.$id);
+
+          if (cart && orders) {
             dispatch(
-              login({ userData, isCartCreated: true, otherData: { cart } })
+              login({ userData, isCartCreated: true, otherData: { cart, orders } })
             );
           } else dispatch(login({ userData }));
           if (currentLocation !== "/login" || currentLocation !== "/signup") {

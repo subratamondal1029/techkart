@@ -10,14 +10,18 @@ const OrderConfirm = () => {
   useEffect(() => {
     if (!orderId) {
       navigate("/");
-    } else {
-      setInterval(() => {
-        count <= 0
-          ? navigate(`/orders/${orderId}`)
-          : setCount(count - 1);
+    }else{   
+      const interval = setInterval(() => {
+        setCount((prevCount) => prevCount - 1);
       }, 1000);
+  
+      if (count === 0) {
+        clearInterval(interval);
+        navigate(`/orders/${orderId}`);
+      }
+      return () => clearInterval(interval);
     }
-  }, []);
+  }, [count]);
 
   return (
     <div className="w-full h-[45vh] flex justify-center items-center flex-col space-y-5">

@@ -18,7 +18,7 @@ const authSlice = createSlice({
             if (action.payload.userData) {
                 state.isLogin = true
                 state.userData = action.payload.userData
-                if (action.payload.otherData) state.otherData = action.payload.otherData
+                if (action.payload.otherData) state.otherData = {...state.otherData, ...action.payload.otherData}
                 if(action.payload.isCartCreated) state.isCartCreated = action.payload.isCartCreated
             }else if (action.payload.otherData) {
                 state.otherData = action.payload.otherData

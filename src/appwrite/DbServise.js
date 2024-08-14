@@ -1,4 +1,4 @@
-import { Client, ID, Databases } from "appwrite";
+import { Client, ID, Databases, Query } from "appwrite";
 import {
   appwriteEndpoint,
   projectId,
@@ -127,6 +127,42 @@ class appWriteDbConfig {
     } catch (error) {
       console.error("createOrder :: error", error.message);
       return null;
+    }
+  }
+
+  async addOrder(orders, userId) {
+
+    try {
+      const order = await this.dataBase.updateDocument(
+        dataBaseId,
+        usersCollectionId,
+        userId,
+        { orders }
+      );
+
+      if (order) {
+        return order;
+      }else return null
+    } catch (error) {
+      console.error("addOrder :: error", error.message);
+      return null;
+    }
+  }
+
+  async getOrders(userId) {
+    try {
+      const orders = await this.dataBase.listDocuments(
+        dataBaseId,
+        ordersCollectionId,
+        [Query.equal("userId", userId)]
+      )
+      
+      if (orders) {
+        return orders.documents
+      }else return null
+    } catch (error) {
+      console.error("getOrders :: error", error.message);
+      return null
     }
   }
 }

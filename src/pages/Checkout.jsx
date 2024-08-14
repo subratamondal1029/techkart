@@ -136,6 +136,7 @@ const Checkout = () => {
   async function addOrder(res, data) {
     setIsLoading(true);
     const orderObj = {
+      date: new Date().toLocaleDateString(),
       userId: userData.$id,
       name: data.name,
       phone: `${countryCode} ${data.phone}`,
@@ -145,11 +146,14 @@ const Checkout = () => {
     const orderId = res.razorpay_order_id.split("_")[1];
 
     try {
-      const order = await appWriteDb.createOrder(orderObj, orderId);
-      await appWriteDb.addToCart([], userData.$id, "update");
-      dispatch(login({ otherData: { cart: [] } }));
+    const order = await appWriteDb.createOrder(orderObj, orderId);
+    
+    if (order) {
+      const oldOrders = otherData.orders.map((order) => order.$id);
+        await appWriteDb.addOrder([...oldOrders, order.$id], userData.$id);
+        await appWriteDb.addToCart([], userData.$id, "update");
 
-      if (order) {
+        dispatch(login({ otherData: { cart: [], orders: await appWriteDb.getOrders(userData.$id) } }));
         navigate("/placed", { state: orderId });
       } else toast.error("Something went wrong");
       setIsLoading(false);
