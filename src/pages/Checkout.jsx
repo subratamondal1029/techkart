@@ -9,6 +9,7 @@ import { createOrder } from "../components/payment";
 import { toast } from "react-toastify";
 import appWriteDb from "../appwrite/DbServise";
 import { login } from "../store/authSlice";
+import { Query } from "appwrite";
 
 const countryCodes = [
   { code: "91", country: "India" },
@@ -153,7 +154,7 @@ const Checkout = () => {
         await appWriteDb.addOrder([...oldOrders, order.$id], userData.$id);
         await appWriteDb.addToCart([], userData.$id, "update");
 
-        dispatch(login({ otherData: { cart: [], orders: await appWriteDb.getOrders(userData.$id) } }));
+        dispatch(login({ otherData: { cart: [], orders: await appWriteDb.getOrders([Query.equal("userId", userData.$id)]) } }));
         navigate("/placed", { state: orderId });
       } else toast.error("Something went wrong");
       setIsLoading(false);

@@ -8,6 +8,7 @@ import { login, logout } from "./store/authSlice";
 import appWriteDb from "./appwrite/DbServise";
 import { storeProducts } from "./store/productSlice";
 import appWriteStorage from "./appwrite/storageService";
+import { Query } from "appwrite";
 
 function App() {
   const dispatch = useDispatch();
@@ -33,7 +34,7 @@ function App() {
         const userData = await appwriteAuth.getCurrentUser();
         if (userData) {
           const cart = await appWriteDb.getCart(userData.$id);
-          const orders = await appWriteDb.getOrders(userData.$id);
+          const orders = await appWriteDb.getOrders([Query.equal("userId", userData.$id)]);
 
           if (cart && orders) {
             dispatch(

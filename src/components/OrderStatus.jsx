@@ -1,6 +1,6 @@
 import React from 'react'
 
-const OrderStatus = ({order}) => {
+const OrderStatus = ({order, classname=""}) => {
 
     const getStatus = () => {
         if(order.isShipped && !order.isDelivered){
@@ -15,7 +15,7 @@ const OrderStatus = ({order}) => {
       const { status, bgColor, textColor } = getStatus()
 
   return (
-    <span className={`mt-3 text-xs font-medium ${textColor} ${bgColor} p-2 rounded-full select-none`}>
+    <span className={`mt-3 text-xs font-medium ${textColor} ${bgColor} p-2 rounded-full select-none ${classname}`}>
     {status}
   </span>
   )

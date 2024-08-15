@@ -5,11 +5,27 @@ import Login from "../components/auth/Login";
 import SignUp from "../components/auth/SignUp";
 import Error from "./Error";
 import ProductDetail from "./ProductDetail";
-import Account from "./Account"
+import Account from "./Account";
 import Orders from "./Orders";
 import Search from "./Search";
 import Cart from "./Cart";
 import Checkout from "./Checkout";
 import OrderConfirm from "./OrderConfirm";
+import Shipment from "./Shipment";
 
-export {Home, Seller, ProtectedRoute, Login, SignUp, Error, ProductDetail, Account, Orders, Search, Cart, Checkout, OrderConfirm}
+export {
+  Home,
+  Seller,
+  ProtectedRoute,
+  Login,
+  SignUp,
+  Error,
+  ProductDetail,
+  Account,
+  Orders,
+  Search,
+  Cart,
+  Checkout,
+  OrderConfirm,
+  Shipment,
+};

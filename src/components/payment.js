@@ -1,6 +1,6 @@
 async function createOrder(amount) {
   try {
-    const response = await fetch("https://66ab338e55cb575490f3.appwrite.global", {
+    const response = await fetch("https://66bd992ea6145b711479.appwrite.global", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

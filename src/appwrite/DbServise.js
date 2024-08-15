@@ -149,12 +149,12 @@ class appWriteDbConfig {
     }
   }
 
-  async getOrders(userId) {
+  async getOrders(query = []) {
     try {
       const orders = await this.dataBase.listDocuments(
         dataBaseId,
         ordersCollectionId,
-        [Query.equal("userId", userId)]
+        query
       )
       
       if (orders) {
@@ -163,6 +163,18 @@ class appWriteDbConfig {
     } catch (error) {
       console.error("getOrders :: error", error.message);
       return null
+    }
+  }
+
+  async updateOrder(orderId, data){
+    try {
+      const updateOrder = await this.dataBase.updateDocument(dataBaseId, ordersCollectionId, orderId, {...data})
+      if (updateOrder) {
+        return true
+      }else return false
+    } catch (error) {
+      console.log("updateOrder :: error", error);
+      return false
     }
   }
 }

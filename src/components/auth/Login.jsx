@@ -7,6 +7,8 @@ import appwriteAuth from "../../appwrite/authService";
 import { useDispatch } from "react-redux";
 import { login } from "../../store/authSlice";
 import { toast } from "react-toastify";
+import appWriteDb from "../../appwrite/DbServise";
+import { Query } from "appwrite";
 
 const Login = () => {
   const { state } = useLocation();
@@ -33,17 +35,23 @@ const Login = () => {
         setIsLoading(false)
           if (session) {
             const userData = await appwriteAuth.getCurrentUser();
+            const cart = await appWriteDb.getCart(userData.$id);
+            const orders = await appWriteDb.getOrders([Query.equal("userId", userData.$id)]);
+            if (cart || orders) {
+              dispatch(
+                login({ userData, isCartCreated: true, otherData: {cart: cart || [], orders: orders || [] } })
+              );
+            } else dispatch(login({ userData }));
             toast.update(toastId, {
               render: "Login successful",
               type: "success",
               autoClose: 3000,
               isLoading: false,
             })
-            dispatch(login({ userData }));
 
             if (state?.redirect) {
               navigate(`/${state.redirect}`);
-            } else navigate("/"); //TODO: change the route as per user preference
+            } else navigate("/");
           }
     } catch (error) {
       toast.update(toastId, {

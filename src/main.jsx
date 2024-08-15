@@ -10,7 +10,7 @@ import {
   Route,
   RouterProvider,
 } from "react-router-dom";
-import { Home, Seller, ProtectedRoute, Login, Error, SignUp, ProductDetail, Account, Orders, Search, Cart, Checkout, OrderConfirm } from "./pages";
+import { Home, Seller, ProtectedRoute, Login, Error, SignUp, ProductDetail, Account, Orders, Search, Cart, Checkout, OrderConfirm, Shipment } from "./pages";
 import { Provider } from "react-redux";
 import { store } from "./store/store.js";
 
@@ -25,10 +25,11 @@ const router = createBrowserRouter(
       <Route path="placed" element={<OrderConfirm />} />
       <Route path="cart" element={<ProtectedRoute authontication isSignUp={true} redirect="cart"><Cart /></ProtectedRoute>} />
       <Route path="checkout" element={<ProtectedRoute authontication isSignUp={true} redirect="cart"><Checkout /></ProtectedRoute>} />
-      <Route path="seller" element={<ProtectedRoute authontication isSignUp={false} redirect="seller"><Seller /></ProtectedRoute>}/>
      <Route path="product/:productId" element={<ProductDetail />} />
      <Route path="account" element={<ProtectedRoute authontication redirect="account"><Account /></ProtectedRoute>} />
      <Route path="orders/:orderId" element={<ProtectedRoute authontication redirect="account"><Orders /></ProtectedRoute>} />
+      <Route path="seller" element={<ProtectedRoute authontication isSignUp={false} redirect="seller"><Seller /></ProtectedRoute>}/>
+      <Route path="shipment" element={<ProtectedRoute authontication isSignUp={false} redirect="shipment"><Shipment /></ProtectedRoute>}/>
     </Route>
   )
 );
