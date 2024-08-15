@@ -5,8 +5,6 @@ import appWriteStorage from "../appwrite/storageService";
 import appWriteDb from "../appwrite/DbServise";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
 
 const Seller = () => {
   const { register, handleSubmit, formState: { errors }, reset} = useForm();
@@ -95,13 +93,17 @@ const Seller = () => {
           placeholder="Price (1-99,999)"
           {...register("price", { required: true, validate: (value) => Number(value) !== 0})}
         />
-        <Input
-          label="category"
-          placeholder="eg. Mobile"
-          required
-          error={errors.category && true}
-          {...register("category", { required: true })}
-        />
+        <div className="w-full">
+       <select className="w-full bg-transparent p-2 border rounded-lg" {...register("category", { required: true })}>
+        <option value="" hidden>Category</option>
+         <option value="mobile">Mobile</option>
+         <option value="laptop">Laptop</option>
+         <option value="computer">Computer</option>
+         <option value="audio">Audio</option>
+       </select>
+       <p className="mt-1 text-xs text-gray-500"> <span className="text-red-500">*</span> This field is required</p>
+        </div>
+
         <Input
           label="tags"
           error={errors.tags && true}
@@ -114,7 +116,7 @@ const Seller = () => {
           error={errors.description && true}
           required
           placeholder="Enter Your Product Description"
-          {...register("description", { required: true, minLength: 10 })}
+          {...register("description", { required: true, minLength: 10, maxLength: 555 })}
         />
         <Input
           type="file"

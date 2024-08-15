@@ -72,6 +72,8 @@ const Header = () => {
               </option>
               <option value="mobile">Mobile</option>
               <option value="laptop">Laptop</option>
+              <option value="audio">Audio</option>
+              <option value="computer">Computer</option>
             </select>
             <span className="pointer-events-none absolute right-0 top-0 flex h-full w-10 items-center justify-center text-center text-gray-600">
               <ChevronDown size={16} />
