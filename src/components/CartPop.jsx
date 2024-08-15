@@ -13,12 +13,12 @@ export default function CartPop({ setIsCartOpen }) {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [loadingClass, setLoadingClass] = useState("");
-  const { cart } = useSelector((state) => state.auth.otherData);
+  const { otherData } = useSelector((state) => state.auth);
   const userData = useSelector((state) => state.auth.userData);
   const { products: allProducts } = useSelector((state) => state.products);
 
   useEffect(() => {
-    const createProducts = cart.map((cartProduct) => {
+    const createProducts = otherData.cart.map((cartProduct) => {
       const productDetails = allProducts.find(
         (product) => product.$id === cartProduct.productId
       );
@@ -33,7 +33,7 @@ export default function CartPop({ setIsCartOpen }) {
     });
 
     setProducts(createProducts.reverse());
-  }, [cart, allProducts]);
+  }, [otherData.cart, allProducts]);
 
   const handleDeleteProduct = async(productId) => {
     setLoadingClass("cursor-wait");
@@ -47,7 +47,7 @@ export default function CartPop({ setIsCartOpen }) {
       try {
         const cart = await appWriteDb.addToCart(filteredProducts, userData.$id, "update");
         if (cart) {
-          dispatch(login({ otherData: { cart } }));
+          dispatch(login({ otherData: { cart, orders: otherData.orders } }));
           setLoadingClass("");
         }
       } catch (error) {

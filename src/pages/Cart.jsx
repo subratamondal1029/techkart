@@ -43,7 +43,7 @@ export default function Cart() {
       try {
       const cart = await appWriteDb.addToCart(filteredProducts, userData.$id, "update");
       if (cart) {
-        dispatch(login({ otherData: { cart } }));
+        dispatch(login({ otherData: { cart, orders: otherData.orders } }));
         setLoadingClass("");
       }
     } catch (error) {
