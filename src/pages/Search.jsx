@@ -5,11 +5,11 @@ import { useSelector } from "react-redux";
 
 const Search = () => {
   const navigate = useNavigate();
-  const { searchValue } = useParams();
+  let { searchValue } = useParams();
+  if(searchValue === "all") searchValue = ""
   const allProducts = useSelector((state) => state.products.products);
   const [searchProducts, setSearchProducts] = useState([]);
     const filterProducts = useCallback(() => {
-      
       const products = allProducts.filter((product) => {
         if (
           product.name.toLowerCase().includes(searchValue) ||

@@ -38,11 +38,14 @@ const Header = () => {
   };
 
   const handleSearch = (value) => {
+    if (value === "") {
+    value = "all"; 
+    }
     navigate(`/search/${value}`);
   };
 
   return (
-    <header className="z-10">
+    <header className="z-10 relative bg-white">
       <div className="flex justify-between items-center shadow-md py-4 px-8">
         <Link to="/">
           <Logo classname="w-10" width="200px" />
@@ -62,8 +65,9 @@ const Header = () => {
               className="bg-transparent mt-1 appearance-none border border-gray-300 py-[9px] pl-3 pr-10 text-sm  focus:outline-none select-none rounded-r-lg"
               id="category"
               name="category"
+              onChange={(e) => handleSearch(e.target.value)}
             >
-              <option value="" hidden>
+              <option value="">
                 All Category
               </option>
               <option value="mobile">Mobile</option>
