@@ -67,11 +67,13 @@ const ProductDetail = () => {
         <ArrowLeft size={20} />
         Go back
       </Button>
+      <div className="w-full max-w-[400px] h-auto rounded-lg flex items-center justify-center">
       <img
         src={product.image}
         alt={product.name}
-        className="w-full max-w-[600px] h-auto rounded-lg"
-      />
+        className="min-w-52"
+        />
+      </div>
       <div className="w-full h-full flex justify-start flex-col items-start gap-3">
         <h3 className="text-2xl uppercase text-gray-500">{product.company}</h3>
         <h1 className="text-3xl font-bold ">{product.name}</h1>
@@ -97,7 +99,7 @@ const ProductDetail = () => {
               </span>
               <Link
                 className="hover:text-heading transition hover:underline capitalize"
-                to="/"
+                to={`/search/${product.category}`}
               >
                 {product.category}
               </Link>
