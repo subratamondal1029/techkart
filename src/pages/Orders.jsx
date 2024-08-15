@@ -1,53 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { Button, OrderStatus } from "../components";
-import { Link, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import appWriteDb from "../appwrite/DbServise";
 import appWriteStorage from "../appwrite/storageService";
-
-// const products = [
-//   {
-//     id: 1,
-//     name: "Nike Air Force 1 07 LV8",
-//     price: "47199",
-//     quantity: 1,
-//     imageSrc:
-//       "https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/54a510de-a406-41b2-8d62-7f8c587c9a7e/air-force-1-07-lv8-shoes-9KwrSk.png",
-//   },
-//   {
-//     id: 2,
-//     name: "Nike Blazer Low 77 SE",
-//     price: "1549",
-//     quantity: 1,
-//     imageSrc:
-//       "https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/e48d6035-bd8a-4747-9fa1-04ea596bb074/blazer-low-77-se-shoes-0w2HHV.png",
-//   },
-//   {
-//     id: 3,
-//     name: "Nike Air Max 90",
-//     price: "2219",
-//     quantity: 1,
-//     imageSrc:
-//       "https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/fd17b420-b388-4c8a-aaaa-e0a98ddf175f/dunk-high-retro-shoe-DdRmMZ.png",
-//   },
-// ];
-
-// const orderr = {
-//   date: "2022-01-01",
-//   id: 2735239,
-//   products,
-//   userId: 1,
-//   name: "John Doe",
-//   phone: 1234567890,
-//   address: "123 Main Street",
-//   isShipped: false,
-//   isDelivered: false,
-// };
+import { Download } from "lucide-react";
+import { toast } from "react-toastify";
+import { login } from "../store/authSlice";
+import { Query } from "appwrite";
 
 export default function Orders() {
   const orders = useSelector((state) => state.auth.otherData.orders);
+  const cart = useSelector((state) => state.auth.otherData.cart);
   const { products: allProducts } = useSelector((state) => state.products);
   const { orderId } = useParams();
+  const navigate = useNavigate()
+  const dispatch = useDispatch();
   const [order, setOrder] = useState({
     date: "",
     id: "",
@@ -61,6 +29,7 @@ export default function Orders() {
   });
 
   useEffect(() => {
+    if (!orderId) navigate("/account")
     const getProducts = (cart) => {
       return cart
         .map((product) => JSON.parse(product))
@@ -91,16 +60,51 @@ export default function Orders() {
         isShipped: order.isShipped,
         isDelivered: order.isDeliverd,
       }));
+      if (order.length === 0) {
+        navigate("/account")
+      }
     setOrder(order[0]);
   }, []);
 
   const calTotal = () => {
     let total = 0;
-    order.products.forEach((product) => {
+    order?.products.forEach((product) => {
       total += Number(product.price) * product.quantity;
     });
     return total.toLocaleString("en-IN");
   };
+
+  const downloadInvoice = async() =>{
+    try {
+      const downloadLink = await appWriteStorage.getDownloadLink(`${order.id}_invoice`)
+      if(downloadLink) {
+        window.open(downloadLink, "_blank")
+      }else throw new Error("Something went wrong")
+    } catch (error) {
+      toast.error(error.message)
+    }
+  }
+
+  const deleteOrder = async () => {
+    try {
+      const deleteOrder = await appWriteDb.deleteOrder(orderId)
+      if (deleteOrder) {
+        const newOrders = orders.map((order) => {
+          if(order.$id !== orderId) return order.$id
+        })
+       const res = await appWriteDb.addOrder(newOrders, order.userId)
+       if(res) {
+        const allorders = await appWriteDb.getOrders([Query.equal("userId", order.userId)])
+        dispatch(login({otherData: {orders: allorders, cart: [...cart], isCartCreated: true}}))
+        toast.success("Order deleted successfully")
+        navigate("/account")
+       }else throw new Error("Something went wrong")
+      }
+    } catch (error) {
+      toast.error(error.message)
+      console.error(error.message)
+    }
+  }
 
   return (
     <div className="mx-auto my-4 max-w-4xl md:my-6">
@@ -174,8 +178,8 @@ export default function Orders() {
                     Date: {order?.date}
                   </p>
                   {order?.isDelivered && (
-                    <Button type="button" classname="mt-3">
-                      View Invoice
+                    <Button type="button" classname="mt-3 flex justify-center items-center" onClick={downloadInvoice}>
+                      <Download className="mr-2 h-4 w-4" size={20}/> Download Invoice
                     </Button>
                   )}
                 </div>
@@ -195,7 +199,10 @@ export default function Orders() {
                 </div>
                 <div className="py-6">
                   <h2 className="text-base font-bold text-black">Status</h2>
+                  <div className="flex items-center justify-between">
                   <OrderStatus order={order} />
+                  <Button type="button" onClick={deleteOrder}>Cancel</Button>
+                  </div>
                 </div>
               </div>
             </div>

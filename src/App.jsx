@@ -38,7 +38,7 @@ function App() {
 
           if (cart && orders) {
             dispatch(
-              login({ userData, isCartCreated: true, otherData: { cart, orders } })
+              login({ userData, isCartCreated: true, otherData: { cart, orders: orders || []} })
             );
           } else dispatch(login({ userData }));
           if (currentLocation !== "/login" || currentLocation !== "/signup") {

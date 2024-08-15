@@ -108,7 +108,7 @@ class appWriteDbConfig {
       } else return null;
     } catch (error) {
       console.warn(error.message);
-      return null;
+      return null
     }
   }
 
@@ -126,7 +126,7 @@ class appWriteDbConfig {
       } else return null;
     } catch (error) {
       console.error("createOrder :: error", error.message);
-      return null;
+      throw error
     }
   }
 
@@ -145,7 +145,18 @@ class appWriteDbConfig {
       }else return null
     } catch (error) {
       console.error("addOrder :: error", error.message);
-      return null;
+      throw error
+    }
+  }
+
+  async deleteOrder(orderId) {
+    try {
+      const deleteOrder = await this.dataBase.deleteDocument(dataBaseId, ordersCollectionId, orderId)
+      if (deleteOrder) {
+        return true
+      }return false
+    } catch (error) {
+      throw error
     }
   }
 
