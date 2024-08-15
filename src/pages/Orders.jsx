@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, OrderStatus } from "../components";
+import { Button, ButtonLoading, OrderStatus } from "../components";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import appWriteDb from "../appwrite/DbServise";
@@ -14,8 +14,9 @@ export default function Orders() {
   const cart = useSelector((state) => state.auth.otherData.cart);
   const { products: allProducts } = useSelector((state) => state.products);
   const { orderId } = useParams();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
   const [order, setOrder] = useState({
     date: "",
     id: "",
@@ -29,7 +30,7 @@ export default function Orders() {
   });
 
   useEffect(() => {
-    if (!orderId) navigate("/account")
+    if (!orderId) navigate("/account");
     const getProducts = (cart) => {
       return cart
         .map((product) => JSON.parse(product))
@@ -60,9 +61,9 @@ export default function Orders() {
         isShipped: order.isShipped,
         isDelivered: order.isDeliverd,
       }));
-      if (order.length === 0) {
-        navigate("/account")
-      }
+    if (order.length === 0) {
+      navigate("/account");
+    }
     setOrder(order[0]);
   }, []);
 
@@ -74,37 +75,51 @@ export default function Orders() {
     return total.toLocaleString("en-IN");
   };
 
-  const downloadInvoice = async() =>{
+  const downloadInvoice = async () => {
     try {
-      const downloadLink = await appWriteStorage.getDownloadLink(`${order.id}_invoice`)
-      if(downloadLink) {
-        window.open(downloadLink, "_blank")
-      }else throw new Error("Something went wrong")
+      const downloadLink = await appWriteStorage.getDownloadLink(
+        `${order.id}_invoice`
+      );
+      if (downloadLink) {
+        window.open(downloadLink, "_blank");
+      } else throw new Error("Something went wrong");
     } catch (error) {
-      toast.error(error.message)
+      toast.error(error.message);
     }
-  }
+  };
 
   const deleteOrder = async () => {
+    setIsLoading(true);
     try {
-      const deleteOrder = await appWriteDb.deleteOrder(orderId)
+      const deleteOrder = await appWriteDb.deleteOrder(orderId);
       if (deleteOrder) {
         const newOrders = orders.map((order) => {
-          if(order.$id !== orderId) return order.$id
-        })
-       const res = await appWriteDb.addOrder(newOrders, order.userId)
-       if(res) {
-        const allorders = await appWriteDb.getOrders([Query.equal("userId", order.userId)])
-        dispatch(login({otherData: {orders: allorders, cart: [...cart], isCartCreated: true}}))
-        toast.success("Order deleted successfully")
-        navigate("/account")
-       }else throw new Error("Something went wrong")
+          if (order.$id !== orderId) return order.$id;
+        });
+        const res = await appWriteDb.addOrder(newOrders, order.userId);
+        if (res) {
+          const allorders = await appWriteDb.getOrders([
+            Query.equal("userId", order.userId),
+          ]);
+          dispatch(
+            login({
+              otherData: {
+                orders: allorders,
+                cart: [...cart],
+                isCartCreated: true,
+              },
+            })
+          );
+          toast.success("Order deleted successfully");
+          navigate("/account");
+        } else throw new Error("Something went wrong");
       }
     } catch (error) {
-      toast.error(error.message)
-      console.error(error.message)
+      toast.error(error.message);
+      console.error(error.message);
     }
-  }
+    setIsLoading(false);
+  };
 
   return (
     <div className="mx-auto my-4 max-w-4xl md:my-6">
@@ -178,8 +193,13 @@ export default function Orders() {
                     Date: {order?.date}
                   </p>
                   {order?.isDelivered && (
-                    <Button type="button" classname="mt-3 flex justify-center items-center" onClick={downloadInvoice}>
-                      <Download className="mr-2 h-4 w-4" size={20}/> Download Invoice
+                    <Button
+                      type="button"
+                      classname="mt-3 flex justify-center items-center"
+                      onClick={downloadInvoice}
+                    >
+                      <Download className="mr-2 h-4 w-4" size={20} /> Download
+                      Invoice
                     </Button>
                   )}
                 </div>
@@ -200,8 +220,21 @@ export default function Orders() {
                 <div className="py-6">
                   <h2 className="text-base font-bold text-black">Status</h2>
                   <div className="flex items-center justify-between">
-                  <OrderStatus order={order} />
-                  <Button type="button" onClick={deleteOrder}>Cancel</Button>
+                    <OrderStatus order={order} />
+                    {order.isDelivered || (
+                      <Button
+                        type="button"
+                        classname="flex justify-center items-center h-9 disabled:cursor-not-allowed disabled:bg-black/50"
+                        disabled={isLoading}
+                        onClick={deleteOrder}
+                      >
+                        {isLoading ? (
+                          <ButtonLoading fillColor="fill-black" />
+                        ) : (
+                          "Cancel"
+                        )}
+                      </Button>
+                    )}
                   </div>
                 </div>
               </div>

@@ -204,7 +204,7 @@ const Shipment = () => {
                       />
                     ) : shipment.isShipped ? (
                       <>
-                        <Download size={20} /> "Invoice"
+                        <Download size={20} className="mr-2"/> Invoice
                       </>
                     ) : (
                       "Dispatch"
