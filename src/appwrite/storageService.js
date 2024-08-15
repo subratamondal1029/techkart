@@ -27,15 +27,14 @@ class appwriteStorageconfig {
     }
   }
 
-  async deleteFile(fileId) {
+  async deleteFile(fileId, delstorageId=storageId) {
     try {
-      const fileDelete = await this.storage.deleteFile(storageId, fileId);
+      const fileDelete = await this.storage.deleteFile(delstorageId, fileId);
       if (fileDelete) {
         return true;
       } else return false;
     } catch (error) {
-      console.log("deleteFile :: error", error);
-      return false;
+      throw error
     }
   }
 
@@ -51,19 +50,14 @@ class appwriteStorageconfig {
     }
   }
 
-  async uploadInvoice(type, pdf, documentId) {
-    try {
-      let response;
-      if (type === "shipped") {
-        response = await this.storage.createFile(invoiceId, documentId, pdf)
-      }else if(type === "delivered"){
-        response = await this.storage.updateFile(invoiceId, documentId, pdf)
-      }else throw new Error("Invalid type");
-  
+  async uploadInvoice( pdf, documentId) {
+ try {
+       const response = await this.storage.createFile(invoiceId, documentId, pdf)
       if (response) {
         return true
       }else return null
     } catch (error) {
+      console.log("uploadInvoice :: error", error);
       throw error
     }
   }

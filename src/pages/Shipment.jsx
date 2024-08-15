@@ -2,7 +2,12 @@ import { ArrowLeft, Download } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { AccessDenied, Button, ButtonLoading, OrderStatus } from "../components";
+import {
+  AccessDenied,
+  Button,
+  ButtonLoading,
+  OrderStatus,
+} from "../components";
 import appWriteDb from "../appwrite/DbServise";
 import { toast } from "react-toastify";
 import appWriteStorage from "../appwrite/storageService";
@@ -15,7 +20,7 @@ const Shipment = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   if (!userData?.labels.includes("shipment")) {
-    return <AccessDenied message="Shipment master"/>
+    return <AccessDenied message="Shipment master" />;
   }
 
   useEffect(() => {
@@ -83,14 +88,15 @@ const Shipment = () => {
 
         if (ordersStatusChange) {
           const uploadInvoice = await appWriteStorage.uploadInvoice(
-            "shipped",
             invoicePdf,
             orderId
           );
           if (uploadInvoice) {
             setDisplayOrders((prev) =>
               prev.map((order) =>
-                order.orderId === orderId ? { ...order, isShipped: true } : order
+                order.orderId === orderId
+                  ? { ...order, isShipped: true }
+                  : order
               )
             );
           }
@@ -107,7 +113,7 @@ const Shipment = () => {
 
   const downloadInvoice = async (orderId) => {
     try {
-      const downloadLink = await appWriteStorage.getDownloadLink(orderId)
+      const downloadLink = await appWriteStorage.getDownloadLink(orderId);
       if (downloadLink) {
         window.open(downloadLink, "_blank");
       }
@@ -197,7 +203,9 @@ const Shipment = () => {
                         fillColor="fill-black"
                       />
                     ) : shipment.isShipped ? (
-                      <><Download size={20} /> "Invoice"</>
+                      <>
+                        <Download size={20} /> "Invoice"
+                      </>
                     ) : (
                       "Dispatch"
                     )}

@@ -17,10 +17,12 @@ function generatePdf(type, data) {
 
       // Generate the PDF and return it
       PdfMake.createPdf(docDefinition).getBlob(async (blob) => {
-        const file = new File([blob], `${data.orderId}.pdf`, { type: blob.type });
+        const file = new File([blob], `${data.orderId}_${type}.pdf`, { type: blob.type });
        resolve(file);
       })
     } catch (error) {
+      console.log("generatePdf :: error", error);
+      
       reject(error);
     }
   });

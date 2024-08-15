@@ -166,6 +166,18 @@ class appWriteDbConfig {
     }
   }
 
+  async getOrder(orderId) {
+    try {
+      const order = await this.dataBase.getDocument(dataBaseId, ordersCollectionId, orderId)
+      if (order) {
+        return order
+      }else return null
+    } catch (error) {
+      console.log("getOrder :: error", error);
+      return null
+    }
+  }
+
   async updateOrder(orderId, data){
     try {
       const updateOrder = await this.dataBase.updateDocument(dataBaseId, ordersCollectionId, orderId, {...data})
