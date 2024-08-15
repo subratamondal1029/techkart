@@ -148,7 +148,7 @@ const Delivery = () => {
             Cancel
           </Button>
           <Button
-            classname={`w-full disabled:bg-black/80 disabled:cursor-not-allowed h-9`}
+            classname={`w-full disabled:bg-black/80 disabled:cursor-not-allowed h-9 flex items-center justify-center`}
             onClick={() => changeStatus(scanedData.orderId)}
             disabled={isSending || scanedData.isDeliverd}
           >
