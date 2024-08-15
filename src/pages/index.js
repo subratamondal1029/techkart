@@ -12,6 +12,7 @@ import Cart from "./Cart";
 import Checkout from "./Checkout";
 import OrderConfirm from "./OrderConfirm";
 import Shipment from "./Shipment";
+import Delivery from "./Delivery";
 
 export {
   Home,
@@ -28,4 +29,5 @@ export {
   Checkout,
   OrderConfirm,
   Shipment,
+  Delivery,
 };

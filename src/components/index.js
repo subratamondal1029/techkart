@@ -11,6 +11,7 @@ import MainLoader from "./MainLoader";
 import AccountInfoCard from "./AccountInfoCard";
 import OrderStatus from "./OrderStatus";
 import CartPop from "./CartPop";
+import AccessDenied from "./AccessDenied";
 
 export {
   Input,
@@ -26,4 +27,5 @@ export {
   AccountInfoCard,
   OrderStatus,
   CartPop,
+  AccessDenied
 };

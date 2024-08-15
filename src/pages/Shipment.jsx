@@ -1,8 +1,8 @@
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Download } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { Button, ButtonLoading, OrderStatus } from "../components";
+import { AccessDenied, Button, ButtonLoading, OrderStatus } from "../components";
 import appWriteDb from "../appwrite/DbServise";
 import { toast } from "react-toastify";
 import appWriteStorage from "../appwrite/storageService";
@@ -15,21 +15,7 @@ const Shipment = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   if (!userData?.labels.includes("shipment")) {
-    return (
-      <div className="text-center flex justify-center items-center flex-col">
-        <h1 className="font-bold text-3xl pt-20 min-h-64">
-          To access this page you need to be a Shipment master
-        </h1>
-        <Link
-          to="/"
-          type="button"
-          className="inline-flex items-center rounded-md border border-black px-3 py-2 text-sm font-semibold text-black shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
-        >
-          <ArrowLeft size={16} className="mr-2" />
-          Go back
-        </Link>
-      </div>
-    );
+    return <AccessDenied message="Shipment master"/>
   }
 
   useEffect(() => {
@@ -211,7 +197,7 @@ const Shipment = () => {
                         fillColor="fill-black"
                       />
                     ) : shipment.isShipped ? (
-                      "Invoice"
+                      <><Download size={20} /> "Invoice"</>
                     ) : (
                       "Dispatch"
                     )}
