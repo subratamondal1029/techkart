@@ -1,11 +1,11 @@
-import PdfMake from "pdfmake/build/pdfmake";
-import PdfFonts from "pdfmake/build/vfs_fonts";
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
 
 function generatePdf(type, data) {
   return new Promise(async (resolve, reject) => {
     try {
       // Configure PDFMake with fonts
-      PdfMake.vfs = PdfFonts.pdfMake.vfs;
+      pdfMake.vfs = pdfFonts.pdfMake.vfs;
       let docDefinition;
 
       // PDF document definition
@@ -16,7 +16,7 @@ function generatePdf(type, data) {
       } else reject("Invalid type");
 
       // Generate the PDF and return it
-      PdfMake.createPdf(docDefinition).getBlob(async (blob) => {
+      pdfMake.createPdf(docDefinition).getBlob(async (blob) => {
         const file = new File([blob], `${data.orderId}_${type}.pdf`, {
           type: blob.type,
         });
