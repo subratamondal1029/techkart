@@ -1,5 +1,5 @@
-import PdfMake from "pdfmake/build/pdfmake.js";
-import PdfFonts from "pdfmake/build/vfs_fonts.js";
+import PdfMake from "pdfmake/build/pdfmake";
+import PdfFonts from "pdfmake/build/vfs_fonts";
 
 function generatePdf(type, data) {
   return new Promise(async (resolve, reject) => {
