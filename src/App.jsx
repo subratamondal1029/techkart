@@ -36,7 +36,7 @@ function App() {
           const cart = await appWriteDb.getCart(userData.$id);
           const orders = await appWriteDb.getOrders([Query.equal("userId", userData.$id)]);
 
-          if (cart || orders) {
+          if (cart || orders.length !== 0) {
             dispatch(
               login({ userData, isCartCreated: true, otherData: { cart: cart || [], orders: orders || []} })
             );

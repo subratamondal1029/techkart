@@ -24,35 +24,50 @@ const Login = () => {
     formState: { errors },
   } = useForm();
 
+  const handleGoogleLogin = async () => {
+    const currentUrl = window.location.host;
+    const redirectUrl = `http://${currentUrl}/${state?.redirect || ""}`;
+    appwriteAuth
+      .loginWithGogle(redirectUrl, `http://${currentUrl}`)
+      .catch((error) => toast.error(error));
+  };
 
   const handleLogin = async (data) => {
     setIsLoading(true);
     setError("");
     const toastId = toast.loading("Logging in...");
     try {
-     const session = await appwriteAuth
-        .emailPassLogin({ email: data.email, password: data.password })
-        setIsLoading(false)
-          if (session) {
-            const userData = await appwriteAuth.getCurrentUser();
-            const cart = await appWriteDb.getCart(userData.$id);
-            const orders = await appWriteDb.getOrders([Query.equal("userId", userData.$id)]);
-            if (cart || orders) {
-              dispatch(
-                login({ userData, isCartCreated: true, otherData: {cart: cart || [], orders: orders || [] } })
-              );
-            } else dispatch(login({ userData }));
-            toast.update(toastId, {
-              render: "Login successful",
-              type: "success",
-              autoClose: 3000,
-              isLoading: false,
+      const session = await appwriteAuth.emailPassLogin({
+        email: data.email,
+        password: data.password,
+      });
+      setIsLoading(false);
+      if (session) {
+        const userData = await appwriteAuth.getCurrentUser();
+        const cart = await appWriteDb.getCart(userData.$id);
+        const orders = await appWriteDb.getOrders([
+          Query.equal("userId", userData.$id),
+        ]);
+        if (cart || orders) {
+          dispatch(
+            login({
+              userData,
+              isCartCreated: true,
+              otherData: { cart: cart || [], orders: orders || [] },
             })
+          );
+        } else dispatch(login({ userData }));
+        toast.update(toastId, {
+          render: "Login successful",
+          type: "success",
+          autoClose: 3000,
+          isLoading: false,
+        });
 
-            if (state?.redirect) {
-              navigate(`/${state.redirect}`);
-            } else navigate("/");
-          }
+        if (state?.redirect) {
+          navigate(`/${state.redirect}`);
+        } else navigate("/");
+      }
     } catch (error) {
       toast.update(toastId, {
         render: "Login failed",
@@ -61,7 +76,7 @@ const Login = () => {
         isLoading: false,
       });
       setError(error.message);
-      setIsLoading(false)
+      setIsLoading(false);
       console.log("handleLogin :: error", error);
     }
   };
@@ -141,13 +156,18 @@ const Login = () => {
                 classname="w-full flex justify-center items-center text-3xl select-none"
                 type="submit"
               >
-                 {isLoading ? <ButtonLoading fillColor="fill-black"/> :  <>Login <ArrowRight className="ml-2" size={16} /></> }
-               
+                {isLoading ? (
+                  <ButtonLoading fillColor="fill-black" />
+                ) : (
+                  <>
+                    Login <ArrowRight className="ml-2" size={16} />
+                  </>
+                )}
               </Button>
             </div>
           </form>
           {state?.isSignUp !== false ? (
-            <div className="mt-3 space-y-3">
+            <div className="mt-3 space-y-3" onClick={handleGoogleLogin}>
               <button
                 type="button"
                 className="relative inline-flex w-full items-center justify-center rounded-md border border-gray-400 bg-white px-3.5 py-2.5 font-semibold text-gray-700 transition-all duration-200 hover:bg-gray-100 hover:text-black focus:bg-gray-100 focus:text-black focus:outline-none"
