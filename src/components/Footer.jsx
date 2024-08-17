@@ -30,23 +30,23 @@ export default function Footer() {
               </h3>
               <ul>
                 <li className="mb-4">
-                  <Link className=" text-base font-medium text-gray-900 hover:text-gray-700" to="/">
-                    Features
+                  <Link className=" text-base font-medium text-gray-900 hover:text-gray-700" to="/shipment">
+                    Shipment Portal
                   </Link>
                 </li>
                 <li className="mb-4">
-                  <Link className=" text-base font-medium text-gray-900 hover:text-gray-700" to="/">
-                    Pricing
+                <Link className=" text-base font-medium text-gray-900 hover:text-gray-700" to="/account">
+                    Account
                   </Link>
                 </li>
                 <li className="mb-4">
-                  <Link className=" text-base font-medium text-gray-900 hover:text-gray-700" to="/">
-                    Affiliate Program
+                <Link className=" text-base font-medium text-gray-900 hover:text-gray-700" to="/">
+                    Terms &amp; Conditions
                   </Link>
                 </li>
                 <li>
-                  <Link className=" text-base font-medium text-gray-900 hover:text-gray-700" to="/seller">
-                    Become a Seller
+                  <Link className=" text-base font-medium text-gray-900 hover:text-gray-700" to="/">
+                  Affiliate Program
                   </Link>
                 </li>
               </ul>
@@ -59,8 +59,8 @@ export default function Footer() {
               </h3>
               <ul>
                 <li className="mb-4">
-                  <Link className=" text-base font-medium text-gray-900 hover:text-gray-700" to="/account">
-                    Account
+                  <Link className=" text-base font-medium text-gray-900 hover:text-gray-700" to="/delivery">
+                    Delivery Portal
                   </Link>
                 </li>
                 <li className="mb-4">
@@ -88,8 +88,8 @@ export default function Footer() {
               </h3>
               <ul>
                 <li className="mb-4">
-                  <Link className=" text-base font-medium text-gray-900 hover:text-gray-700" to="/">
-                    Terms &amp; Conditions
+                  <Link className=" text-base font-medium text-gray-900 hover:text-gray-700" to="/seller">
+                    Seller Portal
                   </Link>
                 </li>
                 <li className="mb-4">
