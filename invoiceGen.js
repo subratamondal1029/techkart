@@ -1,201 +1,141 @@
-import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import QRCode from "qrcode";
+
+// Import Noto Sans font files
+import NotoSansBlack from "./src/assets/fotns/NotoSans-Black"
+NotoSansBlack(jsPDF.API)
 
 function generatePdf(type, data) {
   return new Promise(async (resolve, reject) => {
     try {
-      // Configure PDFMake with fonts
-      pdfMake.vfs = pdfFonts.pdfMake.vfs;
-      let docDefinition;
+      let doc;
 
-      // PDF document definition
       if (type === "shipped") {
-        docDefinition = createShipmentPdf(data);
+        doc = await createShipmentPdf(data);
       } else if (type === "delivered") {
-        docDefinition = createDeliveredPdf(data);
+        doc = await createDeliveredPdf(data);
       } else reject("Invalid type");
 
-      // Generate the PDF and return it
-      pdfMake.createPdf(docDefinition).getBlob(async (blob) => {
-        const file = new File([blob], `${data.orderId}_${type}.pdf`, {
-          type: blob.type,
-        });
-        resolve(file);
+      const pdfBlob = doc.output("blob");
+      const file = new File([pdfBlob], `${data.orderId}_${type}.pdf`, {
+        type: pdfBlob.type,
       });
+      resolve(file);
     } catch (error) {
       console.log("generatePdf :: error", error);
-
       reject(error);
     }
   });
 }
 
-function createShipmentPdf(data) {
-  const docDefinition = {
-    pageSize: "A5",
-    content: [
-      { qr: data.orderId, fit: "150", margin: [0, 0, 0, 20] },
-      {
-        text: [
-          { text: "Customer Name: ", bold: true }, // Bold heading
-          data.customerName,
-        ],
-        margin: [0, 0, 0, 10],
-        fontSize: 12,
-      },
-      {
-        text: [
-          { text: "Address: ", bold: true }, // Bold heading
-          data.address,
-        ],
-        margin: [0, 0, 0, 20],
-        fontSize: 10,
-        width: 500,
-        lineHeight: 1.2,
-      },
-      {
-        text: [
-          { text: "Contact: ", bold: true }, // Bold heading
-          data.contact,
-        ],
-        margin: [0, 0, 0, 20],
-        fontSize: 12,
-      },
-      {
-        text: "Product Details",
-        bold: true,
-        fontSize: 14,
-        margin: [0, 0, 0, 10],
-      },
-      {
-        table: {
-          widths: ["*", "*", "*"], // Define column widths
-          body: [
-            [
-              { text: "Product", bold: true },
-              { text: "Quantity", bold: true },
-              { text: "Price", bold: true },
-            ],
-            ...data.products.map((product) => [
-              {
-                text: product.name,
-                alignment: "left",
-                noWrap: false,
-                fontSize: 10,
-              },
-              product.quantity,
-              `₹${Number(product.price).toLocaleString("en-IN")}`,
-            ]),
-            [
-              "",
-              "",
-              {
-                text: `Total: ₹${data.products
-                  .reduce(
-                    (acc, product) => acc + product.price * product.quantity,
-                    0
-                  )
-                  .toLocaleString("en-IN")}`,
-                bold: true,
-              },
-            ], // Summary row
-          ],
-        },
-        layout: "lightHorizontalLines", // Table layout
-      },
-    ],
-    styles: {
-      header: {
-        fontSize: 18,
-        bold: true,
-        margin: [0, 20, 0, 10],
-      },
-    },
-  };
+async function createShipmentPdf(data) {
+  const doc = new jsPDF({ unit: "pt", format: "a5" });
 
-  return docDefinition;
+  const fontList = doc.getFontList();
+  console.log("Available fonts:", fontList);
+
+  // Set Noto Sans font
+  doc.addFont('NotoSans-Black.ttf', 'NotoSans-Black', 'normal')
+  doc.setFont("NotoSans-Black");
+
+  const options = {
+    errorCorrectionLevel: "H",
+    type: "image/png",
+    quality: 1,
+    margin: 1,
+    width: 300,
+  };
+  const qrCodeDataUrl = await QRCode.toDataURL(data.orderId, options);
+
+  doc.addImage(qrCodeDataUrl, "PNG", 20, 20, 150, 150);
+
+  doc.setFontSize(12);
+  doc.text(`Customer Name: ${data.customerName}`, 20, 190);
+  doc.text(`Address: ${data.address}`, 20, 210, { maxWidth: 500 });
+  doc.text(`Contact: ${data.contact}`, 20, 250);
+
+  doc.setFontSize(14);
+  doc.text("Product Details", 20, 280);
+
+  const products = data.products.map((product) => [
+    { content: product.name, styles: { halign: "left" } },
+    product.quantity,
+    `₹${Number(product.price).toLocaleString("en-IN")}`,
+  ]);
+  const total = data.products.reduce(
+    (acc, product) => acc + product.price * product.quantity,
+    0
+  );
+
+  doc.autoTable({
+    startY: 300,
+    head: [["Product", "Quantity", "Price"]],
+    body: [
+      ...products,
+      [
+        "",
+        "",
+        {
+          content: `Total: ₹${total.toLocaleString("en-IN")}`,
+          styles: { fontStyle: "bold" },
+        },
+      ],
+    ],
+    theme: "grid",
+    styles: { fontSize: 10 },
+  });
+
+  return doc;
 }
 
-function createDeliveredPdf(data) {
-  const docDefinition = {
-    pageSize: "A4",
-    content: [
-      {
-        text: `Invoice for Order #${data.orderId}`,
-        bold: true,
-        fontSize: 18,
-        margin: [0, 0, 0, 20],
-      },
-      {
-        text: `Date: ${data.date}`,
-        bold: true,
-        fontSize: 18,
-        margin: [0, 0, 0, 20],
-      },
-      {
-        text: [{ text: "Customer Name: ", bold: true }, data.customerName],
-        margin: [0, 0, 0, 10],
-        fontSize: 12,
-      },
-      {
-        text: [{ text: "Address: ", bold: true }, data.address],
-        margin: [0, 0, 0, 20],
-        fontSize: 12,
-        lineHeight: 1.2,
-      },
-      {
-        text: [{ text: "Contact: ", bold: true }, data.contact],
-        margin: [0, 0, 0, 20],
-        fontSize: 12,
-      },
-      {
-        text: "Product Details",
-        bold: true,
-        fontSize: 14,
-        margin: [0, 10, 0, 10],
-      },
-      {
-        table: {
-          widths: ["*", "*", "*"], // Define column widths
-          body: [
-            [
-              { text: "Product", bold: true },
-              { text: "Quantity", bold: true },
-              { text: "Price", bold: true },
-            ],
-            ...data.products.map((product) => [
-              { text: product.name, fontSize: 10 },
-              product.quantity,
-              `₹${Number(product.price).toLocaleString("en-IN")}`,
-            ]),
-            [
-              "",
-              "",
-              {
-                text: `Total: ₹${data.products
-                  .reduce(
-                    (acc, product) => acc + product.price * product.quantity,
-                    0
-                  )
-                  .toLocaleString("en-IN")}`,
-                bold: true,
-              },
-            ],
-          ],
-        },
-        layout: "lightHorizontalLines", // Table layout
-      },
-    ],
-    styles: {
-      header: {
-        fontSize: 18,
-        bold: true,
-        margin: [0, 20, 0, 10],
-      },
-    },
-  };
+async function createDeliveredPdf(data) {
+  const doc = new jsPDF({ unit: "pt", format: "a4" });
 
-  return docDefinition;
+  doc.addFont('NotoSans-Black.ttf', 'NotoSans-Black', 'normal')
+  doc.setFont("NotoSans-Black");
+
+  doc.setFontSize(18);
+  doc.text(`Invoice for Order #${data.orderId}`, 20, 40);
+  doc.text(`Date: ${data.date}`, 20, 60);
+
+  doc.setFontSize(12);
+  doc.text(`Customer Name: ${data.customerName}`, 20, 100);
+  doc.text(`Address: ${data.address}`, 20, 120, { maxWidth: 500 });
+  doc.text(`Contact: ${data.contact}`, 20, 160);
+
+  doc.setFontSize(14);
+  doc.text("Product Details", 20, 190);
+
+  const products = data.products.map((product) => [
+    { content: product.name, styles: { halign: "left" } },
+    product.quantity,
+    `₹${Number(product.price).toLocaleString("en-IN")}`,
+  ]);
+  const total = data.products.reduce(
+    (acc, product) => acc + product.price * product.quantity,
+    0
+  );
+
+  doc.autoTable({
+    startY: 210,
+    head: [["Product", "Quantity", "Price"]],
+    body: [
+      ...products,
+      [
+        "",
+        "",
+        {
+          content: `Total: ₹${total.toLocaleString("en-IN")}`,
+          styles: { fontStyle: "bold" },
+        },
+      ],
+    ],
+    theme: "grid",
+    styles: { fontSize: 10 },
+  });
+
+  return doc;
 }
 
 export { generatePdf };

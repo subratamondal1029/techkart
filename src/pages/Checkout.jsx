@@ -149,7 +149,6 @@ const Checkout = () => {
     try {
     const order = await appWriteDb.createOrder(orderObj, orderId);
     if (order) {
-      console.log(otherData.orders, otherData)
       const oldOrders = otherData.orders.map((order) => order.$id);
         await appWriteDb.addOrder([...oldOrders, order.$id], userData.$id);
         await appWriteDb.addToCart([], userData.$id, "update");
