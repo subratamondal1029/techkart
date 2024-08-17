@@ -2,10 +2,6 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import QRCode from "qrcode";
 
-// Import Noto Sans font files
-import NotoSansBlack from "./src/assets/fotns/NotoSans-Black"
-NotoSansBlack(jsPDF.API)
-
 function generatePdf(type, data) {
   return new Promise(async (resolve, reject) => {
     try {
@@ -32,12 +28,8 @@ function generatePdf(type, data) {
 async function createShipmentPdf(data) {
   const doc = new jsPDF({ unit: "pt", format: "a5" });
 
-  const fontList = doc.getFontList();
-  console.log("Available fonts:", fontList);
 
-  // Set Noto Sans font
-  doc.addFont('NotoSans-Black.ttf', 'NotoSans-Black', 'normal')
-  doc.setFont("NotoSans-Black");
+  doc.setFont('helvetica')
 
   const options = {
     errorCorrectionLevel: "H",
@@ -61,8 +53,9 @@ async function createShipmentPdf(data) {
   const products = data.products.map((product) => [
     { content: product.name, styles: { halign: "left" } },
     product.quantity,
-    `₹${Number(product.price).toLocaleString("en-IN")}`,
+    `RS. ${Number(product.price).toLocaleString("en-IN")}`,
   ]);
+  
   const total = data.products.reduce(
     (acc, product) => acc + product.price * product.quantity,
     0
@@ -77,7 +70,7 @@ async function createShipmentPdf(data) {
         "",
         "",
         {
-          content: `Total: ₹${total.toLocaleString("en-IN")}`,
+          content: `Total: RS. ${total.toLocaleString("en-IN")}`,
           styles: { fontStyle: "bold" },
         },
       ],
@@ -92,8 +85,7 @@ async function createShipmentPdf(data) {
 async function createDeliveredPdf(data) {
   const doc = new jsPDF({ unit: "pt", format: "a4" });
 
-  doc.addFont('NotoSans-Black.ttf', 'NotoSans-Black', 'normal')
-  doc.setFont("NotoSans-Black");
+  doc.setFont('helvetica')
 
   doc.setFontSize(18);
   doc.text(`Invoice for Order #${data.orderId}`, 20, 40);
@@ -110,7 +102,7 @@ async function createDeliveredPdf(data) {
   const products = data.products.map((product) => [
     { content: product.name, styles: { halign: "left" } },
     product.quantity,
-    `₹${Number(product.price).toLocaleString("en-IN")}`,
+    `RS. ${Number(product.price).toLocaleString("en-IN")}`,
   ]);
   const total = data.products.reduce(
     (acc, product) => acc + product.price * product.quantity,
@@ -126,7 +118,7 @@ async function createDeliveredPdf(data) {
         "",
         "",
         {
-          content: `Total: ₹${total.toLocaleString("en-IN")}`,
+          content: `Total: RS. ${total.toLocaleString("en-IN")}`,
           styles: { fontStyle: "bold" },
         },
       ],
