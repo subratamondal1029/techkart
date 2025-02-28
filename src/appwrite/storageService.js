@@ -27,14 +27,14 @@ class appwriteStorageconfig {
     }
   }
 
-  async deleteFile(fileId, delstorageId=storageId) {
+  async deleteFile(fileId, delStorageId = storageId) {
     try {
-      const fileDelete = await this.storage.deleteFile(delstorageId, fileId);
+      const fileDelete = await this.storage.deleteFile(delStorageId, fileId);
       if (fileDelete) {
         return true;
       } else return false;
     } catch (error) {
-      throw error
+      throw error;
     }
   }
 
@@ -50,15 +50,19 @@ class appwriteStorageconfig {
     }
   }
 
-  async uploadInvoice( pdf, documentId) {
- try {
-       const response = await this.storage.createFile(invoiceId, documentId, pdf)
+  async uploadInvoice(pdf, documentId) {
+    try {
+      const response = await this.storage.createFile(
+        invoiceId,
+        documentId,
+        pdf
+      );
       if (response) {
-        return true
-      }else return null
+        return true;
+      } else return null;
     } catch (error) {
       console.log("uploadInvoice :: error", error);
-      throw error
+      throw error;
     }
   }
 
@@ -69,7 +73,7 @@ class appwriteStorageconfig {
         return downloadLink.href;
       } else return false;
     } catch (error) {
-      throw error
+      throw error;
     }
   }
 }
