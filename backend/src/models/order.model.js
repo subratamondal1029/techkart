@@ -40,6 +40,10 @@ const orderSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    isCancelled: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

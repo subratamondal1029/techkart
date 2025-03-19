@@ -21,6 +21,7 @@ export default class ApiError extends Error {
 
   toJSON() {
     return {
+      status: this.status,
       success: this.success,
       message: this.message,
       errors: this.errors,

@@ -13,22 +13,31 @@ const userSchema = new Schema(
       required: true,
       trim: true,
       unique: true,
+      index: 1,
+    },
+    avatar: {
+      type: String,
     },
     label: {
       type: String,
       enum: ["user", "shipment", "seller", "delivery", "admin"],
-      required: true,
+      default: "user",
     },
     provider: {
       type: String,
+      enum: ["google", "local"],
       required: true,
+      index: 1,
     },
     googleId: {
       type: String,
+      index: 1,
     },
     password: {
       type: String,
-      required: true,
+    },
+    refreshToken: {
+      type: String,
     },
   },
   { timestamps: true }
@@ -50,6 +59,7 @@ userSchema.methods.comparePassword = async (password) => {
 userSchema.methods.toJSON = function () {
   const user = this.toObject();
   delete user.password;
+  delete user.refreshToken;
   return user;
 };
 

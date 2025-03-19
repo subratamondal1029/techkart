@@ -1,9 +1,8 @@
+import ApiError from "../utils/apiError.js";
+
 export default function errorHandler(err, req, res, next) {
-  console.error(err.stack); // Log the error
-  const errorObj = {
-    ...err,
-    message: err.message || "Internal Server Error",
-    status: err.status || 500,
-  };
-  res.status(500).json(errorObj); // Send error response
+  const errorObj = new ApiError(err.status, err.message);
+  console.log(errorObj); // Log error object
+
+  res.status(errorObj.status || 500).json(errorObj); // Send error response
 }
