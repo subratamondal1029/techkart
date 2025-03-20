@@ -7,9 +7,18 @@ const orderSchema = new Schema(
       ref: "User",
       required: true,
     },
+    paymentId: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     cart: {
       type: Schema.Types.ObjectId,
       ref: "Cart",
+      required: true,
+    },
+    totalAmount: {
+      type: Number,
       required: true,
     },
     orderDate: {
@@ -41,6 +50,10 @@ const orderSchema = new Schema(
       default: false,
     },
     isCancelled: {
+      type: Boolean,
+      default: false,
+    },
+    isRefund: {
       type: Boolean,
       default: false,
     },

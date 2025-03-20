@@ -1,5 +1,10 @@
 import { Router } from "express";
-import { sendSuccess, throwError } from "../controllers/test.controllers.js";
+import {
+  sendSuccess,
+  throwError,
+  validObjectId,
+} from "../controllers/test.controllers.js";
+import verifyUser from "../middlewares/verifyUser.middleware.js";
 
 const router = Router();
 
@@ -12,5 +17,6 @@ router.get(
   sendSuccess
 );
 router.get("/error", throwError);
+router.get("/validObjectId", verifyUser, validObjectId);
 
 export default router;

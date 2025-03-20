@@ -1,3 +1,4 @@
+import { isValidObjectId } from "mongoose";
 import ApiError from "../utils/apiError.js";
 import ApiResponse from "../utils/apiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
@@ -10,4 +11,10 @@ const throwError = asyncHandler(async (req, res) => {
   throw new Error("This is an error");
 });
 
-export { sendSuccess, throwError };
+const validObjectId = asyncHandler(async (req, res) => {
+  res.json(
+    new ApiResponse(200, "Success", { isValid: isValidObjectId(req.user._id) })
+  );
+});
+
+export { sendSuccess, throwError, validObjectId };
