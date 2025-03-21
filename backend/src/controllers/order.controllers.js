@@ -1,5 +1,6 @@
 import Order from "../models/order.model.js";
 import Cart from "../models/cart.model.js";
+import User from "../models/user.model.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import ApiError from "../utils/apiError.js";
 import ApiResponse from "../utils/apiResponse.js";
@@ -267,11 +268,58 @@ const cancelOrder = asyncHandler(async (req, res) => {
   res.json(new ApiResponse(200, "Order cancelled successfully", order));
 });
 
+const updateOrderStatus = asyncHandler(async (req, res) => {
+  const { isShipped, isDelivered, invoice } = req.body;
+
+  if (!isShipped && !isDelivered)
+    throw new ApiError(400, "IsShipped or IsDelivered is required");
+  if (!invoice) throw new ApiError(400, "Invoice is required");
+
+  const order = await Order.findById(req.params.id);
+
+  if (!order) throw new ApiError(404, "Order not found");
+  if (order.isCancelled) throw new ApiError(400, "Order is already cancelled");
+
+  const createdUser = await User.findById(order.userId);
+  if (
+    createdUser.label !== "shipment" &&
+    createdUser.label !== "admin" &&
+    createdUser.label !== "delivery"
+  )
+    throw new ApiError(403, "Unauthorized request");
+
+  if (isShipped) {
+    if (order.isShipped) throw new ApiError(400, "Order is already shipped");
+
+    order.isShipped = true;
+  }
+
+  if (isDelivered) {
+    if (order.isDelivered)
+      throw new ApiError(400, "Order is already delivered");
+
+    order.isDelivered = true;
+  }
+
+  if (invoice) order.invoice = invoice;
+
+  await order.save();
+
+  res.json(
+    new ApiResponse(
+      200,
+      `${isDelivered} ? "Order is delivered" : "Order is Shipped`,
+      order
+    )
+  );
+});
+
 export {
   generateRazorpayOrder,
   createOrder,
   getOrder,
   getOrders,
   updateContact,
+  updateOrderStatus,
   cancelOrder,
 };
