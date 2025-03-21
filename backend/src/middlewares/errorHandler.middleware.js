@@ -1,8 +1,30 @@
 import ApiError from "../utils/apiError.js";
+import multer from "multer";
 
 export default function errorHandler(err, req, res, next) {
-  const errorObj = new ApiError(err.status, err.message);
-  console.log(errorObj); // Log error object
+  let errorObj;
 
-  res.status(errorObj.status || 500).json(errorObj); // Send error response
+  if (err instanceof multer.MulterError) {
+    // Handle Multer-specific errors
+    switch (err.code) {
+      case "LIMIT_FILE_SIZE":
+        errorObj = new ApiError(400, "File size should not exceed 5MB.");
+        break;
+      case "LIMIT_UNEXPECTED_FILE":
+        errorObj = new ApiError(400, "Too many files uploaded.");
+        break;
+      default:
+        errorObj = new ApiError(400, err.message);
+        break;
+    }
+  } else {
+    // Handle other errors
+    errorObj = new ApiError(
+      err.status || 500,
+      err.message || "Internal Server Error"
+    );
+  }
+
+  console.log(errorObj); // Log error object for debugging
+  res.status(errorObj.status).json(errorObj); // Send error response
 }

@@ -1,4 +1,5 @@
 import { v2 as cloudinary } from "cloudinary";
+import fs from "fs";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -21,8 +22,17 @@ const uploadFile = async (filePath, folder, resource_type = "image") => {
       success: true,
       url: response.secure_url,
       public_id: response.public_id,
+      fileName: response.original_filename,
     };
   } catch (error) {
+    if (fs.existsSync(filePath)) {
+      fs.unlink(filePath, (err) => {
+        if (err) {
+          console.log(err);
+          // TODO: add in failure log
+        }
+      });
+    }
     return { success: false, message: error.message };
   }
 };
@@ -35,6 +45,7 @@ const deleteFile = async (publicId, resource_type = "image") => {
 
     return { success: true, ...response };
   } catch (error) {
+    // TODO: add in failure log
     return { success: false, message: error.message };
   }
 };

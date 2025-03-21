@@ -9,6 +9,7 @@ import {
 } from "./routes/index.js";
 import errorHandler from "./middlewares/errorHandler.middleware.js";
 import passport from "./config/passport.js";
+import path from "path";
 
 const app = express();
 
@@ -23,6 +24,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use(passport.initialize());
+
+app.use(express.static(path.resolve("public")));
 
 // Routes define
 app.use("/api/v1/test", testRouter);

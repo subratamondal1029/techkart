@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  imageSend,
   sendSuccess,
   throwError,
   validObjectId,
@@ -18,5 +19,6 @@ router.get(
 );
 router.get("/error", throwError);
 router.get("/validObjectId", verifyUser, validObjectId);
+router.get("/image", imageSend);
 
 export default router;
