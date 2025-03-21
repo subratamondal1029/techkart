@@ -26,7 +26,7 @@ const productSchema = new Schema(
     },
     image: {
       type: Schema.Types.ObjectId,
-      ref: "Image",
+      ref: "File",
     },
     sellerId: {
       type: Schema.Types.ObjectId,

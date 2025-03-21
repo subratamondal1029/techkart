@@ -16,7 +16,8 @@ const userSchema = new Schema(
       index: 1,
     },
     avatar: {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: "File",
     },
     label: {
       type: String,

@@ -2,6 +2,7 @@ import asyncHandler from "../utils/asyncHandler.js";
 import ApiResponse from "../utils/apiResponse.js";
 import ApiError from "../utils/apiError.js";
 import User from "../models/user.model.js";
+import File from "../models/file.model.js";
 import jwt from "jsonwebtoken";
 import { generateTokens } from "../utils/jwt.js";
 import passport from "../config/passport.js";
@@ -16,7 +17,7 @@ const calculateExpiresInMilliseconds = (day) => {
 };
 
 const createUser = asyncHandler(async (req, res) => {
-  const { name, email, password, label } = req.body;
+  const { name, email, password, label, avatar } = req.body;
 
   if (!name || !email || !password || !label) {
     throw new ApiError(400, "All fields are required");
@@ -39,6 +40,7 @@ const createUser = asyncHandler(async (req, res) => {
     password,
     label,
     provider: "local",
+    avatar,
   });
 
   if (!user) {
@@ -46,6 +48,25 @@ const createUser = asyncHandler(async (req, res) => {
   }
 
   res.status(201).json(new ApiResponse(201, "User created", user));
+});
+
+const updateUser = asyncHandler(async (req, res) => {
+  const { name, email, avatar } = req.body;
+
+  if (!name && !email && !avatar)
+    throw new ApiError(400, "At least One field is required");
+
+  if (avatar) {
+    const isAvatarExist = File.exists({ _id: avatar });
+    if (!isAvatarExist) throw new ApiError(400, "Invalid Avatar Id");
+    req.user.avatar = avatar;
+  }
+  if (name) req.user.name = name;
+  if (email) req.user.email = email;
+
+  await req.user.save();
+
+  res.json(new ApiResponse(200, "User Details Updated", req.user));
 });
 
 const login = asyncHandler(async (req, res) => {
@@ -196,6 +217,7 @@ const getUser = asyncHandler(async (req, res) => {
 
 export {
   createUser,
+  updateUser,
   login,
   refreshAccessToken,
   googleLoginRedirect,
