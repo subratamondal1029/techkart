@@ -1,5 +1,4 @@
 import { Router } from "express";
-import upload from "../middlewares/multer.middleware.js";
 import verifyUser from "../middlewares/verifyUser.middleware.js";
 import {
   createProduct,
@@ -11,15 +10,12 @@ import {
 
 const router = Router();
 
-router
-  .route("/")
-  .post(verifyUser, upload.single("file"), createProduct)
-  .get(getProducts);
+router.route("/").post(verifyUser, createProduct).get(getProducts);
 router.get("/seller", verifyUser, getProducts);
 router
   .route("/:id")
   .get(getProduct)
   .delete(verifyUser, deleteProduct)
-  .patch(verifyUser, upload.single("file"), updateProduct);
+  .patch(verifyUser, updateProduct);
 
 export default router;
