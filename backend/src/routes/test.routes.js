@@ -4,6 +4,7 @@ import {
   sendSuccess,
   throwError,
   validObjectId,
+  reqAbort,
 } from "../controllers/test.controllers.js";
 import verifyUser from "../middlewares/verifyUser.middleware.js";
 
@@ -20,5 +21,6 @@ router.get(
 router.get("/error", throwError);
 router.get("/validObjectId", verifyUser, validObjectId);
 router.get("/image", imageSend);
+router.get("/abort", reqAbort);
 
 export default router;

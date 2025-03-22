@@ -42,4 +42,10 @@ const imageSend = asyncHandler(async (req, res) => {
   response.data.pipe(res);
 });
 
-export { sendSuccess, throwError, validObjectId, imageSend };
+const reqAbort = asyncHandler(async (req, res) => {
+  setTimeout(() => {
+    res.json(new ApiResponse(200, "Success"));
+  }, 5000);
+});
+
+export { sendSuccess, throwError, validObjectId, imageSend, reqAbort };
