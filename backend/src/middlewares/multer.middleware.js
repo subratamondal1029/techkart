@@ -10,7 +10,7 @@ const acceptTypes = [
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.resolve("public/tmp"));
+    cb(null, path.resolve("storage/temp"));
   },
   filename: (req, file, cb) => {
     cb(

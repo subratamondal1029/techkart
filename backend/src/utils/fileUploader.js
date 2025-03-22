@@ -1,5 +1,6 @@
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
+import addToDelete from "../../storage/log/addToDelete";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -30,6 +31,7 @@ const uploadFile = async (filePath, folder, resource_type = "image") => {
         if (err) {
           console.log(err);
           // TODO: add in failure log
+          addToDelete({ filePath });
         }
       });
     }
