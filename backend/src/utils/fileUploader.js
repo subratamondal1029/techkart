@@ -1,6 +1,6 @@
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
-import addToDelete from "../../storage/log/addToDelete";
+import addToDelete from "../../storage/log/addToDelete.js";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
