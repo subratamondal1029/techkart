@@ -1,7 +1,22 @@
 import fs from "fs";
 import path from "path";
 
-const addToDelete = ({ filePath, publicId, documentId }) => {
+class FailureLog {
+  constructor(type, data, error) {
+    if (type === "local") {
+      this.path = data;
+    } else {
+      this.id = data;
+    }
+
+    this.error = error;
+    this.solved = false;
+    this.default = false;
+    this.timestamp = new Date().toISOString();
+  }
+}
+
+const addToDelete = (type, { filePath, publicId, documentId }, error) => {
   fs.readFile(path.resolve("storage/log/failures.json"), (err, data) => {
     if (err) {
       console.log(`Error reading file: ${err}`);
@@ -9,26 +24,47 @@ const addToDelete = ({ filePath, publicId, documentId }) => {
     }
     const parsedData = JSON.parse(data);
 
-    if (filePath) {
-      if (!parsedData.deleteFile.local.includes(filePath))
-        parsedData.deleteFile.local.push(filePath);
-    }
+    switch (type) {
+      case "local":
+        if (parsedData.deleteFile.local.some((log) => log.path !== filePath)) {
+          const log = new FailureLog(type, filePath, error);
+          parsedData.deleteFile.local.push(log);
+        }
+        break;
 
-    if (publicId) {
-      if (!parsedData.deleteFile.cloudinary.publicId.includes(publicId))
-        parsedData.deleteFile.cloudinary.publicId.push(publicId);
-    }
+      case "cloudinary":
+        if (documentId) {
+          if (
+            parsedData.deleteFile.cloudinary.documents.some(
+              (log) => log.id !== documentId
+            )
+          ) {
+            const log = new FailureLog(type, documentId, error);
+            parsedData.deleteFile.cloudinary.documents.push(log);
+          }
+        } else if (publicId) {
+          if (
+            parsedData.deleteFile.cloudinary.publicIds.some(
+              (log) => log.id !== publicId
+            )
+          ) {
+            const log = new FailureLog(type, publicId, error);
+            parsedData.deleteFile.cloudinary.publicIds.push(log);
+          }
+        }
+        break;
 
-    if (documentId) {
-      if (!parsedData.deleteFile.cloudinary.document.includes(documentId))
-        parsedData.deleteFile.cloudinary.document.push(documentId);
+      default:
+        console.log("Invalid type");
+        break;
     }
 
     fs.writeFile(
       path.resolve("storage/log/failures.json"),
       JSON.stringify(parsedData),
       (err) => {
-        console.log(`Error writing file: ${err}`);
+        console.log(`Error writing log file: ${err}`);
+        // TODO: log to temp log
       }
     );
   });

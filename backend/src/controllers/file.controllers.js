@@ -4,6 +4,7 @@ import ApiError from "../utils/apiError.js";
 import ApiResponse from "../utils/apiResponse.js";
 import { uploadFile, deleteFile } from "../utils/fileUploader.js";
 import axios from "axios";
+import addToDelete from "../../storage/log/addToDelete.js";
 
 const createFileDoc = asyncHandler(async (req, res) => {
   const { entityType } = req.body;
@@ -28,7 +29,11 @@ const createFileDoc = asyncHandler(async (req, res) => {
   });
 
   if (!file) throw new ApiError(500, "File Upload failed");
-  // TODO: add in failure log
+  addToDelete(
+    "cloudinary",
+    { publicId: uploadedFile.public_id },
+    new Error("Failed while creating File document in DB")
+  );
 
   res
     .status(201)
@@ -63,33 +68,47 @@ const updateFileDoc = asyncHandler(async (req, res) => {
 
   const existingFile = await File.findById(req.params.id);
   if (!existingFile) throw new ApiError(404, "File not found");
-  // TODO: log in failure
+
+  addToDelete(
+    "local",
+    { filePath },
+    new Error("File Document Not available to Update in DB")
+  );
 
   const createdUser = await User.findById(existingFile.userId);
-  if (existingFile.entityType !== "invoice" && createdUser._id !== req.user._id)
-    // TODO: log in failure
+  if (
+    existingFile.entityType !== "invoice" &&
+    createdUser._id !== req.user._id
+  ) {
+    addToDelete(
+      "local",
+      { filePath },
+      new Error("Unauthorized File Update Attempt")
+    );
     throw new ApiError(403, "Reject File Update");
+  }
   if (
     existingFile.entityType === "invoice" &&
     createdUser.label !== "admin" &&
     createdUser.label !== "shipment" &&
     createdUser.label !== "delivery"
-  )
-    // TODO: log in failure
+  ) {
+    addToDelete(
+      "local",
+      { filePath },
+      new Error("Unauthorized File Update Attempt")
+    );
     throw new ApiError(403, "Reject File Update");
+  }
 
   const uploadResponse = await uploadFile(filePath, req.folder);
   if (!uploadResponse.success) throw new ApiError(500, "File Upload failed");
 
-  try {
-    await deleteFile(
-      existingFile.publicId,
-      existingFile.entityType === "invoice" ? "raw" : "image"
-    );
-  } catch (error) {
-    console.error("Failed to delete old file:", error);
-    // TODO: add to log in failure file for later cleanup
-  }
+  const deleteResponse = await deleteFile(
+    existingFile.publicId,
+    existingFile.entityType === "invoice" ? "raw" : "image"
+  );
+  if (!deleteResponse.success) console.log(new Error(deleteResponse.message));
 
   existingFile.fileUrl = uploadResponse.url;
   existingFile.publicId = uploadResponse.public_id;

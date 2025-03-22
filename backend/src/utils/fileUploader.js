@@ -30,8 +30,7 @@ const uploadFile = async (filePath, folder, resource_type = "image") => {
       fs.unlink(filePath, (err) => {
         if (err) {
           console.log(err);
-          // TODO: add in failure log
-          addToDelete({ filePath });
+          addToDelete("local", { filePath }, err.stack);
         }
       });
     }
@@ -47,7 +46,7 @@ const deleteFile = async (publicId, resource_type = "image") => {
 
     return { success: true, ...response };
   } catch (error) {
-    // TODO: add in failure log
+    addToDelete("cloudinary", { publicId }, error.stack || error);
     return { success: false, message: error.message };
   }
 };

@@ -1,9 +1,33 @@
 {
   "deleteFile": {
-    "local": [],
+    "local": [
+      {
+        "path": "/path/to/file",
+        "error": "File not found",
+        "timestamp": "2024-03-22T14:30:00.123Z",
+        "solved": false,
+        "default": true
+      }
+    ],
     "cloudinary": {
-      "document": [],
-      "publicId": []
+      "documents": [
+        {
+          "id": "cloudinary-file-id",
+          "error": "Unauthorized access",
+          "timestamp": "2024-03-22T14:30:00.123Z",
+          "solved": false,
+          "default": true
+        }
+      ],
+      "publicIds": [
+        {
+          "id": "cloudinary-public-id",
+          "error": "Failed to delete",
+          "timestamp": "2024-03-22T14:30:00.123Z",
+          "solved": false,
+          "default": true
+        }
+      ]
     }
   }
 }
