@@ -6,6 +6,8 @@ import {
   productRouter,
   testRouter,
   usersRouter,
+  orderRouter,
+  fileRouter,
 } from "./routes/index.js";
 import errorHandler from "./middlewares/errorHandler.middleware.js";
 import passport from "./config/passport.js";
@@ -32,6 +34,8 @@ app.use("/api/v1/test", testRouter);
 app.use("/api/v1/users", usersRouter);
 app.use("/api/v1/products", productRouter);
 app.use("/api/v1/cart", cartRouter);
+app.use("/api/v1/orders", orderRouter);
+app.use("/api/v1/files", fileRouter);
 
 // Error handler
 app.use(errorHandler);
