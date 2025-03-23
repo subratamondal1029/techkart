@@ -7,6 +7,8 @@ import {
   reqAbort,
 } from "../controllers/test.controllers.js";
 import verifyUser from "../middlewares/verifyUser.middleware.js";
+import asyncHandler from "../utils/asyncHandler.js";
+import ApiResponse from "../utils/apiResponse.js";
 
 const router = Router();
 
@@ -20,7 +22,6 @@ router.get(
 );
 router.get("/error", throwError);
 router.get("/validObjectId", verifyUser, validObjectId);
-router.get("/image", imageSend);
 router.get("/abort", reqAbort);
 
 export default router;

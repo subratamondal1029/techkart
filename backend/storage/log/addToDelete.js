@@ -47,7 +47,10 @@ const addToDelete = (type, fileRef, error) => {
       JSON.stringify(parsedData),
       (err) => {
         console.log(`Error writing log file: ${err}`);
-        fs.appendFile(path.resolve("storage/log/tempError.log"), err.stack);
+        fs.appendFile(
+          path.resolve("storage/log/tempError.log"),
+          `${new Date().toISOString()} - ${error.stack}\n`
+        );
       }
     );
   });
