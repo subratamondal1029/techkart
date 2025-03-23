@@ -78,6 +78,8 @@ const deleteFile = async (log) => {
 };
 
 const queueDeleteFile = async () => {
+  let solvedCount = 0;
+  let attemptCount = 0;
   try {
     const log = await getFailureLog();
 
@@ -95,6 +97,7 @@ const queueDeleteFile = async () => {
           if (deleted) {
             log.solved = true;
             log.solvedAt = new Date().toISOString();
+            solvedCount++;
           } else {
             log.attemptError = new Error(
               "Deletion failed but no error was thrown"
@@ -104,8 +107,13 @@ const queueDeleteFile = async () => {
           log.attemptError = error; // Store the error message
         }
         log.attempted = true; // Mark as attempted
+        attemptCount++;
         return log;
       })
+    );
+
+    console.log(
+      `Deleted ${solvedCount} files and attempted to delete ${attemptCount} files`
     );
 
     // Update the log file with changes
@@ -120,6 +128,8 @@ const queueDeleteFile = async () => {
       `${new Date().toISOString()} - ${error.stack}\n`
     );
   }
+
+  return { deleted: solvedCount, attempted: attemptCount };
 };
 
-export default queueDeleteFile;
+export { queueDeleteFile, getFailureLog };
