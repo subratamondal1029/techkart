@@ -16,7 +16,11 @@ class FailureLog {
   }
 }
 
-const addToDelete = (type, { filePath, publicId, documentId }, error) => {
+const addToDelete = (
+  type,
+  { filePath, publicId, resourceType, documentId },
+  error
+) => {
   fs.readFile(path.resolve("storage/log/failures.json"), (err, data) => {
     if (err) {
       console.log(`Error reading file: ${err}`);
@@ -49,7 +53,10 @@ const addToDelete = (type, { filePath, publicId, documentId }, error) => {
             )
           ) {
             const log = new FailureLog(type, publicId, error);
-            parsedData.deleteFile.cloudinary.publicIds.push(log);
+            parsedData.deleteFile.cloudinary.publicIds.push({
+              ...log,
+              resourceType,
+            });
           }
         }
         break;
@@ -64,7 +71,7 @@ const addToDelete = (type, { filePath, publicId, documentId }, error) => {
       JSON.stringify(parsedData),
       (err) => {
         console.log(`Error writing log file: ${err}`);
-        // TODO: log to temp log
+        fs.appendFile(path.resolve("storage/log/tempError.log"), err.stack);
       }
     );
   });

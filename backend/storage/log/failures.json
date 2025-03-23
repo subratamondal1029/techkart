@@ -22,6 +22,7 @@
       "publicIds": [
         {
           "id": "cloudinary-public-id",
+          "resourceType": "image",
           "error": "Failed to delete",
           "timestamp": "2024-03-22T14:30:00.123Z",
           "solved": false,
