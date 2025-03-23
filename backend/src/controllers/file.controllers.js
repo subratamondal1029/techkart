@@ -31,7 +31,7 @@ const createFileDoc = asyncHandler(async (req, res) => {
   if (!file) throw new ApiError(500, "File Upload failed");
   addToDelete(
     "cloudinary",
-    { publicId: uploadedFile.public_id },
+    { publicId: uploadedFile.public_id, resourceType: entityType === "invoice" ? "raw" : "image" },
     new Error("Failed while creating File document in DB")
   );
 

@@ -46,7 +46,11 @@ const deleteFile = async (publicId, resource_type = "image") => {
 
     return { success: true, ...response };
   } catch (error) {
-    addToDelete("cloudinary", { publicId }, error.stack || error);
+    addToDelete(
+      "cloudinary",
+      { publicId, resourceType: resource_type },
+      error.stack || error
+    );
     return { success: false, message: error.message };
   }
 };
