@@ -31,8 +31,8 @@ const createFileDoc = asyncHandler(async (req, res) => {
   if (!file) throw new ApiError(500, "File Upload failed");
   addToDelete(
     "cloudinary",
-    { publicId: uploadedFile.public_id, resourceType: entityType === "invoice" ? "raw" : "image" },
-    new Error("Failed while creating File document in DB")
+    uploadedFile.public_id,
+    new Error("Failed while creating File document in DB").stack
   );
 
   res
@@ -71,8 +71,8 @@ const updateFileDoc = asyncHandler(async (req, res) => {
 
   addToDelete(
     "local",
-    { filePath },
-    new Error("File Document Not available to Update in DB")
+    filePath,
+    new Error("File Document Not available to Update in DB").stack
   );
 
   const createdUser = await User.findById(existingFile.userId);
@@ -82,8 +82,8 @@ const updateFileDoc = asyncHandler(async (req, res) => {
   ) {
     addToDelete(
       "local",
-      { filePath },
-      new Error("Unauthorized File Update Attempt")
+      filePath,
+      new Error("Unauthorized File Update Attempt").stack
     );
     throw new ApiError(403, "Reject File Update");
   }
@@ -95,8 +95,8 @@ const updateFileDoc = asyncHandler(async (req, res) => {
   ) {
     addToDelete(
       "local",
-      { filePath },
-      new Error("Unauthorized File Update Attempt")
+      filePath,
+      new Error("Unauthorized File Update Attempt").stack
     );
     throw new ApiError(403, "Reject File Update");
   }
