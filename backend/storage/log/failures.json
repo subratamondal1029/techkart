@@ -6,6 +6,8 @@
         "error": "File not found",
         "timestamp": "2024-03-22T14:30:00.123Z",
         "solved": false,
+        "tried": false,
+        "solvedAt": null,
         "default": true
       }
     ],
@@ -16,6 +18,8 @@
           "error": "Unauthorized access",
           "timestamp": "2024-03-22T14:30:00.123Z",
           "solved": false,
+          "tried": false,
+          "solvedAt": null,
           "default": true
         }
       ],
@@ -26,6 +30,8 @@
           "error": "Failed to delete",
           "timestamp": "2024-03-22T14:30:00.123Z",
           "solved": false,
+          "tried": false,
+          "solvedAt": null,
           "default": true
         }
       ]

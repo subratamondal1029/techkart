@@ -12,6 +12,8 @@ class FailureLog {
     this.error = error;
     this.solved = false;
     this.default = false;
+    this.tried = false;
+    this.solvedAt = null;
     this.timestamp = new Date().toISOString();
   }
 }
