@@ -17,11 +17,16 @@ export default function errorHandler(err, req, res, next) {
         errorObj = new ApiError(400, err.message);
         break;
     }
+  } else if (err instanceof ApiError) {
+    // Handle ApiError instances
+    errorObj = err;
   } else {
     // Handle other errors
     errorObj = new ApiError(
       err.status || 500,
-      err.message || "Internal Server Error"
+      err.message || "Internal Server Error",
+      err.errors,
+      err.stack
     );
   }
 
