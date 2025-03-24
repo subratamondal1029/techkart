@@ -5,6 +5,7 @@ import {
   throwError,
   validObjectId,
   reqAbort,
+  sendMail,
 } from "../controllers/test.controllers.js";
 import verifyUser from "../middlewares/verifyUser.middleware.js";
 import asyncHandler from "../utils/asyncHandler.js";
@@ -23,5 +24,6 @@ router.get(
 router.get("/error", throwError);
 router.get("/validObjectId", verifyUser, validObjectId);
 router.get("/abort", reqAbort);
+router.get("/sendMail", sendMail);
 
 export default router;

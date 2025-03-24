@@ -3,6 +3,7 @@ import ApiError from "../utils/apiError.js";
 import ApiResponse from "../utils/apiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import axios from "axios";
+import nodemailer from "nodemailer";
 
 const sendSuccess = asyncHandler((req, res) => {
   res.json(new ApiResponse());
@@ -48,4 +49,34 @@ const reqAbort = asyncHandler(async (req, res) => {
   }, 5000);
 });
 
-export { sendSuccess, throwError, validObjectId, imageSend, reqAbort };
+const sendMail = asyncHandler(async (req, res) => {
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: process.env.SMTP_PORT,
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
+    },
+  });
+
+  // send mail with defined transport object
+  const info = await transporter.sendMail({
+    from: `"Maddison Foo Koch 👻"`, // sender address
+    to: process.env.SMTP_RECEIVER_EMAILS, // list of receivers
+    subject: "Hello ✔", // Subject line
+    text: "Hello world?", // plain text body
+    html: "<b>Hello world?</b>", // html body
+  });
+
+  console.log("Message sent: %s", info.messageId);
+  res.json(new ApiResponse(200, "Success", info));
+});
+
+export {
+  sendSuccess,
+  throwError,
+  validObjectId,
+  imageSend,
+  sendMail,
+  reqAbort,
+};
