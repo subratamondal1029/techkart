@@ -12,6 +12,8 @@ import {
 import errorHandler from "./middlewares/errorHandler.middleware.js";
 import passport from "./config/passport.js";
 import path from "path";
+import requestLogger from "./middlewares/requestLogger.middleware.js";
+import "../storage/log/cronAutomation.js";
 
 const app = express();
 
@@ -28,6 +30,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(passport.initialize());
 
 app.use(express.static(path.resolve("public")));
+
+// Request logger
+app.use("/api", requestLogger);
 
 // Routes define
 app.use("/api/v1/test", testRouter);
