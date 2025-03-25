@@ -2,6 +2,8 @@ import cron from "node-cron";
 import { queueDeleteFile } from "./deleteFile.js";
 import clearLog from "./clearLog.js";
 import nodemailer from "nodemailer";
+import path from "path";
+import fs from "fs";
 
 const sendMail = async (body) => {
   try {
@@ -10,6 +12,7 @@ const sendMail = async (body) => {
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: process.env.SMTP_PORT,
+      secure: process.env.SMTP_PORT == 465,
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
@@ -45,4 +48,31 @@ cron.schedule("0 0 * * *", async () => {
   `;
 
   sendMail(mailBody);
+});
+
+// TODO: Work on this and store in a database
+const generateReport = async () => {
+  try {
+    const logFilePath = path.resolve("storage/log/requests.log");
+
+    const logs = fs.readFileSync(logFilePath);
+    const logData = JSON.stringify(
+      logs
+        .toString()
+        .trim()
+        .split("\n")
+        .map((log) => JSON.parse(log))
+    );
+
+    return JSON.parse(logData);
+  } catch (error) {
+    throw error;
+  }
+};
+
+cron.schedule("0 0 1 * *", async () => {
+  console.log("Generating request report at 1st day of the month");
+  const logFilePath = path.resolve("storage/log/requests.log");
+
+  fs.writeFileSync(logFilePath, "");
 });
