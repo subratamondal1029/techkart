@@ -2,6 +2,13 @@ import fs from "fs";
 import path from "path";
 
 const requestLogger = (req, res, next) => {
+  const ignoreRoutes = ["/api/docs"];
+  if (
+    req.method === "OPTIONS" ||
+    ignoreRoutes.some((url) => req.originalUrl.includes(url))
+  )
+    return next();
+
   const start = Date.now();
 
   res.on("finish", () => {
