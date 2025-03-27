@@ -17,21 +17,30 @@ const calculateExpiresInMilliseconds = (day) => {
 };
 
 const createUser = asyncHandler(async (req, res) => {
-  const { name, email, password, label, avatar } = req.body;
+  let { name, email, password, label } = req.body;
 
-  if (!name || !email || !password || !label) {
+  if (!name?.trim() || !email?.trim() || !password || !label?.trim()) {
     throw new ApiError(400, "All fields are required");
   }
 
-  if (!email.test(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)) {
+  name = name.trim();
+  email = email.trim().toLowerCase();
+
+  if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
     throw new ApiError(400, "Invalid email");
   }
 
-  if (!password.test(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,20}$/)) {
+  if (!/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,20}$/.test(password)) {
     throw new ApiError(
       400,
       "Password must be at least 8 characters long and contain at least one number, one lowercase letter, and one uppercase letter"
     );
+  }
+
+  const existingUser = await User.findOne({ email });
+
+  if (existingUser) {
+    throw new ApiError(409, "User already exists");
   }
 
   const user = await User.create({
@@ -40,7 +49,6 @@ const createUser = asyncHandler(async (req, res) => {
     password,
     label,
     provider: "local",
-    avatar,
   });
 
   if (!user) {
@@ -51,18 +59,24 @@ const createUser = asyncHandler(async (req, res) => {
 });
 
 const updateUser = asyncHandler(async (req, res) => {
-  const { name, email, avatar } = req.body;
+  let { name, email, avatar } = req.body;
 
-  if (!name && !email && !avatar)
+  if (!name?.trim() && !email?.trim() && !avatar?.trim())
     throw new ApiError(400, "At least One field is required");
 
-  if (avatar) {
-    const isAvatarExist = File.exists({ _id: avatar });
+  if (avatar?.trim()) {
+    const isAvatarExist = File.findById(avatar);
     if (!isAvatarExist) throw new ApiError(400, "Invalid Avatar Id");
     req.user.avatar = avatar;
   }
-  if (name) req.user.name = name;
-  if (email) req.user.email = email;
+
+  if (name?.trim()) req.user.name = name.trim();
+  if (email?.trim()) {
+    email = email.trim().toLowerCase();
+    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email))
+      throw new ApiError(400, "Invalid email");
+    req.user.email = email;
+  }
 
   await req.user.save();
 
@@ -78,10 +92,14 @@ const login = asyncHandler(async (req, res) => {
 
   const user = await User.findOne({ email });
 
+  if (!user) {
+    throw new ApiError(401, "Invalid email Cannot find user");
+  }
+
   const isMatched = await user.comparePassword(password);
 
   if (!isMatched) {
-    throw new ApiError(401, "Invalid password");
+    throw new ApiError(401, "Wrong password");
   }
 
   const { accessToken, refreshToken } = await generateTokens(user._id);

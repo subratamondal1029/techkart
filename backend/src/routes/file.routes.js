@@ -27,8 +27,8 @@ const router = Router();
 router.post(
   "/",
   verifyUser,
-  selectFolder,
   upload.single("file"),
+  selectFolder,
   reqAbort,
   createFileDoc
 );
@@ -37,8 +37,8 @@ router
   .get(getFile)
   .patch(
     verifyUser,
-    selectFolder,
     upload.single("file"),
+    selectFolder,
     reqAbort,
     updateFileDoc
   )

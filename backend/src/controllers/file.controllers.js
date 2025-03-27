@@ -1,5 +1,6 @@
 import asyncHandler from "../utils/asyncHandler.js";
 import File from "../models/file.model.js";
+import User from "../models/user.model.js";
 import ApiError from "../utils/apiError.js";
 import ApiResponse from "../utils/apiResponse.js";
 import { uploadFile, deleteFile } from "../utils/fileUploader.js";
@@ -28,12 +29,15 @@ const createFileDoc = asyncHandler(async (req, res) => {
     entityType,
   });
 
-  if (!file) throw new ApiError(500, "File Upload failed");
-  addToDelete(
-    "cloudinary",
-    uploadedFile.public_id,
-    new Error("Failed while creating File document in DB").stack
-  );
+  if (!file) {
+    addToDelete(
+      "cloudinary",
+      uploadedFile.public_id,
+      new Error("Failed while creating File document in DB").stack
+    );
+
+    throw new ApiError(500, "File Upload failed");
+  }
 
   res
     .status(201)
@@ -67,18 +71,18 @@ const updateFileDoc = asyncHandler(async (req, res) => {
   if (!filePath) throw new ApiError(500, "File Upload failed");
 
   const existingFile = await File.findById(req.params.id);
-  if (!existingFile) throw new ApiError(404, "File not found");
-
-  addToDelete(
-    "local",
-    filePath,
-    new Error("File Document Not available to Update in DB").stack
-  );
+  if (!existingFile) {
+    addToDelete(
+      "local",
+      filePath,
+      new Error("File Document Not available to Update in DB").stack
+    );
+  }
 
   const createdUser = await User.findById(existingFile.userId);
   if (
     existingFile.entityType !== "invoice" &&
-    createdUser._id !== req.user._id
+    createdUser._id.toString() !== req.user._id.toString()
   ) {
     addToDelete(
       "local",
@@ -130,7 +134,10 @@ const deleteFileDoc = asyncHandler(async (req, res) => {
 
   const createdUser = await User.findById(file.userId);
 
-  if (file.entityType !== "invoice" && createdUser._id !== req.user._id)
+  if (
+    file.entityType !== "invoice" &&
+    createdUser._id.toString() !== req.user._id.toString()
+  )
     throw new ApiError(403, "Reject File Delete");
   if (
     file.entityType === "invoice" &&

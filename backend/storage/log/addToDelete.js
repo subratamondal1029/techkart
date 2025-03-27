@@ -44,13 +44,15 @@ const addToDelete = (type, fileRef, error) => {
 
     fs.writeFile(
       path.resolve("storage/log/failures.json"),
-      JSON.stringify(parsedData),
+      JSON.stringify(parsedData, null, 2),
       (err) => {
-        console.log(`Error writing log file: ${err}`);
-        fs.appendFile(
-          path.resolve("storage/log/tempError.log"),
-          `${new Date().toISOString()} - ${error.stack}\n`
-        );
+        if (err) {
+          console.log(`Error writing log file: ${err}`);
+          fs.appendFile(
+            path.resolve("storage/log/tempError.log"),
+            `${new Date().toISOString()} - ${error.stack}\n`
+          );
+        }
       }
     );
   });

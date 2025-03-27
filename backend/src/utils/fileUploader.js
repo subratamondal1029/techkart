@@ -19,6 +19,14 @@ const uploadFile = async (filePath, folder, resource_type = "image") => {
       ],
     });
 
+    if (fs.existsSync(filePath)) {
+      fs.unlink(filePath, (err) => {
+        if (err) {
+          addToDelete("local", filePath, err.stack || err);
+        }
+      });
+    }
+
     return {
       success: true,
       url: response.secure_url,
@@ -29,7 +37,6 @@ const uploadFile = async (filePath, folder, resource_type = "image") => {
     if (fs.existsSync(filePath)) {
       fs.unlink(filePath, (err) => {
         if (err) {
-          console.log(err);
           addToDelete("local", filePath, err.stack || err);
         }
       });

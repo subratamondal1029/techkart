@@ -13,14 +13,7 @@ import ApiResponse from "../utils/apiResponse.js";
 
 const router = Router();
 
-router.get(
-  "/success",
-  (req, res, next) => {
-    res.cookie("test", "test cookie from middleware");
-    next();
-  },
-  sendSuccess
-);
+router.get("/success", sendSuccess);
 router.get("/error", throwError);
 router.get("/validObjectId", verifyUser, validObjectId);
 router.get("/abort", reqAbort);

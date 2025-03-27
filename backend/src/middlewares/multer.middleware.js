@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
   filename: (req, file, cb) => {
     cb(
       null,
-      `${file.originalname}_${
+      `${path.parse(file.originalname).name}_${
         req.user._id || "anonymous"
       }_${Date.now()}${path.extname(file.originalname)}`
     );
@@ -23,11 +23,11 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
-  if (acceptTypes.includes(file.mimetype)) {
-    cb(null, true);
-  } else {
-    cb(new Error(`Only ${acceptTypes.join(", ")} are allowed`), false);
+  if (!acceptTypes.includes(file.mimetype)) {
+    return cb(new Error(`Only ${acceptTypes.join(", ")} are allowed`), false);
   }
+
+  cb(null, true);
 };
 
 const upload = multer({

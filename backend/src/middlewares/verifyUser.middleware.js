@@ -6,7 +6,7 @@ export default async (req, res, next) => {
   try {
     const token =
       req.cookies?.accessToken ||
-      req.headers["authorization"]?.replace("Bearer ", "") ||
+      req.headers["Authorization"]?.replace("Bearer ", "") ||
       req.query?.accessToken ||
       req.body?.accessToken;
 

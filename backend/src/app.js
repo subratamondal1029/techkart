@@ -14,6 +14,9 @@ import passport from "./config/passport.js";
 import path from "path";
 import requestLogger from "./middlewares/requestLogger.middleware.js";
 import "../storage/log/cronAutomation.js";
+import swaggerUi from "swagger-ui-express";
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
 
 const app = express();
 
@@ -33,6 +36,13 @@ app.use(express.static(path.resolve("public")));
 
 // Request logger
 app.use("/api", requestLogger);
+
+// Swagger
+app.use(
+  "/api/docs",
+  swaggerUi.serve,
+  swaggerUi.setup(require("../test/swagger.json"))
+);
 
 // Routes define
 app.use("/api/v1/test", testRouter);

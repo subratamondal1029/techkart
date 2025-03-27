@@ -27,5 +27,10 @@
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "razorpay": "^2.9.6"
+  },
+  "devDependencies": {
+    "swagger-autogen": "^2.23.7",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   }
 }

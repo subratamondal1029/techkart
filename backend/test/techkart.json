@@ -1,0 +1,101 @@
+{
+	"info": {
+		"_postman_id": "b0c94ff3-bc84-486f-b861-fa6e9953b033",
+		"name": "techkart",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43463698"
+	},
+	"item": [
+		{
+			"name": "users",
+			"item": []
+		},
+		{
+			"name": "files",
+			"item": []
+		},
+		{
+			"name": "products",
+			"item": []
+		},
+		{
+			"name": "cart",
+			"item": []
+		},
+		{
+			"name": "orders",
+			"item": []
+		},
+		{
+			"name": "test",
+			"item": [
+				{
+					"name": "success",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "/success",
+							"path": [
+								"success"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							"pm.request.url.host = pm.variables.get(\"v1\"); ",
+							"pm.request.url.path = [\"test\"].concat(pm.request.url.path);"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "v1",
+			"value": "http://localhost:8000/api/v1",
+			"type": "string"
+		}
+	]
+}
