@@ -3,9 +3,10 @@ import Product from "../models/product.model.js";
 import File from "../models/file.model.js";
 import ApiError from "../utils/apiError.js";
 import ApiResponse from "../utils/apiResponse.js";
+import axios from "axios";
 
 const createProduct = asyncHandler(async (req, res) => {
-  const {
+  let {
     name,
     description,
     price,
@@ -14,6 +15,9 @@ const createProduct = asyncHandler(async (req, res) => {
     company,
     image,
   } = req.body;
+
+  if (req.user.label !== "seller" && req.user.label !== "admin")
+    throw new ApiError(403, "Unauthorized");
 
   const requiredFields = { name, description, price, category, company, image };
 
@@ -24,11 +28,13 @@ const createProduct = asyncHandler(async (req, res) => {
     }
   }
 
-  const isImageAvailable = File.exists({ _id: image });
+  tags = tags.map((tag) => tag.trim()?.toLowerCase());
+
+  const isImageAvailable = File.findOne(image);
   if (!isImageAvailable) throw new ApiError(404, "Image not found");
 
   // Proceed with product creation if validation passes
-  const product = Product.create({
+  const product = await Product.create({
     name,
     description,
     price,
@@ -55,15 +61,14 @@ const getProduct = asyncHandler(async (req, res) => {
 });
 
 const getProducts = asyncHandler(async (req, res) => {
-  // default values taken from body
-  const {
+  let {
     page = 1,
     category,
     company,
-    tags = [],
     sort = "d",
     sortBy = "$createdAt",
-  } = req.body;
+    query,
+  } = req.query;
 
   let sortFilter;
 
@@ -79,25 +84,26 @@ const getProducts = asyncHandler(async (req, res) => {
 
   const filter = {};
 
-  if (category) filter.category = category;
-  if (company) filter.company = company;
-  if (tags.length > 0) filter.tags = { $in: tags };
+  if (category?.trim())
+    filter.category = { $regex: category?.trim?.(), $options: "i" };
+  if (company?.trim())
+    filter.company = { $regex: company?.trim?.(), $options: "i" };
 
   if (req.path.includes("seller")) {
     if (req.user.label !== "seller") throw new ApiError(403, "Unauthorized");
 
     filter.sellerId = req.user._id;
-  } else {
-    const { query } = req.body;
-    if (query) {
-      filter.$or = [
-        { name: { $regex: query, $options: "i" } },
-        { description: { $regex: query, $options: "i" } },
-        { company: { $regex: query, $options: "i" } },
-        { category: { $regex: query, $options: "i" } },
-        { tags: { $in: [query] } },
-      ];
-    }
+  }
+
+  if (query?.trim()) {
+    query = query?.trim()?.toLowerCase();
+    filter.$or = [
+      { name: { $regex: query, $options: "i" } },
+      { description: { $regex: query, $options: "i" } },
+      { company: { $regex: query, $options: "i" } },
+      { category: { $regex: query, $options: "i" } },
+      { tags: { $in: query } },
+    ];
   }
 
   const products = await Product.find(filter)
@@ -113,8 +119,19 @@ const deleteProduct = asyncHandler(async (req, res) => {
 
   if (!product) throw new ApiError(404, "Product not found");
 
-  if (req.user._id !== product.sellerId)
+  if (req.user._id.toString() !== product.sellerId.toString())
     throw new ApiError(403, "Unauthorized");
+
+  try {
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
+
+    await axios.delete(`${baseUrl}/api/v1/files/${product.image}`, {
+      headers: req.headers,
+    });
+  } catch (error) {
+    console.log(error);
+    throw new ApiError(500, "File Deletion failed");
+  }
 
   await product.deleteOne();
 
@@ -126,7 +143,7 @@ const updateProduct = asyncHandler(async (req, res) => {
 
   if (!product) throw new ApiError(404, "Product not found");
 
-  if (req.user._id !== product.sellerId)
+  if (req.user._id.toString() !== product.sellerId.toString())
     throw new ApiError(403, "Unauthorized");
 
   const {
@@ -139,17 +156,16 @@ const updateProduct = asyncHandler(async (req, res) => {
     tags = [],
   } = req.body;
 
-  if (name) product.name = name;
-  if (description) product.description = description;
-  if (category) product.category = category;
-  if (company) product.company = company;
+  if (image)
+    throw new ApiError(400, "Image is not allowed", [
+      "update image with /files endpoint",
+    ]);
+  if (name?.trim()) product.name = name?.trim();
+  if (description?.trim()) product.description = description?.trim();
+  if (category?.trim()) product.category = category?.trim();
+  if (company?.trim()) product.company = company?.trim();
   if (price) product.price = price;
   if (tags.length > 0) product.tags = tags;
-  if (image) {
-    const isImageAvailable = File.exists({ _id: image });
-    if (!isImageAvailable) throw new ApiError(404, "Image not found");
-    product.image = image;
-  }
 
   await product.save();
   res.json(new ApiResponse(200, "Product updated successfully", product));
