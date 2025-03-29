@@ -4,6 +4,7 @@ import ApiResponse from "../utils/apiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import axios from "axios";
 import nodemailer from "nodemailer";
+import fs from "fs";
 
 const sendSuccess = asyncHandler((req, res) => {
   res.json(new ApiResponse());
@@ -72,6 +73,24 @@ const sendMail = asyncHandler(async (req, res) => {
   res.json(new ApiResponse(200, "Success", info));
 });
 
+const deleteRequest = asyncHandler(async (req, res) => {
+  const { status } = req.params;
+  let response;
+  const baseUrl = `${req.protocol}://${req.get("host")}`;
+
+  try {
+    if (status === "success") {
+      response = await axios.get(`${baseUrl}/api/v1/test/success`);
+    } else {
+      response = await axios.get(`${baseUrl}/api/v1/test/error`);
+    }
+  } catch (error) {
+    throw new ApiError(500, "Something went wrong");
+  }
+
+  res.json(new ApiResponse(200, "Success", response?.data));
+});
+
 export {
   sendSuccess,
   throwError,
@@ -79,4 +98,5 @@ export {
   imageSend,
   sendMail,
   reqAbort,
+  deleteRequest,
 };
