@@ -116,8 +116,9 @@ const Checkout = () => {
         name: "Tech Kart",
         description: "Tech Kart - Place Order",
         order_id: order.id,
-        handler: (res) => addOrder(res, data),
+        handler: (res) => addOrder(res, data), // make request to backend to verify payment
         prefill: {
+          //This will be user's details
           name: "Subrata Mondal",
           email: "subratamondal@outlook.com",
           contact: "9999999999",
