@@ -22,7 +22,7 @@ const fileSchema = new Schema(
     entityType: {
       type: String,
       required: true,
-      enum: ["invoice", "product", "avatar"],
+      enum: ["invoice", "product", "avatar", "default"],
     },
   },
   { timestamps: true }

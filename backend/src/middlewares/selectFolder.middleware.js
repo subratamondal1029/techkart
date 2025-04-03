@@ -28,6 +28,7 @@ const selectFolder = async (req, res, next) => {
     avatar: ["admin", "user", "shipment", "seller", "delivery"],
     invoice: ["admin", "shipment", "delivery"],
     product: ["admin", "seller"],
+    default: ["admin"],
   };
 
   if (
@@ -44,7 +45,7 @@ const selectFolder = async (req, res, next) => {
       );
   }
 
-  const validTypes = ["invoice", "product", "avatar"];
+  const validTypes = Object.keys(validLabels);
   if (!validTypes.includes(entityType)) {
     res
       .status(400)
@@ -68,6 +69,11 @@ const selectFolder = async (req, res, next) => {
 
     case "invoice":
       folderName = "invoices";
+      break;
+
+    case "default":
+      folderName = "default";
+      break;
   }
 
   req.folder = folderName;
