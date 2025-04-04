@@ -23,3 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 .env
+test/test.js
+storage/invoices/*.html
+storage/invoices/*.pdf
