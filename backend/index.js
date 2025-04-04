@@ -4,7 +4,7 @@ import connectDB from "./src/db.js";
 
 const port = process.env.PORT || 8000;
 
-connectDB().then((response) => {
+connectDB().then(() => {
   const server = app.listen(port, () => {
     console.log("Server is Running on:", server.address().port);
   });
