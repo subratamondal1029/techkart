@@ -3,7 +3,7 @@ import File from "../models/file.model.js";
 import User from "../models/user.model.js";
 import ApiError from "../utils/apiError.js";
 import ApiResponse from "../utils/apiResponse.js";
-import { uploadFile, deleteFile } from "../utils/fileUploader.js";
+import { cloudinaryUpload, cloudinaryDelete } from "../utils/fileUploader.js";
 import axios from "axios";
 import addToDelete from "../../storage/log/addToDelete.js";
 
@@ -13,7 +13,7 @@ const createFileDoc = asyncHandler(async (req, res) => {
   const fileUrl = req.file?.path;
   if (!fileUrl) throw new ApiError(500, "File Upload failed");
 
-  const uploadedFile = await uploadFile(
+  const uploadedFile = await cloudinaryUpload(
     req.file.path,
     req.folder,
     entityType === "invoice" ? "raw" : "image"
@@ -116,10 +116,10 @@ const updateFileDoc = asyncHandler(async (req, res) => {
     throw new ApiError(403, "Reject File Update");
   }
 
-  const uploadResponse = await uploadFile(filePath, req.folder);
+  const uploadResponse = await cloudinaryUpload(filePath, req.folder);
   if (!uploadResponse.success) throw new ApiError(500, "File Upload failed");
 
-  const deleteResponse = await deleteFile(
+  const deleteResponse = await cloudinaryDelete(
     existingFile.publicId,
     existingFile.entityType === "invoice" ? "raw" : "image"
   );
@@ -158,7 +158,7 @@ const deleteFileDoc = asyncHandler(async (req, res) => {
   )
     throw new ApiError(403, "Reject File Delete");
 
-  const deleteResponse = await deleteFile(
+  const deleteResponse = await cloudinaryDelete(
     file.publicId,
     file.entityType === "invoice" ? "raw" : "image"
   );

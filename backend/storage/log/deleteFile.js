@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { deleteFile as cloudinaryDelete } from "../../src/utils/fileUploader.js";
+import { cloudinaryDelete } from "../../src/utils/fileUploader.js";
 import { v2 as cloudinary } from "cloudinary";
 import File from "../../src/models/file.model.js";
 import ApiError from "../../src/utils/apiError.js";

@@ -8,7 +8,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const uploadFile = async (filePath, folder, resource_type = "image") => {
+const cloudinaryUpload = async (filePath, folder, resource_type = "image") => {
   try {
     const response = await cloudinary.uploader.upload(filePath, {
       folder: `techkart/${folder}`,
@@ -45,7 +45,7 @@ const uploadFile = async (filePath, folder, resource_type = "image") => {
   }
 };
 
-const deleteFile = async (publicId, resource_type = "image") => {
+const cloudinaryDelete = async (publicId, resource_type = "image") => {
   try {
     const response = await cloudinary.uploader.destroy(publicId, {
       resource_type,
@@ -58,4 +58,4 @@ const deleteFile = async (publicId, resource_type = "image") => {
   }
 };
 
-export { uploadFile, deleteFile };
+export { cloudinaryUpload, cloudinaryDelete };
