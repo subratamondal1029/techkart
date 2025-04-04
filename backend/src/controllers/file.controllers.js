@@ -51,17 +51,28 @@ const getFile = asyncHandler(async (req, res) => {
 
   if (!file) throw new ApiError(404, "File not found");
 
+  if (req.headers["if-none-match"] === file._id.toString()) {
+    return res.status(304).end(); // Not Modified
+  }
+
   const response = await axios({
     method: "GET",
     url: file.fileUrl,
     responseType: "stream",
   });
 
+  const isDownload = req.query.download;
+
   res.setHeader(
     "Content-Disposition",
-    `attachment; filename="${file.name || "file"}"`
+    `${isDownload !== undefined ? "attachment" : "inline"}; filename="${
+      file.name || "file"
+    }"`
   );
   res.setHeader("Content-Type", response.headers["content-type"]);
+  res.setHeader("Content-Length", response.headers["content-length"]);
+  res.setHeader("Cache-Control", "public, max-age=31536000");
+  res.setHeader("ETag", file._id.toString());
 
   response.data.pipe(res);
 });
