@@ -122,6 +122,7 @@ const deleteProduct = asyncHandler(async (req, res) => {
   if (req.user._id.toString() !== product.sellerId.toString())
     throw new ApiError(403, "Unauthorized");
 
+  // FIXME: delete image using util func
   try {
     const baseUrl = `${req.protocol}://${req.get("host")}`;
 
