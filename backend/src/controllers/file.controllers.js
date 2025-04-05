@@ -121,9 +121,9 @@ const deleteFileDoc = asyncHandler(async (req, res) => {
     throw new ApiError(403, "Reject File Delete");
   if (
     file.entityType === "invoice" &&
-    createdUser.label !== "admin" &&
-    createdUser.label !== "shipment" &&
-    createdUser.label !== "delivery"
+    req.user.label !== "admin" &&
+    req.user.label !== "shipment" &&
+    req.user.label !== "delivery"
   )
     throw new ApiError(403, "Reject File Delete");
 

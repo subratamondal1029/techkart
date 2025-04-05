@@ -51,6 +51,7 @@ const uploadFile = async (filePath, folder, entityType, userId) => {
  * Deletes a file from Cloudinary and removes its corresponding document from the database.
  *
  * @param {string} fileId - The ID of the file document to be deleted.
+ * @returns {Promise<boolean>} - Returns true if the file is successfully deleted, throw an error otherwise.
  * @throws {ApiError} - Throws an error if the file is not found or deletion fails.
  */
 const deleteFile = async (fileId) => {
