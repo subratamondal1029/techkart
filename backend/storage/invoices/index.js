@@ -2,7 +2,11 @@ import wkhtmltopdf from "wkhtmltopdf";
 import fs from "fs";
 import path from "path";
 import ApiError from "../../src/utils/apiError.js";
-import { deleteLocalFile, uploadFile } from "../../src/utils/fileHandler.js";
+import {
+  deleteFile,
+  deleteLocalFile,
+  uploadFile,
+} from "../../src/utils/fileHandler.js";
 
 const orderSample = {
   baseUrl: "http://localhost:8000",
@@ -452,6 +456,7 @@ const createPdf = (html, pageSize, outputFile) => {
  * @property {boolean} isCancelled - Cancellation status
  * @property {string} statusUpdateDate - Last status update timestamp (ISO string)
  * @property {string} orderDate - Order placement timestamp (ISO string)
+ * @property {ObjectId} invoiceId - ID of the shipment invoice
  *
  * @example
  * const order = {
@@ -475,6 +480,7 @@ const createPdf = (html, pageSize, outputFile) => {
  *   isDelivered: false,
  *   isCancelled: false,
  *   statusUpdateDate: "2025-04-02T05:32:09.466Z",
+ *   invoice: "67eccbd95be609023c4e03bd",
  *   orderDate: "2025-04-02T05:32:09.466Z"
  * };
  * @returns {Promise<ObjectId>} Promise resolving to the File ID of the uploaded generated invoice
@@ -509,6 +515,10 @@ const genInvoice = async (order = orderSample) => {
     );
 
     deleteLocalFile(outputFile.path);
+
+    if (file && type === "delivery") {
+      deleteFile(order.invoice);
+    }
 
     return file._id;
   } catch (error) {
