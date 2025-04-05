@@ -5,39 +5,19 @@ import ApiError from "../utils/apiError.js";
 import ApiResponse from "../utils/apiResponse.js";
 import { cloudinaryUpload, cloudinaryDelete } from "../utils/fileUploader.js";
 import axios from "axios";
-import addToDelete from "../../storage/log/addToDelete.js";
+import {
+  deleteFile,
+  uploadFile,
+  deleteLocalFile,
+} from "../utils/fileHandler.js";
 
 const createFileDoc = asyncHandler(async (req, res) => {
   const { entityType } = req.body;
 
-  const fileUrl = req.file?.path;
-  if (!fileUrl) throw new ApiError(500, "File Upload failed");
+  const filePath = req.file?.path;
+  if (!filePath) throw new ApiError(500, "File Upload failed");
 
-  const uploadedFile = await cloudinaryUpload(
-    req.file.path,
-    req.folder,
-    entityType === "invoice" ? "raw" : "image"
-  );
-
-  if (!uploadedFile.success) throw new ApiError(500, "File Upload failed");
-
-  const file = await File.create({
-    userId: req.user._id,
-    name: uploadedFile.fileName,
-    fileUrl: uploadedFile.url,
-    publicId: uploadedFile.public_id,
-    entityType,
-  });
-
-  if (!file) {
-    addToDelete(
-      "cloudinary",
-      uploadedFile.public_id,
-      new Error("Failed while creating File document in DB").stack
-    );
-
-    throw new ApiError(500, "File Upload failed");
-  }
+  const file = await uploadFile(filePath, req.folder, entityType);
 
   res
     .status(201)
@@ -83,11 +63,8 @@ const updateFileDoc = asyncHandler(async (req, res) => {
 
   const existingFile = await File.findById(req.params.id);
   if (!existingFile) {
-    addToDelete(
-      "local",
-      filePath,
-      new Error("File Document Not available to Update in DB").stack
-    );
+    deleteLocalFile(filePath);
+    throw new ApiError(404, "File not found");
   }
 
   const createdUser = await User.findById(existingFile.userId);
@@ -95,11 +72,7 @@ const updateFileDoc = asyncHandler(async (req, res) => {
     existingFile.entityType !== "invoice" &&
     createdUser._id.toString() !== req.user._id.toString()
   ) {
-    addToDelete(
-      "local",
-      filePath,
-      new Error("Unauthorized File Update Attempt").stack
-    );
+    deleteLocalFile(filePath);
     throw new ApiError(403, "Reject File Update");
   }
   if (
@@ -108,11 +81,7 @@ const updateFileDoc = asyncHandler(async (req, res) => {
     createdUser.label !== "shipment" &&
     createdUser.label !== "delivery"
   ) {
-    addToDelete(
-      "local",
-      filePath,
-      new Error("Unauthorized File Update Attempt").stack
-    );
+    deleteLocalFile(filePath);
     throw new ApiError(403, "Reject File Update");
   }
 
@@ -158,14 +127,7 @@ const deleteFileDoc = asyncHandler(async (req, res) => {
   )
     throw new ApiError(403, "Reject File Delete");
 
-  const deleteResponse = await cloudinaryDelete(
-    file.publicId,
-    file.entityType === "invoice" ? "raw" : "image"
-  );
-
-  if (!deleteResponse.success) throw new ApiError(500, "File Deletion failed");
-
-  await file.deleteOne();
+  await deleteFile(file._id);
 
   res.json(new ApiResponse(200, "File deleted successfully"));
 });

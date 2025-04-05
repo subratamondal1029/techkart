@@ -1,6 +1,7 @@
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
 import addToDelete from "../../storage/log/addToDelete.js";
+import { deleteLocalFile } from "./fileHandler.js";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -19,13 +20,7 @@ const cloudinaryUpload = async (filePath, folder, resource_type = "image") => {
       ],
     });
 
-    if (fs.existsSync(filePath)) {
-      fs.unlink(filePath, (err) => {
-        if (err) {
-          addToDelete("local", filePath, err.stack || err);
-        }
-      });
-    }
+    deleteLocalFile(filePath);
 
     return {
       success: true,
@@ -34,13 +29,7 @@ const cloudinaryUpload = async (filePath, folder, resource_type = "image") => {
       fileName: response.original_filename,
     };
   } catch (error) {
-    if (fs.existsSync(filePath)) {
-      fs.unlink(filePath, (err) => {
-        if (err) {
-          addToDelete("local", filePath, err.stack || err);
-        }
-      });
-    }
+    deleteLocalFile(filePath);
     return { success: false, message: error.message };
   }
 };
