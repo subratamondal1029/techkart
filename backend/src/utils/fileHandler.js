@@ -68,6 +68,8 @@ const deleteFile = async (fileId) => {
       throw new ApiError(500, "File Deletion failed");
 
     await file.deleteOne();
+
+    return true;
   } catch (error) {
     throw error;
   }

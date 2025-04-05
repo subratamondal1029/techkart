@@ -4,6 +4,7 @@ import File from "../models/file.model.js";
 import ApiError from "../utils/apiError.js";
 import ApiResponse from "../utils/apiResponse.js";
 import axios from "axios";
+import { deleteFile } from "../utils/fileHandler.js";
 
 const createProduct = asyncHandler(async (req, res) => {
   let {
@@ -122,17 +123,7 @@ const deleteProduct = asyncHandler(async (req, res) => {
   if (req.user._id.toString() !== product.sellerId.toString())
     throw new ApiError(403, "Unauthorized");
 
-  // FIXME: delete image using util func
-  try {
-    const baseUrl = `${req.protocol}://${req.get("host")}`;
-
-    await axios.delete(`${baseUrl}/api/v1/files/${product.image}`, {
-      headers: req.headers,
-    });
-  } catch (error) {
-    console.log(error);
-    throw new ApiError(500, "File Deletion failed");
-  }
+  await deleteFile(product.image);
 
   await product.deleteOne();
 
