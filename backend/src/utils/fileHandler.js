@@ -13,7 +13,7 @@ import ApiError from "../utils/apiError.js";
  * @returns {Promise<Object>} - The newly created file document.
  * @throws {ApiError} - Throws an error if the upload or database operation fails.
  */
-const uploadFile = async (filePath, folder, entityType) => {
+const uploadFile = async (filePath, folder, entityType, userId) => {
   try {
     const uploadedFile = await cloudinaryUpload(
       filePath,
@@ -24,7 +24,7 @@ const uploadFile = async (filePath, folder, entityType) => {
     if (!uploadedFile.success) throw new ApiError(500, "File Upload failed");
 
     const file = await File.create({
-      userId: req.user._id,
+      userId,
       name: uploadedFile.fileName,
       fileUrl: uploadedFile.url,
       publicId: uploadedFile.public_id,

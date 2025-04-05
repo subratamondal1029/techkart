@@ -17,7 +17,7 @@ const createFileDoc = asyncHandler(async (req, res) => {
   const filePath = req.file?.path;
   if (!filePath) throw new ApiError(500, "File Upload failed");
 
-  const file = await uploadFile(filePath, req.folder, entityType);
+  const file = await uploadFile(filePath, req.folder, entityType, req.user._id);
 
   res
     .status(201)
