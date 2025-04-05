@@ -350,6 +350,13 @@ const cancelOrder = asyncHandler(async (req, res) => {
   if (!order) throw new ApiError(404, "Order not found");
   if (order.userId.toString() !== req.user._id.toString())
     throw new ApiError(403, "Unauthorized");
+
+  if (order.isDelivered)
+    throw new ApiError(400, "Order is already delivered", [
+      "Order is already delivered",
+      "Cannot cancel the order",
+      "cannot cancel the order after delivery",
+    ]);
   if (order.isShipped)
     throw new ApiError(400, "Order is already shipped", [
       "order is already shipped",
