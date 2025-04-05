@@ -57,6 +57,9 @@ const orderSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    statusUpdateDate: {
+      type: Date,
+    },
   },
   { timestamps: true }
 );
