@@ -11,14 +11,19 @@ cloudinary.config({
 
 const cloudinaryUpload = async (filePath, folder, resource_type = "image") => {
   try {
-    const response = await cloudinary.uploader.upload(filePath, {
+    const options = {
       folder: `techkart/${folder}`,
       resource_type,
-      transformation: [
+    };
+
+    if (resource_type === "image") {
+      options.transformation = [
         { width: 500, height: 500, crop: "fill" },
         { quality: "auto:eco" },
-      ],
-    });
+      ];
+    }
+
+    const response = await cloudinary.uploader.upload(filePath, options);
 
     deleteLocalFile(filePath);
 

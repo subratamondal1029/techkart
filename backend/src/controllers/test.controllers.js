@@ -4,7 +4,9 @@ import ApiResponse from "../utils/apiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import axios from "axios";
 import nodemailer from "nodemailer";
+import File from "../models/file.model.js";
 import fs from "fs";
+import { v2 as cloudinary } from "cloudinary";
 
 const sendSuccess = asyncHandler((req, res) => {
   res.json(new ApiResponse());
@@ -21,27 +23,54 @@ const validObjectId = asyncHandler(async (req, res) => {
 });
 
 const imageSend = asyncHandler(async (req, res) => {
-  const { type } = req.query;
-  console.log(type);
+  // const file = await File.findById(req.params.id);
 
-  const fileUrl = "https://res.cloudinary.com/demo/image/upload/sample.jpg";
+  // if (!file) throw new ApiError(404, "File not found");
 
-  // Fetch the file from Cloudinary
+  // if (req.headers["if-none-match"] === file._id.toString()) {
+  //   return res.status(304).end(); // Not Modified
+  // }
+
+  const secureUrl = cloudinary.url(req.query.id, {
+    secure: true,
+    resource_type: "raw",
+  });
+
   const response = await axios({
-    url: fileUrl,
     method: "GET",
+    url: secureUrl,
     responseType: "stream",
   });
 
-  // Set headers to prompt download
+  const isDownload = req.query.download;
+
   res.setHeader(
     "Content-Disposition",
-    'attachment; filename="downloaded_file.jpg"'
+    `${isDownload !== undefined ? "attachment" : "inline"}; filename="${
+      file?.name || "file"
+    }.pdf"`
   );
   res.setHeader("Content-Type", response.headers["content-type"]);
+  res.setHeader("Content-Length", response.headers["content-length"]);
+  res.setHeader("Cache-Control", "public, max-age=31536000");
+  // res.setHeader("ETag", file._id.toString());
 
-  // Pipe the Cloudinary response to the client
   response.data.pipe(res);
+});
+
+const uploadPdf = asyncHandler(async (req, res) => {
+  const file = req.file.path;
+
+  if (!file) throw new ApiError(500, "File Upload failed");
+
+  const upload = await cloudinary.uploader.upload(file, {
+    resource_type: "raw",
+    folder: "techkart/invoices",
+  });
+  console.log(
+    `pdf uploaded successfully ${(upload.secure_url, upload.public_id)}`
+  );
+  res.json(new ApiResponse(200, "Success", upload));
 });
 
 const reqAbort = asyncHandler(async (req, res) => {
@@ -96,6 +125,7 @@ export {
   throwError,
   validObjectId,
   imageSend,
+  uploadPdf,
   sendMail,
   reqAbort,
   deleteRequest,

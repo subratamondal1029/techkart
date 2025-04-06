@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
     cb(
       null,
       `${path.parse(file.originalname).name}_${
-        req.user._id || "anonymous"
+        req.user?._id || "anonymous"
       }_${Date.now()}${path.extname(file.originalname)}`
     );
   },
