@@ -2,6 +2,7 @@ import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
 import addToDelete from "../../storage/log/addToDelete.js";
 import { deleteLocalFile } from "./fileHandler.js";
+import path from "path";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -31,7 +32,7 @@ const cloudinaryUpload = async (filePath, folder, resource_type = "image") => {
       success: true,
       url: response.secure_url,
       public_id: response.public_id,
-      fileName: response.original_filename,
+      fileName: response.original_filename + path.extname(filePath),
     };
   } catch (error) {
     deleteLocalFile(filePath);
