@@ -1,6 +1,7 @@
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import User from "../models/user.model.js";
+import File from "../models/file.model.js";
 
 passport.use(
   new GoogleStrategy(
@@ -15,14 +16,24 @@ passport.use(
         let user = await User.findOne({ googleId: profile.id });
 
         if (!user) {
-          user = await User.create({
+          user = new User.create({
             name: profile.displayName,
             email: profile.emails?.[0]?.value || "",
             googleId: profile.id,
             label: "user",
             provider: "google",
-            avatar: profile.photos?.[0]?.value || "",
           });
+
+          const file = await File.create({
+            name: "avatar.png",
+            entityType: "avatar",
+            fileUrl: profile.photos?.[0]?.value,
+            publicId: profile.id,
+            userId: user._id,
+          });
+
+          user.avatar = file._id;
+          await user.save();
         }
 
         return done(null, user);

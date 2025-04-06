@@ -17,7 +17,6 @@ const fileSchema = new Schema(
     },
     publicId: {
       type: String,
-      required: true,
     },
     entityType: {
       type: String,
