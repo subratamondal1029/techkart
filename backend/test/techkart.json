@@ -8,23 +8,4036 @@
 	"item": [
 		{
 			"name": "users",
-			"item": []
+			"item": [
+				{
+					"name": "create user",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Subrata Mondal shipment\",\n  \"email\": \"subrata@shipment.com\",\n  \"password\": \"@1Iamsubrata\",\n  \"label\": \"shipment\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "/",
+							"path": [
+								""
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "wrong password format",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"johndoe@example.com\",\n  \"password\": \"securepassword123\",\n  \"label\": \"user\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "/",
+									"path": [
+										""
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "190"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"be-OnFpsySDC1o4NJjy91JqsfGHxIo\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 26 Mar 2025 13:42:21 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 400,\n    \"success\": false,\n    \"message\": \"Password must be at least 8 characters long and contain at least one number, one lowercase letter, and one uppercase letter\",\n    \"errors\": [],\n    \"data\": null\n}"
+						},
+						{
+							"name": "already exist user",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"johndoe@example.com\",\n  \"password\": \"@1Iampass\",\n  \"label\": \"user\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "/",
+									"path": [
+										""
+									]
+								}
+							},
+							"status": "Conflict",
+							"code": 409,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "86"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"56-XGZk5/JB50I/LPHMfT9xAx7Dh2w\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 26 Mar 2025 13:49:10 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 409,\n    \"success\": false,\n    \"message\": \"User already exists\",\n    \"errors\": [],\n    \"data\": null\n}"
+						},
+						{
+							"name": "invalid email format",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"johndoe@example.c\",\n  \"password\": \"@1Iampass\",\n  \"label\": \"user\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "/",
+									"path": [
+										""
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "80"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"50-HLneFbmmZhnybmUUXm9KvT8CKVA\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 26 Mar 2025 13:50:01 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 400,\n    \"success\": false,\n    \"message\": \"Invalid email\",\n    \"errors\": [],\n    \"data\": null\n}"
+						},
+						{
+							"name": "successfully user created",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"johndoe@example.com\",\n  \"password\": \"@1Iampass\",\n  \"label\": \"user\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "/",
+									"path": [
+										""
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "264"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"108-e/i2/E2+gDkYMyduYu5RHecXfy8\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 26 Mar 2025 13:53:24 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"status\": 201,\n    \"message\": \"User created\",\n    \"data\": {\n        \"name\": \"John Doe\",\n        \"email\": \"johndoe@example.com\",\n        \"label\": \"user\",\n        \"provider\": \"local\",\n        \"_id\": \"67e406d4cab7ac65ac76fb54\",\n        \"createdAt\": \"2025-03-26T13:53:24.177Z\",\n        \"updatedAt\": \"2025-03-26T13:53:24.177Z\",\n        \"__v\": 0\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "login",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"subrata@test.com\",\n    \"password\": \"@1Iamsubrata\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "/auth/login",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "wrong email",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"johndoe12@example.com\",\n    \"password\": \"@1Iampass\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "/auth/login",
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "97"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"61-paIA3q3XiX5ibk+Xkk+5hAfihZw\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 26 Mar 2025 14:01:35 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 401,\n    \"success\": false,\n    \"message\": \"Invalid email Cannot find user\",\n    \"errors\": [],\n    \"data\": null\n}"
+						},
+						{
+							"name": "wrong password",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"johndoe@example.com\",\n    \"password\": \"@1Iampasssd\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "/auth/login",
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "81"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"51-8isUlkardUe6DUZ/6bwoHwE+m7I\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 26 Mar 2025 14:02:18 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 401,\n    \"success\": false,\n    \"message\": \"Wrong password\",\n    \"errors\": [],\n    \"data\": null\n}"
+						},
+						{
+							"name": "successfully logged in",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"johndoe@example.com\",\n    \"password\": \"@1Iampass\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "/auth/login",
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTQwNmQ0Y2FiN2FjNjVhYzc2ZmI1NCIsImlhdCI6MTc0Mjk5ODI5MSwiZXhwIjoxNzQzNjAzMDkxfQ.IHbRu7SnEw0jm8SgW36maDJROOdWKQnzgO2wJ8dKXSk; Max-Age=604800; Path=/; Expires=Wed, 02 Apr 2025 14:11:31 GMT; HttpOnly"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTQwNmQ0Y2FiN2FjNjVhYzc2ZmI1NCIsImlhdCI6MTc0Mjk5ODI5MSwiZXhwIjoxNzQzMDg0NjkxfQ.y0-IdMrookDZizLNLV8qUJbDx2tRt1Jw5l5sdoKbpx4; Max-Age=86400; Path=/; Expires=Thu, 27 Mar 2025 14:11:31 GMT; HttpOnly"
+								},
+								{
+									"key": "accessToken",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTQwNmQ0Y2FiN2FjNjVhYzc2ZmI1NCIsImlhdCI6MTc0Mjk5ODI5MSwiZXhwIjoxNzQzMDg0NjkxfQ.y0-IdMrookDZizLNLV8qUJbDx2tRt1Jw5l5sdoKbpx4"
+								},
+								{
+									"key": "refreshToken",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTQwNmQ0Y2FiN2FjNjVhYzc2ZmI1NCIsImlhdCI6MTc0Mjk5ODI5MSwiZXhwIjoxNzQzNjAzMDkxfQ.IHbRu7SnEw0jm8SgW36maDJROOdWKQnzgO2wJ8dKXSk"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "444"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1bc-E6AFVXaLDHAq2jmg4EubapvWjjk\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 26 Mar 2025 14:11:31 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"status\": 200,\n    \"message\": \"Login successful\",\n    \"data\": {\n        \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTQwNmQ0Y2FiN2FjNjVhYzc2ZmI1NCIsImlhdCI6MTc0Mjk5ODI5MSwiZXhwIjoxNzQzMDg0NjkxfQ.y0-IdMrookDZizLNLV8qUJbDx2tRt1Jw5l5sdoKbpx4\",\n        \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTQwNmQ0Y2FiN2FjNjVhYzc2ZmI1NCIsImlhdCI6MTc0Mjk5ODI5MSwiZXhwIjoxNzQzNjAzMDkxfQ.IHbRu7SnEw0jm8SgW36maDJROOdWKQnzgO2wJ8dKXSk\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "get current user",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "/",
+							"path": [
+								""
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "successfull",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTQwNmQ0Y2FiN2FjNjVhYzc2ZmI1NCIsImlhdCI6MTc0Mjk5ODI5MSwiZXhwIjoxNzQzMDg0NjkxfQ.y0-IdMrookDZizLNLV8qUJbDx2tRt1Jw5l5sdoKbpx4",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "/",
+									"path": [
+										""
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "262"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"106-rAR6YeKL9ClBjWgrgOa+cEZvbb4\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 26 Mar 2025 14:18:05 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"status\": 200,\n    \"message\": \"User found\",\n    \"data\": {\n        \"_id\": \"67e406d4cab7ac65ac76fb54\",\n        \"name\": \"John Doe\",\n        \"email\": \"johndoe@example.com\",\n        \"label\": \"user\",\n        \"provider\": \"local\",\n        \"createdAt\": \"2025-03-26T13:53:24.177Z\",\n        \"updatedAt\": \"2025-03-26T14:11:31.771Z\",\n        \"__v\": 0\n    }\n}"
+						},
+						{
+							"name": "fails",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTQwNmQ0Y2FiN2FjNjVhYzc2ZmI1NCIsImlhdCI6MTc0Mjk5ODI5MSwiZXhwIjoxNzQzMDg0NjkxfQ.y0-IdMrookDZizLNLV8qUJbDx2tRt1Jw5l5sdoKbpx4",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "/",
+									"path": [
+										""
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "79"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"4f-ePpW49IRWG84rZ+cRb/+sTUMY4o\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 26 Mar 2025 14:19:45 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 401,\n    \"success\": false,\n    \"message\": \"Unauthorized\",\n    \"errors\": [],\n    \"data\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "logout",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "/auth/logout",
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "successfull",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "/auth/logout",
+									"path": [
+										"auth",
+										"logout"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "refreshToken=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "accessToken=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "69"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"45-MqhbY4h4N7WAgmFyhKLp+YFXZ1M\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 26 Mar 2025 14:19:01 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"status\": 200,\n    \"message\": \"Logout successful\",\n    \"data\": {}\n}"
+						},
+						{
+							"name": "fails",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "/auth/logout",
+									"path": [
+										"auth",
+										"logout"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "79"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"4f-ePpW49IRWG84rZ+cRb/+sTUMY4o\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 26 Mar 2025 14:19:19 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 401,\n    \"success\": false,\n    \"message\": \"Unauthorized\",\n    \"errors\": [],\n    \"data\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "update user details",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTQwNmQ0Y2FiN2FjNjVhYzc2ZmI1NCIsImlhdCI6MTc0Mjk5OTU0NywiZXhwIjoxNzQzMDg1OTQ3fQ.Md2vh-btXKpzAB8K3mnnpQpGp9X-zYyXmlWeT8qAWE4",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"avatar\": \"67e41c839e65b596e2d037fc\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "/",
+							"path": [
+								""
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "without login",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"James Deo\",\n    \"email\": \"jamesdeo@example.com\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "/",
+									"path": [
+										""
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "79"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"4f-ePpW49IRWG84rZ+cRb/+sTUMY4o\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 26 Mar 2025 14:27:17 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 401,\n    \"success\": false,\n    \"message\": \"Unauthorized\",\n    \"errors\": [],\n    \"data\": null\n}"
+						},
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"James Deo\",\n    \"email\": \"jamesdeo@example.com\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "/",
+									"path": [
+										""
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "274"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"112-dnjKQXu+oVIj2is+glz5yRIWPFg\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 26 Mar 2025 14:28:58 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"status\": 200,\n    \"message\": \"User Details Updated\",\n    \"data\": {\n        \"_id\": \"67e406d4cab7ac65ac76fb54\",\n        \"name\": \"James Deo\",\n        \"email\": \"jamesdeo@example.com\",\n        \"label\": \"user\",\n        \"provider\": \"local\",\n        \"createdAt\": \"2025-03-26T13:53:24.177Z\",\n        \"updatedAt\": \"2025-03-26T14:28:58.764Z\",\n        \"__v\": 0\n    }\n}"
+						},
+						{
+							"name": "invalid email",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"James Deo\",\n    \"email\": \"jamesdeoexample.com\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "/",
+									"path": [
+										""
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "80"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"50-HLneFbmmZhnybmUUXm9KvT8CKVA\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 26 Mar 2025 14:29:25 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 400,\n    \"success\": false,\n    \"message\": \"Invalid email\",\n    \"errors\": [],\n    \"data\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "refresh access token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refreshToken\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "/auth/refresh-tokens",
+							"path": [
+								"auth",
+								"refresh-tokens"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTQwNmQ0Y2FiN2FjNjVhYzc2ZmI1NCIsImlhdCI6MTc0Mjk5OTU0NywiZXhwIjoxNzQzMDg1OTQ3fQ.Md2vh-btXKpzAB8K3mnnpQpGp9X-zYyXmlWeT8qAWE4",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "/auth/refresh-tokens",
+									"path": [
+										"auth",
+										"refresh-tokens"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTQwNmQ0Y2FiN2FjNjVhYzc2ZmI1NCIsImlhdCI6MTc0Mjk5OTI2MiwiZXhwIjoxNzQzNjA0MDYyfQ._SOivAqS8eAo94wAzSLuzOeu8OAkWcwY_Cw8gj9gIDM; Max-Age=604800; Path=/; Expires=Wed, 02 Apr 2025 14:31:17 GMT; HttpOnly"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTQwNmQ0Y2FiN2FjNjVhYzc2ZmI1NCIsImlhdCI6MTc0Mjk5OTQ3NywiZXhwIjoxNzQzMDg1ODc3fQ.nsGE1gSFsOMiSzFe5U6IBUq3peAmQ2Bn1i1QHr8Li-s; Max-Age=86400; Path=/; Expires=Thu, 27 Mar 2025 14:31:17 GMT; HttpOnly"
+								},
+								{
+									"key": "accessToken",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTQwNmQ0Y2FiN2FjNjVhYzc2ZmI1NCIsImlhdCI6MTc0Mjk5OTQ3NywiZXhwIjoxNzQzMDg1ODc3fQ.nsGE1gSFsOMiSzFe5U6IBUq3peAmQ2Bn1i1QHr8Li-s"
+								},
+								{
+									"key": "refreshToken",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTQwNmQ0Y2FiN2FjNjVhYzc2ZmI1NCIsImlhdCI6MTc0Mjk5OTQ3NywiZXhwIjoxNzQzNjA0Mjc3fQ.wV_8DUgn4Jg-0aI3bnit9D27KCZUSYG3_nigeti71b4"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "450"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1c2-rMHmn8Aed2T+OuPs3A8baXk5jIU\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 26 Mar 2025 14:31:17 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"status\": 200,\n    \"message\": \"Access token refreshed\",\n    \"data\": {\n        \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTQwNmQ0Y2FiN2FjNjVhYzc2ZmI1NCIsImlhdCI6MTc0Mjk5OTQ3NywiZXhwIjoxNzQzMDg1ODc3fQ.nsGE1gSFsOMiSzFe5U6IBUq3peAmQ2Bn1i1QHr8Li-s\",\n        \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTQwNmQ0Y2FiN2FjNjVhYzc2ZmI1NCIsImlhdCI6MTc0Mjk5OTQ3NywiZXhwIjoxNzQzNjA0Mjc3fQ.wV_8DUgn4Jg-0aI3bnit9D27KCZUSYG3_nigeti71b4\"\n    }\n}"
+						},
+						{
+							"name": "fails",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTQwNmQ0Y2FiN2FjNjVhYzc2ZmI1NCIsImlhdCI6MTc0Mjk5OTU0NywiZXhwIjoxNzQzMDg1OTQ3fQ.Md2vh-btXKpzAB8K3mnnpQpGp9X-zYyXmlWeT8qAWE4",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "/auth/refresh-tokens",
+									"path": [
+										"auth",
+										"refresh-tokens"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "92"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"5c-ea6+/v1o+0XUnp/L9LjDuuPBVww\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 26 Mar 2025 14:33:55 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 400,\n    \"success\": false,\n    \"message\": \"Refresh token is required\",\n    \"errors\": [],\n    \"data\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "google login",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "/auth/google?success=/&fails=/login",
+							"path": [
+								"auth",
+								"google"
+							],
+							"query": [
+								{
+									"key": "success",
+									"value": "/"
+								},
+								{
+									"key": "fails",
+									"value": "/login"
+								}
+							]
+						},
+						"description": "This is only for browser it will redirect to the google login page"
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							"pm.request.url.host = pm.variables.get(\"v1\"); ",
+							"pm.request.url.path = [\"users\"].concat(pm.request.url.path);"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
 		},
 		{
 			"name": "files",
-			"item": []
+			"item": [
+				{
+					"name": "upload file",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/home/subrata/Pictures/techkart test/samsang_watch.jpg"
+								},
+								{
+									"key": "entityType",
+									"value": "product",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "/",
+							"path": [
+								""
+							]
+						},
+						"description": "**entityType** is a required field in API requests to categorize uploaded files. Each file type supports specific roles:\n\n- **avatar** → `admin`, `user`, `shipment`, `seller`, `delivery`\n    \n- **invoice** → `admin`, `shipment`, `delivery`\n    \n- **product** → `admin`, `seller`\n    \n- **default** → `admin`"
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": "postman-cloud:///1f00a510-bed1-4180-ad4b-6e1be2e79d68"
+										},
+										{
+											"key": "entityType",
+											"value": "avatar",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "/",
+									"path": [
+										""
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "111"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"6f-48rwKwEHmDK3fb3rOfvqEcMTPtY\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 26 Mar 2025 15:25:55 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"status\": 201,\n    \"message\": \"File uploaded successfully\",\n    \"data\": {\n        \"file\": \"67e41c839e65b596e2d037fc\"\n    }\n}"
+						},
+						{
+							"name": "fails is file not send",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": "postman-cloud:///1f00a510-bed1-4180-ad4b-6e1be2e79d68",
+											"disabled": true
+										},
+										{
+											"key": "entityType",
+											"value": "avatar",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "/",
+									"path": [
+										""
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "85"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"55-HDAz4gSzdBdXkUr+C2+lO3ykOT0\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 26 Mar 2025 15:33:18 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 500,\n    \"success\": false,\n    \"message\": \"File Upload failed\",\n    \"errors\": [],\n    \"data\": null\n}"
+						},
+						{
+							"name": "fails if entity type is not available",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": "postman-cloud:///1f00a510-bed1-4180-ad4b-6e1be2e79d68"
+										},
+										{
+											"key": "entityType",
+											"value": "avatar",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "/",
+									"path": [
+										""
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "90"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"5a-3qNNj7hEKx0VbaJoI7v4yO9czqE\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 26 Mar 2025 15:35:25 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 400,\n    \"success\": false,\n    \"message\": \"Entity Type is required\",\n    \"errors\": [],\n    \"data\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "get file preview",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "/67e7849b806e563227d47941",
+							"path": [
+								"67e7849b806e563227d47941"
+							]
+						},
+						"description": "This will return a image not any url"
+					},
+					"response": [
+						{
+							"name": "if file id is wrong or file is not available",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "/67e41c839e65b596e2d037fd",
+									"path": [
+										"67e41c839e65b596e2d037fd"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "81"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"51-OWz6L6UlcUE5WT9SYoUJvl+dwFA\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 26 Mar 2025 15:42:07 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 404,\n    \"success\": false,\n    \"message\": \"File not found\",\n    \"errors\": [],\n    \"data\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "delete file",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "/67f13b7ba4afcada1d3bb644",
+							"path": [
+								"67f13b7ba4afcada1d3bb644"
+							]
+						},
+						"description": "This is a optional route for future usage."
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "/67e4218b5110859f5335c478",
+									"path": [
+										"67e4218b5110859f5335c478"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "77"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"4d-mM+Dbj3FOZmBi5G4tCn03bVxrOw\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 26 Mar 2025 15:56:13 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"status\": 200,\n    \"message\": \"File deleted successfully\",\n    \"data\": {}\n}"
+						},
+						{
+							"name": "file not available",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "/67e4218b5110859f5335c478",
+									"path": [
+										"67e4218b5110859f5335c478"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "81"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"51-OWz6L6UlcUE5WT9SYoUJvl+dwFA\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 26 Mar 2025 15:59:00 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 404,\n    \"success\": false,\n    \"message\": \"File not found\",\n    \"errors\": [],\n    \"data\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "update files",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/home/subrata/Pictures/techkart test/keyboard.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "/67e4ddee0638273a96dfe72b",
+							"path": [
+								"67e4ddee0638273a96dfe72b"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": "/home/subrata/Pictures/pc.png"
+										}
+									]
+								},
+								"url": {
+									"raw": "/67e4ccd2da28b233ea0012ef",
+									"path": [
+										"67e4ccd2da28b233ea0012ef"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "110"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"6e-2Zv4u/4pFxzesylTtT4B52kcdIA\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 27 Mar 2025 04:11:15 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"status\": 200,\n    \"message\": \"File updated successfully\",\n    \"data\": {\n        \"file\": \"67e4ccd2da28b233ea0012ef\"\n    }\n}"
+						},
+						{
+							"name": "fails if won't send file",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": "/home/subrata/Pictures/pc.png",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "/67e4ccd2da28b233ea0012ef",
+									"path": [
+										"67e4ccd2da28b233ea0012ef"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "85"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"55-HDAz4gSzdBdXkUr+C2+lO3ykOT0\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 27 Mar 2025 04:12:29 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 500,\n    \"success\": false,\n    \"message\": \"File Upload failed\",\n    \"errors\": [],\n    \"data\": null\n}"
+						}
+					]
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							"pm.request.url.host = pm.variables.get(\"v1\"); ",
+							"pm.request.url.path = [\"files\"].concat(pm.request.url.path);"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
 		},
 		{
 			"name": "products",
-			"item": []
+			"item": [
+				{
+					"name": "create product",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Samsung Galaxy Watch 7\",\n  \"description\": \"Premium smartwatch with Super AMOLED display, fitness tracking, ECG, and long battery life.\",\n  \"price\": 18999,\n  \"tags\": [\"smartwatch\", \"wearable\", \"fitness\", \"AMOLED\", \"Samsung\"],\n  \"category\": \"Wearables\",\n  \"company\": \"Samsung\",\n  \"image\": \"67e78490806e563227d4793e\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "/",
+							"path": [
+								""
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "if any field is empty except tags",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n//   \"name\": \"Wireless Mechanical Keyboard\",\n  \"description\": \"A high-performance wireless mechanical keyboard with RGB lighting and customizable key switches.\",\n  \"price\": 10999,\n  \"tags\": [\"keyboard\", \"wireless\", \"mechanical\", \"RGB\"],\n  \"category\": \"Accessories\",\n  \"company\": \"Logitech\",\n  \"image\": \"67e4d7914b3f35440cb39fc3\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "/",
+									"path": [
+										""
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "83"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"53-Gk/xywr33rB+l5x0Ih1s3bE4RFQ\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 27 Mar 2025 04:44:43 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 400,\n    \"success\": false,\n    \"message\": \"name is required\",\n    \"errors\": [],\n    \"data\": null\n}"
+						},
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"Wireless Mechanical Keyboard\",\n  \"description\": \"A high-performance wireless mechanical keyboard with RGB lighting and customizable key switches.\",\n  \"price\": 10999,\n  \"tags\": [\"keyboard\", \"wireless\", \"mechanical\", \"RGB\"],\n  \"category\": \"Accessories\",\n  \"company\": \"Logitech\",\n  \"image\": \"67e4d7914b3f35440cb39fc3\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "/",
+									"path": [
+										""
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "532"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"214-1qznVgntd7VVj952kMjjM4yyLXs\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 27 Mar 2025 04:46:39 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"status\": 201,\n    \"message\": \"Product created successfully\",\n    \"data\": {\n        \"name\": \"Wireless Mechanical Keyboard\",\n        \"description\": \"A high-performance wireless mechanical keyboard with RGB lighting and customizable key switches.\",\n        \"price\": 10999,\n        \"tags\": [\n            \"keyboard\",\n            \"wireless\",\n            \"mechanical\",\n            \"RGB\"\n        ],\n        \"category\": \"Accessories\",\n        \"company\": \"Logitech\",\n        \"image\": \"67e4d7914b3f35440cb39fc3\",\n        \"sellerId\": \"67e411b8c090932e2a16a4fb\",\n        \"_id\": \"67e4d82f9d50a6eeb5ff2348\",\n        \"createdAt\": \"2025-03-27T04:46:39.297Z\",\n        \"updatedAt\": \"2025-03-27T04:46:39.297Z\",\n        \"__v\": 0\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "update product",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"RGB Gaming Mechanical Keyboard\",\n  \"description\": \"A premium mechanical keyboard with per-key RGB lighting, customizable macros, and a durable aluminum frame.\",\n  \"price\": 11999,\n  \"tags\": [\"keyboard\", \"gaming\", \"mechanical\", \"RGB\", \"hot-swappable\", \"wireless\"],\n  \"category\": \"Gaming Accessories\",\n  \"company\": \"Razer\",\n  \"image\": \"dfgdjfg\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "/67e4de030638273a96dfe72e",
+							"path": [
+								"67e4de030638273a96dfe72e"
+							]
+						},
+						"description": "change the image using /files route the file will automatically update"
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"RGB Gaming Mechanical Keyboard\",\n  \"description\": \"A premium mechanical keyboard with per-key RGB lighting, customizable macros, and a durable aluminum frame.\",\n  \"price\": 11999,\n  \"tags\": [\"keyboard\", \"gaming\", \"mechanical\", \"RGB\", \"hot-swappable\", \"wireless\"],\n  \"category\": \"Gaming Accessories\",\n  \"company\": \"Razer\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "/67e4de030638273a96dfe72e",
+									"path": [
+										"67e4de030638273a96dfe72e"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "574"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"23e-xa7hS/YVL720rEzyf9+LBf8xNZA\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 27 Mar 2025 05:16:34 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"status\": 200,\n    \"message\": \"Product updated successfully\",\n    \"data\": {\n        \"_id\": \"67e4de030638273a96dfe72e\",\n        \"name\": \"RGB Gaming Mechanical Keyboard\",\n        \"description\": \"A premium mechanical keyboard with per-key RGB lighting, customizable macros, and a durable aluminum frame.\",\n        \"price\": 11999,\n        \"tags\": [\n            \"keyboard\",\n            \"gaming\",\n            \"mechanical\",\n            \"RGB\",\n            \"hot-swappable\",\n            \"wireless\"\n        ],\n        \"category\": \"Gaming Accessories\",\n        \"company\": \"Razer\",\n        \"image\": \"67e4ddee0638273a96dfe72b\",\n        \"sellerId\": \"67e411b8c090932e2a16a4fb\",\n        \"createdAt\": \"2025-03-27T05:11:31.134Z\",\n        \"updatedAt\": \"2025-03-27T05:16:34.201Z\",\n        \"__v\": 1\n    }\n}"
+						},
+						{
+							"name": "if change image",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"RGB Gaming Mechanical Keyboard\",\n  \"description\": \"A premium mechanical keyboard with per-key RGB lighting, customizable macros, and a durable aluminum frame.\",\n  \"price\": 11999,\n  \"tags\": [\"keyboard\", \"gaming\", \"mechanical\", \"RGB\", \"hot-swappable\", \"wireless\"],\n  \"category\": \"Gaming Accessories\",\n  \"company\": \"Razer\",\n  \"image\": \"dfgdjfg\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "/67e4de030638273a96dfe72e",
+									"path": [
+										"67e4de030638273a96dfe72e"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "122"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"7a-A8nkB+WGoAZNkI4+co9PREZGmv8\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 27 Mar 2025 05:17:21 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 400,\n    \"success\": false,\n    \"message\": \"Image is not allowed\",\n    \"errors\": [\n        \"update image with /files endpoint\"\n    ],\n    \"data\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "get one product",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "/67e78094b6f5571d1e68c45c",
+							"path": [
+								"67e78094b6f5571d1e68c45c"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "/67e4de030638273a96dfe72e",
+									"path": [
+										"67e4de030638273a96dfe72e"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "569"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"239-McT1clfXi9kkLsRDUKmcBbB8Xq4\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 27 Mar 2025 05:20:06 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"status\": 200,\n    \"message\": \"Product Details Fetched\",\n    \"data\": {\n        \"_id\": \"67e4de030638273a96dfe72e\",\n        \"name\": \"RGB Gaming Mechanical Keyboard\",\n        \"description\": \"A premium mechanical keyboard with per-key RGB lighting, customizable macros, and a durable aluminum frame.\",\n        \"price\": 11999,\n        \"tags\": [\n            \"keyboard\",\n            \"gaming\",\n            \"mechanical\",\n            \"RGB\",\n            \"hot-swappable\",\n            \"wireless\"\n        ],\n        \"category\": \"Gaming Accessories\",\n        \"company\": \"Razer\",\n        \"image\": \"67e4ddee0638273a96dfe72b\",\n        \"sellerId\": \"67e411b8c090932e2a16a4fb\",\n        \"createdAt\": \"2025-03-27T05:11:31.134Z\",\n        \"updatedAt\": \"2025-03-27T05:16:34.201Z\",\n        \"__v\": 1\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "get multiple products",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "/?page=1&category=&company=&sort=a&sortBy=price&query=",
+							"path": [
+								""
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "category",
+									"value": ""
+								},
+								{
+									"key": "company",
+									"value": ""
+								},
+								{
+									"key": "sort",
+									"value": "a"
+								},
+								{
+									"key": "sortBy",
+									"value": "price"
+								},
+								{
+									"key": "query",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success but no product match query",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "/?page=1&category&company&sort=d&sortBy=price&query=asaAS",
+									"path": [
+										""
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "category",
+											"value": null
+										},
+										{
+											"key": "company",
+											"value": null
+										},
+										{
+											"key": "sort",
+											"value": "d"
+										},
+										{
+											"key": "sortBy",
+											"value": "price"
+										},
+										{
+											"key": "query",
+											"value": "asaAS"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "80"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"50-eqxJR4UHqXNUn7tQs7oZ5aivYlg\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 27 Mar 2025 07:38:46 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"status\": 200,\n    \"message\": \"Product fetched Successfully\",\n    \"data\": []\n}"
+						},
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "/?page=1&category=&company=&sort=a&sortBy=price&query=",
+									"path": [
+										""
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "category",
+											"value": ""
+										},
+										{
+											"key": "company",
+											"value": ""
+										},
+										{
+											"key": "sort",
+											"value": "a"
+										},
+										{
+											"key": "sortBy",
+											"value": "price"
+										},
+										{
+											"key": "query",
+											"value": ""
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1086"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"43e-USzY4IGskWmuIc7lenx/bGxlMC0\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 29 Mar 2025 05:18:37 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"status\": 200,\n    \"message\": \"Product fetched Successfully\",\n    \"data\": [\n        {\n            \"_id\": \"67e78094b6f5571d1e68c45c\",\n            \"name\": \"Wireless Noise-Canceling Headphones\",\n            \"description\": \"Premium over-ear headphones with active noise cancellation, 40-hour battery life, and high-fidelity audio for an immersive experience.\",\n            \"price\": 8999,\n            \"tags\": [\n                \"headphones\",\n                \"wireless\",\n                \"noise-canceling\",\n                \"bluetooth\",\n                \"audio\"\n            ],\n            \"category\": \"Audio\",\n            \"company\": \"Sony\",\n            \"image\": \"67e78051b6f5571d1e68c459\",\n            \"sellerId\": \"67e77fd4b6f5571d1e68c452\",\n            \"createdAt\": \"2025-03-29T05:09:40.047Z\",\n            \"updatedAt\": \"2025-03-29T05:09:40.047Z\",\n            \"__v\": 0\n        },\n        {\n            \"_id\": \"67e4de030638273a96dfe72e\",\n            \"name\": \"RGB Gaming Mechanical Keyboard\",\n            \"description\": \"A premium mechanical keyboard with per-key RGB lighting, customizable macros, and a durable aluminum frame.\",\n            \"price\": 11999,\n            \"tags\": [\n                \"keyboard\",\n                \"gaming\",\n                \"mechanical\",\n                \"RGB\",\n                \"hot-swappable\",\n                \"wireless\"\n            ],\n            \"category\": \"Gaming Accessories\",\n            \"company\": \"Razer\",\n            \"image\": \"67e4ddee0638273a96dfe72b\",\n            \"sellerId\": \"67e411b8c090932e2a16a4fb\",\n            \"createdAt\": \"2025-03-27T05:11:31.134Z\",\n            \"updatedAt\": \"2025-03-27T05:16:34.201Z\",\n            \"__v\": 1\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "delete file",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "/67e78094b6f5571d1e68c45c",
+							"path": [
+								"67e78094b6f5571d1e68c45c"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							"pm.request.url.host = pm.variables.get(\"v1\"); ",
+							"pm.request.url.path = [\"products\"].concat(pm.request.url.path);"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
 		},
 		{
 			"name": "cart",
-			"item": []
+			"item": [
+				{
+					"name": "get cart",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "/",
+							"path": [
+								""
+							]
+						},
+						"description": "If the cart is not available, add a product first to create the cart. A cart is automatically created when a user adds their first product.\n\n- A user **must add a product** before placing an order.\n    \n- For **new accounts**, the cart will only be created after adding a product."
+					},
+					"response": [
+						{
+							"name": "cart not available or product added before",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "/",
+									"path": [
+										""
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "81"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"51-ejDHjbnGF6YUCkKqO0szMgPtZ0Y\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 29 Mar 2025 06:21:09 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 404,\n    \"success\": false,\n    \"message\": \"Cart not found\",\n    \"errors\": [],\n    \"data\": null\n}"
+						},
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "/",
+									"path": [
+										""
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "644"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"284-HLRqtb5F5Rs/ioM0sJ6j0yPE1pA\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 31 Mar 2025 03:24:15 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"status\": 200,\n    \"message\": \"Cart fetched successfully\",\n    \"data\": {\n        \"_id\": \"67ea091a55dbc6ff2e6f50b2\",\n        \"products\": [\n            {\n                \"product\": {\n                    \"_id\": \"67e4de030638273a96dfe72e\",\n                    \"name\": \"RGB Gaming Mechanical Keyboard\",\n                    \"description\": \"A premium mechanical keyboard with per-key RGB lighting, customizable macros, and a durable aluminum frame.\",\n                    \"price\": 11999,\n                    \"tags\": [\n                        \"keyboard\",\n                        \"gaming\",\n                        \"mechanical\",\n                        \"RGB\",\n                        \"hot-swappable\",\n                        \"wireless\"\n                    ],\n                    \"category\": \"Gaming Accessories\",\n                    \"company\": \"Razer\",\n                    \"image\": \"67e4ddee0638273a96dfe72b\",\n                    \"sellerId\": \"67e411b8c090932e2a16a4fb\",\n                    \"createdAt\": \"2025-03-27T05:11:31.134Z\",\n                    \"updatedAt\": \"2025-03-27T05:16:34.201Z\",\n                    \"__v\": 1\n                },\n                \"quantity\": 1\n            }\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "add and remove product to cart",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"product\": {\n        \"quantity\": 2,\n        \"productId\": \"67e7849b806e563227d47941\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "/",
+							"path": [
+								""
+							]
+						},
+						"description": "- **To Add a Product:** Provide `productId`. `quantity` is optional (defaults to `1` if not provided).\n    \n- **To Increase or Decrease Quantity:** Send `productId` and `quantity`. The new `quantity` must be different from the current quantity.\n    \n- **To Remove a Product:** Set `quantity` to `0`. The product must already exist in the cart."
+					},
+					"response": [
+						{
+							"name": "invalid quantity",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"product\": {\n        \"quantity\": 1,\n        \"productId\": \"67e4de030638273a96dfe72e\"\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "/",
+									"path": [
+										""
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "109"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"6d-cgeufLLk3dzpZV+JUwGrWJxw3xU\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 29 Mar 2025 06:48:58 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 400,\n    \"success\": false,\n    \"message\": \"Quantity must be more or less than current\",\n    \"errors\": [],\n    \"data\": null\n}"
+						},
+						{
+							"name": "product and cart cretated",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"product\": {\n        // \"quantity\": 0,\n        \"productId\": \"67e4de030638273a96dfe72e\"\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "/",
+									"path": [
+										""
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "349"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"15d-XupOwE+gYXEiItFrbNeVf86TJ0w\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 31 Mar 2025 03:49:43 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"status\": 200,\n    \"message\": \"Cart updated successfully\",\n    \"data\": {\n        \"userId\": \"67e77e445c4f4364fe2825d0\",\n        \"isOrdered\": false,\n        \"_id\": \"67ea10d70e8ef24323c86d10\",\n        \"products\": [\n            {\n                \"productId\": \"67e4de030638273a96dfe72e\",\n                \"quantity\": 1,\n                \"_id\": \"67ea10d70e8ef24323c86d11\"\n            }\n        ],\n        \"createdAt\": \"2025-03-31T03:49:43.652Z\",\n        \"updatedAt\": \"2025-03-31T03:49:43.652Z\",\n        \"__v\": 0\n    }\n}"
+						},
+						{
+							"name": "remove product",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"product\": {\n        \"quantity\": 0,\n        \"productId\": \"67e4de030638273a96dfe72e\"\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "/",
+									"path": [
+										""
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "263"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"107-F8c9aRrK1JNtM9dSqpb9TiBVmq0\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 31 Mar 2025 03:54:07 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"status\": 200,\n    \"message\": \"Cart updated successfully\",\n    \"data\": {\n        \"_id\": \"67ea10d70e8ef24323c86d10\",\n        \"userId\": \"67e77e445c4f4364fe2825d0\",\n        \"isOrdered\": false,\n        \"products\": [],\n        \"createdAt\": \"2025-03-31T03:49:43.652Z\",\n        \"updatedAt\": \"2025-03-31T03:54:07.241Z\",\n        \"__v\": 1\n    }\n}"
+						},
+						{
+							"name": "increase quantity",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"product\": {\n        \"quantity\": 2,\n        \"productId\": \"67e4de030638273a96dfe72e\"\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "/",
+									"path": [
+										""
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "349"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"15d-7XN1Jgenvhh4puFGrk6jpoiYvno\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 31 Mar 2025 03:54:30 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"status\": 200,\n    \"message\": \"Cart updated successfully\",\n    \"data\": {\n        \"_id\": \"67ea10d70e8ef24323c86d10\",\n        \"userId\": \"67e77e445c4f4364fe2825d0\",\n        \"isOrdered\": false,\n        \"products\": [\n            {\n                \"productId\": \"67e4de030638273a96dfe72e\",\n                \"quantity\": 2,\n                \"_id\": \"67ea11f00e8ef24323c86d1b\"\n            }\n        ],\n        \"createdAt\": \"2025-03-31T03:49:43.652Z\",\n        \"updatedAt\": \"2025-03-31T03:54:30.561Z\",\n        \"__v\": 2\n    }\n}"
+						}
+					]
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							"pm.request.url.host = pm.variables.get(\"v1\"); ",
+							"pm.request.url.path = [\"cart\"].concat(pm.request.url.path);"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
 		},
 		{
 			"name": "orders",
-			"item": []
+			"item": [
+				{
+					"name": "generate razorpay payment object",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": 49997\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "/payment/order",
+							"path": [
+								"payment",
+								"order"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "if amount is empty",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "/payment/order",
+									"path": [
+										"payment",
+										"order"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "85"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"55-EkEdaJndRM8QDu1JrJNkVOiAOcs\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 31 Mar 2025 04:11:08 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 400,\n    \"success\": false,\n    \"message\": \"Amount is required\",\n    \"errors\": [],\n    \"data\": null\n}"
+						},
+						{
+							"name": "if amount 0",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"amount\": 0\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "/payment/order",
+									"path": [
+										"payment",
+										"order"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "96"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"60-Mi/kaN6INneVYz99ApCCaEIwGbs\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 31 Mar 2025 04:21:34 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 400,\n    \"success\": false,\n    \"message\": \"Amount must be greater than 0\",\n    \"errors\": [],\n    \"data\": null\n}"
+						},
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"amount\": 100\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "/payment/order",
+									"path": [
+										"payment",
+										"order"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "289"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"121-mw4ljgH0srDRkzq7bJuDEynZsIo\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 31 Mar 2025 04:22:08 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"status\": 200,\n    \"message\": \"Order generated successfully\",\n    \"data\": {\n        \"amount\": 10000,\n        \"amount_due\": 10000,\n        \"amount_paid\": 0,\n        \"attempts\": 0,\n        \"created_at\": 1743394928,\n        \"currency\": \"INR\",\n        \"entity\": \"order\",\n        \"id\": \"order_QDGQbBKbi1ZiiN\",\n        \"notes\": [],\n        \"offer_id\": null,\n        \"receipt\": null,\n        \"status\": \"created\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "check payment status",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"orderId\": \"order_QFPjC32BziawD6\",\n    \"paymentId\": \"pay_QFPkHOqKaxuD7B\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "/payment/status",
+							"path": [
+								"payment",
+								"status"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "try to pay but not success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"orderId\": \"order_QDQFzRmo8fypOH\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "/payment/status",
+									"path": [
+										"payment",
+										"status"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "156"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"9c-14Db0XbLm/M5tX5AFhjE+w8rHCA\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 31 Mar 2025 14:03:36 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"status\": 200,\n    \"message\": \"Payment verified successfully\",\n    \"data\": {\n        \"status\": \"attempted\",\n        \"message\": \"Payment Attempted for 2 but not Successful\"\n    }\n}"
+						},
+						{
+							"name": "wrong payment id",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"orderId\": \"order_QDQFzRmo8fypOH\",\n    \"paymentId\": \"pay_QDQOEGPCWlB1B4\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "/payment/status",
+									"path": [
+										"payment",
+										"status"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "97"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"61-J+N9ml8Dx8ofIFJx8ykxBHlksyk\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 02 Apr 2025 03:12:31 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 400,\n    \"success\": false,\n    \"message\": \"The id provided does not exist\",\n    \"errors\": [],\n    \"data\": null\n}"
+						},
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"orderId\": \"order_QDQFzRmo8fypOH\",\n    \"paymentId\": \"pay_QDQOEGPCWlB1B8\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "/payment/status",
+									"path": [
+										"payment",
+										"status"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "296"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"128-wK/YgKS0vQs6/snKmGlWNrziS50\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 02 Apr 2025 03:13:19 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"status\": 200,\n    \"message\": \"Payment verified successfully\",\n    \"data\": {\n        \"status\": \"paid\",\n        \"message\": \"Payment Successful\",\n        \"amount\": 200,\n        \"currency\": \"INR\",\n        \"method\": \"netbanking\",\n        \"bank\": \"YESB\",\n        \"wallet\": null,\n        \"upi\": null,\n        \"card\": null,\n        \"paymentId\": \"pay_QDQOEGPCWlB1B8\",\n        \"orderId\": \"order_QDQFzRmo8fypOH\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "create order",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cartId\": \"67f140c4010287c5706c7a2f\",\n    \"paymentId\": \"pay_QFPkHOqKaxuD7B\",\n    \"customerName\": \"Subrata Mondal\",\n    \"customerPhone\": \"+919812345678\",\n    \"customerAddress\": \"456, Salt Lake Sector V, Kolkata, West Bengal, India - 700091\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "/",
+							"path": [
+								""
+							]
+						},
+						"description": "### **Phone Field**\n\n- **Format:** `+` (E.164)\n    \n- **Length:** 10-15 digits (excluding `+`)\n    \n- **Valid:** `+919876543210`, `+15551234567`\n    \n- **Invalid:** `9876543210`, `+00123456789`, `+1234567890123456`\n    \n- **Error:** Returns `400 - Invalid phone number format` if incorrect."
+					},
+					"response": [
+						{
+							"name": "invalid number formate",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"cartId\": \"67ea10d70e8ef24323c86d10\",\n    \"paymentId\": \"pay_QE2li7ffEemF23\",\n    \"customerName\": \"Rahul Sharma\",\n    \"customerPhone\": \"+91987654454543210\", // the number should be in this formate\n    \"customerAddress\": \"123, MG Road, Kolkata, West Bengal, India - 700001\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "/",
+									"path": [
+										""
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "94"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"5e-3qsKp5HskXry5LmLcgNRZ3vSYwU\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 02 Apr 2025 05:27:34 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 400,\n    \"success\": false,\n    \"message\": \"Invalid phone number format\",\n    \"errors\": [],\n    \"data\": null\n}"
+						},
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"cartId\": \"67ea10d70e8ef24323c86d10\",\n    \"paymentId\": \"pay_QE2li7ffEemF23\",\n    \"customerName\": \"Rahul Sharma\",\n    \"customerPhone\": \"+919876543210\", // the number should be in this format\n    \"customerAddress\": \"123, MG Road, Kolkata, West Bengal, India - 700001\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "/",
+									"path": [
+										""
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "557"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"22d-gwna/tAip8xmPebc7rVt9Mjt9Nc\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 02 Apr 2025 05:32:09 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"status\": 201,\n    \"message\": \"Order Placed successfully\",\n    \"data\": {\n        \"userId\": \"67e77e445c4f4364fe2825d0\",\n        \"paymentId\": \"pay_QE2li7ffEemF23\",\n        \"cart\": \"67ea10d70e8ef24323c86d10\",\n        \"totalAmount\": 23998,\n        \"customerName\": \"Rahul Sharma\",\n        \"customerPhone\": \"+919876543210\",\n        \"address\": \"123, MG Road, Kolkata, West Bengal, India - 700001\",\n        \"isShipped\": false,\n        \"isDelivered\": false,\n        \"isCancelled\": false,\n        \"isRefund\": false,\n        \"_id\": \"67eccbd95be609023c4e03bd\",\n        \"orderDate\": \"2025-04-02T05:32:09.466Z\",\n        \"createdAt\": \"2025-04-02T05:32:09.469Z\",\n        \"updatedAt\": \"2025-04-02T05:32:09.469Z\",\n        \"__v\": 0\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "get order",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "/67f13571d3b312aed4958ac1",
+							"path": [
+								"67f13571d3b312aed4958ac1"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "/67eccbd95be609023c4e03bd",
+									"path": [
+										"67eccbd95be609023c4e03bd"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "993"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"3e1-LffteD0LI91rEcTpo+GqA1SBh08\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 02 Apr 2025 05:35:30 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"status\": 200,\n    \"message\": \"Order Details Fetched\",\n    \"data\": {\n        \"_id\": \"67eccbd95be609023c4e03bd\",\n        \"userId\": \"67e77e445c4f4364fe2825d0\",\n        \"paymentId\": \"pay_QE2li7ffEemF23\",\n        \"cart\": {\n            \"_id\": \"67ea10d70e8ef24323c86d10\",\n            \"products\": [\n                {\n                    \"product\": {\n                        \"_id\": \"67e4de030638273a96dfe72e\",\n                        \"name\": \"RGB Gaming Mechanical Keyboard\",\n                        \"description\": \"A premium mechanical keyboard with per-key RGB lighting, customizable macros, and a durable aluminum frame.\",\n                        \"price\": 11999,\n                        \"tags\": [\n                            \"keyboard\",\n                            \"gaming\",\n                            \"mechanical\",\n                            \"RGB\",\n                            \"hot-swappable\",\n                            \"wireless\"\n                        ],\n                        \"category\": \"Gaming Accessories\",\n                        \"company\": \"Razer\",\n                        \"image\": \"67e4ddee0638273a96dfe72b\",\n                        \"sellerId\": \"67e411b8c090932e2a16a4fb\",\n                        \"createdAt\": \"2025-03-27T05:11:31.134Z\",\n                        \"updatedAt\": \"2025-03-27T05:16:34.201Z\",\n                        \"__v\": 1\n                    },\n                    \"quantity\": 2\n                }\n            ]\n        },\n        \"totalAmount\": 23998,\n        \"customerName\": \"Rahul Sharma\",\n        \"customerPhone\": \"+919876543210\",\n        \"address\": \"123, MG Road, Kolkata, West Bengal, India - 700001\",\n        \"isShipped\": false,\n        \"isDelivered\": false,\n        \"isCancelled\": false,\n        \"orderDate\": \"2025-04-02T05:32:09.466Z\"\n    }\n}"
+						},
+						{
+							"name": "not found",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "/67eccbd95be609023c4e03bc",
+									"path": [
+										"67eccbd95be609023c4e03bc"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "82"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"52-FfcBywWdW76DQhd5kBSfzhLB5jo\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 02 Apr 2025 05:37:03 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 404,\n    \"success\": false,\n    \"message\": \"Order not found\",\n    \"errors\": [],\n    \"data\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "get orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "/?page=1",
+							"path": [
+								""
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "/?page=1",
+									"path": [
+										""
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "988"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"3dc-4hqKGN+2AW6RTSj9KPHiwI1kqRM\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 02 Apr 2025 05:41:00 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"status\": 200,\n    \"message\": \"Orders Fetched\",\n    \"data\": [\n        {\n            \"_id\": \"67eccbd95be609023c4e03bd\",\n            \"userId\": \"67e77e445c4f4364fe2825d0\",\n            \"paymentId\": \"pay_QE2li7ffEemF23\",\n            \"cart\": {\n                \"_id\": \"67ea10d70e8ef24323c86d10\",\n                \"products\": [\n                    {\n                        \"product\": {\n                            \"_id\": \"67e4de030638273a96dfe72e\",\n                            \"name\": \"RGB Gaming Mechanical Keyboard\",\n                            \"description\": \"A premium mechanical keyboard with per-key RGB lighting, customizable macros, and a durable aluminum frame.\",\n                            \"price\": 11999,\n                            \"tags\": [\n                                \"keyboard\",\n                                \"gaming\",\n                                \"mechanical\",\n                                \"RGB\",\n                                \"hot-swappable\",\n                                \"wireless\"\n                            ],\n                            \"category\": \"Gaming Accessories\",\n                            \"company\": \"Razer\",\n                            \"image\": \"67e4ddee0638273a96dfe72b\",\n                            \"sellerId\": \"67e411b8c090932e2a16a4fb\",\n                            \"createdAt\": \"2025-03-27T05:11:31.134Z\",\n                            \"updatedAt\": \"2025-03-27T05:16:34.201Z\",\n                            \"__v\": 1\n                        },\n                        \"quantity\": 2\n                    }\n                ]\n            },\n            \"totalAmount\": 23998,\n            \"customerName\": \"Rahul Sharma\",\n            \"customerPhone\": \"+919876543210\",\n            \"address\": \"123, MG Road, Kolkata, West Bengal, India - 700001\",\n            \"isShipped\": false,\n            \"isDelivered\": false,\n            \"isCancelled\": false,\n            \"orderDate\": \"2025-04-02T05:32:09.466Z\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "update contact details",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"customerName\": \"Subrata Mondal\",\n  \"customerAddress\": \"123, Park Street, Kolkata, India\",\n  \"customerPhone\": \"+919876543210\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "/67eccbd95be609023c4e03bd",
+							"path": [
+								"67eccbd95be609023c4e03bd"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"customerName\": \"Subrata Mondal\",\n  \"customerAddress\": \"123, Park Street, Kolkata, India\",\n  \"customerPhone\": \"+919876543210\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "/67eccbd95be609023c4e03bd",
+									"path": [
+										"67eccbd95be609023c4e03bd"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "542"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"21e-pk66A2+iIPgmqIuGYnEpwm8JhgE\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 02 Apr 2025 05:46:59 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"status\": 200,\n    \"message\": \"Order updated successfully\",\n    \"data\": {\n        \"_id\": \"67eccbd95be609023c4e03bd\",\n        \"userId\": \"67e77e445c4f4364fe2825d0\",\n        \"paymentId\": \"pay_QE2li7ffEemF23\",\n        \"cart\": \"67ea10d70e8ef24323c86d10\",\n        \"totalAmount\": 23998,\n        \"customerName\": \"Subrata Mondal\",\n        \"customerPhone\": \"+919876543210\",\n        \"address\": \"123, Park Street, Kolkata, India\",\n        \"isShipped\": false,\n        \"isDelivered\": false,\n        \"isCancelled\": false,\n        \"isRefund\": false,\n        \"orderDate\": \"2025-04-02T05:32:09.466Z\",\n        \"createdAt\": \"2025-04-02T05:32:09.469Z\",\n        \"updatedAt\": \"2025-04-02T05:46:59.403Z\",\n        \"__v\": 0\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "update status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZjEzZGEzNGY4Y2ZhNDI1Mzc4OTI5NyIsImlhdCI6MTc0Mzg2MzIxNywiZXhwIjoxNzQzOTQ5NjE3fQ.loHPBeQkGxUwlNscMg8KhgZd3f8Ez5vKzTqDz104kQc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    // \"isShipped\": true\n    // or\n    \"isDelivered\": true,\n    \"route\": \"order/:id\"\n    // or\n    // \"route\": \"order?id=\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "/status/67f13571d3b312aed4958ac1",
+							"path": [
+								"status",
+								"67f13571d3b312aed4958ac1"
+							]
+						},
+						"description": "- **Fields:**\n    \n    - `isShipped` (boolean) – Marks the order as shipped (Allowed for Shipment Master).\n        \n    - `isDelivered` (boolean) – Marks the order as delivered (Allowed for Delivery Boy).\n        \n    - `route` (boolean) – Redirect to order details page require only on **delivery**\n        \n- **Rules:**\n    \n    - Only **Shipment Master** can update `isShipped`.\n        \n    - Only **Delivery Boy** can update `isDelivered`.\n        \n    - Only **route/:id or route?id=** acceptable in `route`."
+					},
+					"response": [
+						{
+							"name": "if your are not have the permission",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"isShipped\": true\n    // or\n    // \"isDelivered\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "/status/67eccbd95be609023c4e03bd",
+									"path": [
+										"status",
+										"67eccbd95be609023c4e03bd"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "87"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"57-Vlc/lj2PBKhe/zbannSn3qhzl1o\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 02 Apr 2025 05:55:40 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 403,\n    \"success\": false,\n    \"message\": \"Unauthorized request\",\n    \"errors\": [],\n    \"data\": null\n}"
+						},
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"isShipped\": true\n    // or\n    // \"isDelivered\": true\n    // \"route\": \"order/:id\"\n    // or\n    // \"route\": \"order?id=\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "/status/67f13571d3b312aed4958ac1",
+									"path": [
+										"status",
+										"67f13571d3b312aed4958ac1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "643"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"283-GuxbwSfnS4Peayep2RD8y41DvzA\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 05 Apr 2025 14:22:58 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"status\": 200,\n    \"message\": \"Order is Shipped successfully\",\n    \"data\": {\n        \"_id\": \"67f13571d3b312aed4958ac1\",\n        \"userId\": \"67e77e445c4f4364fe2825d0\",\n        \"paymentId\": \"pay_QE2li7ffEemF23\",\n        \"cart\": \"67ea10d70e8ef24323c86d10\",\n        \"totalAmount\": 23998,\n        \"customerName\": \"Rahul Sharma\",\n        \"customerPhone\": \"+919876543210\",\n        \"address\": \"123, MG Road, Kolkata, West Bengal, India - 700001\",\n        \"isShipped\": true,\n        \"isDelivered\": false,\n        \"isCancelled\": false,\n        \"isRefund\": false,\n        \"orderDate\": \"2025-04-05T13:51:45.556Z\",\n        \"createdAt\": \"2025-04-05T13:51:45.558Z\",\n        \"updatedAt\": \"2025-04-05T14:22:58.226Z\",\n        \"__v\": 0,\n        \"invoice\": \"67f13cc24f8cfa4253789290\",\n        \"statusUpdateDate\": \"2025-04-05T14:22:50.669Z\"\n    }\n}"
+						},
+						{
+							"name": "if route not send",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    // \"isShipped\": true\n    // or\n    \"isDelivered\": true\n    // \"route\": \"order/:id\"\n    // or\n    // \"route\": \"order?id=\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "/status/67f13571d3b312aed4958ac1",
+									"path": [
+										"status",
+										"67f13571d3b312aed4958ac1"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "84"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"54-l7X872PNOs6ubvyD7uGlZvfjMkw\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 05 Apr 2025 14:24:05 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 400,\n    \"success\": false,\n    \"message\": \"Route is required\",\n    \"errors\": [],\n    \"data\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "cancel order",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "/67f142cc727432c568c36760",
+							"path": [
+								"67f142cc727432c568c36760"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "is already shipped or delivered or canceled",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "/67f13571d3b312aed4958ac1",
+									"path": [
+										"67f13571d3b312aed4958ac1"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "188"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"bc-Yq/sQ0jqxjbvPwSzftJNZLUYIsU\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 05 Apr 2025 14:37:39 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 400,\n    \"success\": false,\n    \"message\": \"Order is already delivered\",\n    \"errors\": [\n        \"Order is already delivered\",\n        \"Cannot cancel the order\",\n        \"cannot cancel the order after delivery\"\n    ],\n    \"data\": null\n}"
+						},
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "/67f142cc727432c568c36760",
+									"path": [
+										"67f142cc727432c568c36760"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "617"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"269-vVr8UTs7j3tH4YTVZ2ZN6LzT6PU\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 05 Apr 2025 14:49:13 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"status\": 200,\n    \"message\": \"Order cancelled successfully\",\n    \"data\": {\n        \"_id\": \"67f142cc727432c568c36760\",\n        \"userId\": \"67e77e445c4f4364fe2825d0\",\n        \"paymentId\": \"pay_QFPkHOqKaxuD7B\",\n        \"cart\": \"67f140c4010287c5706c7a2f\",\n        \"totalAmount\": 49997,\n        \"customerName\": \"Subrata Mondal\",\n        \"customerPhone\": \"+919812345678\",\n        \"address\": \"456, Salt Lake Sector V, Kolkata, West Bengal, India - 700091\",\n        \"isShipped\": false,\n        \"isDelivered\": false,\n        \"isCancelled\": true,\n        \"isRefund\": true,\n        \"orderDate\": \"2025-04-05T14:48:44.127Z\",\n        \"createdAt\": \"2025-04-05T14:48:44.128Z\",\n        \"updatedAt\": \"2025-04-05T14:49:13.885Z\",\n        \"__v\": 0,\n        \"statusUpdateDate\": \"2025-04-05T14:49:13.883Z\"\n    }\n}"
+						}
+					]
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							"pm.request.url.host = pm.variables.get(\"v1\"); ",
+							"pm.request.url.path = [\"orders\"].concat(pm.request.url.path);"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
 		},
 		{
 			"name": "test",
@@ -38,6 +4051,169 @@
 							"raw": "/success",
 							"path": [
 								"success"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "/success",
+									"path": [
+										"success"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "test=test%20cookie%20from%20middleware; Path=/"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "59"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"3b-l5GRMRjotSBX4CZzIxPrGUprttY\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 26 Mar 2025 13:11:31 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"status\": 200,\n    \"message\": \"Success\",\n    \"data\": {}\n}"
+						}
+					]
+				},
+				{
+					"name": "error",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "/error",
+							"path": [
+								"error"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "error response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "/error",
+									"path": [
+										"error"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "83"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"53-ZJR1dEZWDwa1nfl5A/0iiae5PM0\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 26 Mar 2025 13:30:34 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 500,\n    \"success\": false,\n    \"message\": \"This is an error\",\n    \"errors\": [],\n    \"data\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "request",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "/request/success",
+							"path": [
+								"request",
+								"success"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "upload pdf",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/home/subrata/Documents/job/subrata_resume.pdf"
+								}
+							]
+						},
+						"url": {
+							"raw": "/pdf",
+							"path": [
+								"pdf"
 							]
 						}
 					},
@@ -69,6 +4245,16 @@
 			]
 		}
 	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTQxMWI4YzA5MDkzMmUyYTE2YTRmYiIsImlhdCI6MTc0Mzk5NzI5MSwiZXhwIjoxNzQ0MDgzNjkxfQ.XoMeBzfTSNByh82G-csxt8NP2SCxPaAgPpFlgHUZHhs",
+				"type": "string"
+			}
+		]
+	},
 	"event": [
 		{
 			"listen": "prerequest",
