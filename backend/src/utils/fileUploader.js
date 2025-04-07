@@ -3,6 +3,7 @@ import fs from "fs";
 import addToDelete from "../../storage/log/addToDelete.js";
 import { deleteLocalFile } from "./fileHandler.js";
 import path from "path";
+import ApiError from "./apiError.js";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -10,11 +11,14 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const cloudinaryUpload = async (filePath, folder, resource_type = "image") => {
+const cloudinaryUpload = async (filePath, folder, entityType) => {
   try {
+    const resource_type = entityType === "invoice" ? "raw" : "image";
+
     const options = {
       folder: `techkart/${folder}`,
       resource_type,
+      transformation: [],
     };
 
     if (resource_type === "image") {
@@ -22,6 +26,10 @@ const cloudinaryUpload = async (filePath, folder, resource_type = "image") => {
         { width: 500, height: 500, crop: "fill" },
         { quality: "auto:eco" },
       ];
+
+      if (entityType === "avatar") {
+        options.transformation[0] = { width: 96, height: 96, crop: "fill" };
+      }
     }
 
     const response = await cloudinary.uploader.upload(filePath, options);

@@ -31,7 +31,7 @@ const getFile = asyncHandler(async (req, res) => {
 
   if (!file) throw new ApiError(404, "File not found");
 
-  if (req.headers["if-none-match"] === file._id.toString()) {
+  if (req.headers["if-none-match"] === file.updatedAt.getTime().toString()) {
     return res.status(304).end(); // Not Modified
   }
 
@@ -52,7 +52,7 @@ const getFile = asyncHandler(async (req, res) => {
   res.setHeader("Content-Type", response.headers["content-type"]);
   res.setHeader("Content-Length", response.headers["content-length"]);
   res.setHeader("Cache-Control", "public, max-age=31536000");
-  res.setHeader("ETag", file._id.toString());
+  res.setHeader("ETag", file.updatedAt.getTime().toString());
 
   response.data.pipe(res);
 });
@@ -85,7 +85,11 @@ const updateFileDoc = asyncHandler(async (req, res) => {
     throw new ApiError(403, "Reject File Update");
   }
 
-  const uploadResponse = await cloudinaryUpload(filePath, req.folder);
+  const uploadResponse = await cloudinaryUpload(
+    filePath,
+    req.folder,
+    existingFile.entityType
+  );
   if (!uploadResponse.success) throw new ApiError(500, "File Upload failed");
 
   const deleteResponse = await cloudinaryDelete(

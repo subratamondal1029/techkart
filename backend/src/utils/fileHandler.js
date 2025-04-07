@@ -15,11 +15,7 @@ import ApiError from "../utils/apiError.js";
  */
 const uploadFile = async (filePath, folder, entityType, userId) => {
   try {
-    const uploadedFile = await cloudinaryUpload(
-      filePath,
-      folder,
-      entityType === "invoice" ? "raw" : "image"
-    );
+    const uploadedFile = await cloudinaryUpload(filePath, folder, entityType);
 
     if (!uploadedFile.success) throw new ApiError(500, "File Upload failed");
 
