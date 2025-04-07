@@ -206,7 +206,8 @@ const googleLoginCallback = async (req, res) => {
   const { successRedirect, failureRedirect } = JSON.parse(state || "{}");
 
   try {
-    const { accessToken, refreshToken } = generateTokens(req.user._id);
+    const { accessToken, refreshToken } = await generateTokens(req.user._id);
+
     res
       .cookie("accessToken", accessToken, {
         ...cookieOptions,

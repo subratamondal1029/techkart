@@ -24,6 +24,7 @@ export default async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
+    console.log(error);
     res
       .status(error.status || 500)
       .json(new ApiError(error.status, error.message));

@@ -9,14 +9,14 @@ passport.use(
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL:
-        process.env.GOOGLE_CALLBACK_URL || "/api/v1/auth/google/callback",
+        process.env.GOOGLE_CALLBACK_URL || "/api/v1/users/auth/google/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
         let user = await User.findOne({ googleId: profile.id });
 
         if (!user) {
-          user = new User.create({
+          user = new User({
             name: profile.displayName,
             email: profile.emails?.[0]?.value || "",
             googleId: profile.id,
