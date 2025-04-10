@@ -1,5 +1,5 @@
 {
-  "name": "techkart --backend",
+  "name": "techkart",
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
@@ -7,10 +7,26 @@
     "dev": "nodemon index.js",
     "start": "node index.js"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "techkart",
+    "ecommerce",
+    "nodejs",
+    "expressjs",
+    "mongodb",
+    "reactjs",
+    "fullstack",
+    "mernstack",
+    "authentication",
+    "authorization",
+    "oauth",
+    "product",
+    "order",
+    "payment",
+    "razorpay"
+  ],
+  "author": "Subrata Mondal",
   "license": "ISC",
-  "description": "",
+  "description": "TechKart is a full-stack e-commerce application built with Node.js, Express.js, MongoDB and React.js. It provides user authentication, authorization, product management, order management and payment gateway integration.",
   "dependencies": {
     "axios": "^1.8.4",
     "bcrypt": "^5.1.1",
@@ -27,11 +43,8 @@
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "razorpay": "^2.9.6",
-    "wkhtmltopdf": "^0.4.0"
-  },
-  "devDependencies": {
-    "swagger-autogen": "^2.23.7",
-    "swagger-jsdoc": "^6.2.8",
+    "wkhtmltopdf": "^0.4.0",
     "swagger-ui-express": "^5.0.1"
-  }
+  },
+  "devDependencies": {}
 }

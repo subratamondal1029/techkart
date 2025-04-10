@@ -1,8 +1,12 @@
 {
-  "openapi": "3.0.0",
+  "openapi": "3.0.1",
   "info": {
-    "title": "Techkart API",
-    "description": "Techkart API documentation",
+    "title": "techkart",
+    "description": "TechKart is a full-stack e-commerce application built with Node.js, Express.js, MongoDB and React.js. It provides user authentication, authorization, product management, order management and payment gateway integration.",
+    "contact": {
+      "name": "Subrata Mondal",
+      "email": "subratamondal@tutanota.com"
+    },
     "version": "1.0.0"
   },
   "servers": [
@@ -10,34 +14,979 @@
       "url": "http://localhost:8000/api/v1"
     }
   ],
+  "externalDocs": {
+    "description": "Github Repo",
+    "url": "https://github.com/subratamondal1029/techkart"
+  },
+  "tags": [
+    {
+      "name": "users"
+    },
+    {
+      "name": "files"
+    },
+    {
+      "name": "products"
+    },
+    {
+      "name": "cart"
+    },
+    {
+      "name": "orders"
+    },
+    {
+      "name": "test"
+    }
+  ],
   "paths": {
-    "/success": {
-      "get": {
+    "/users/": {
+      "post": {
+        "summary": "create user",
+        "deprecated": false,
         "description": "",
+        "tags": ["users"],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "label": {
+                    "type": "string"
+                  }
+                },
+                "required": ["name", "email", "password", "label"]
+              },
+              "example": {
+                "name": "Subrata Mondal shipment",
+                "email": "subrata@shipment.com",
+                "password": "@1Iamsubrata",
+                "label": "shipment"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "email": {
+                          "type": "string"
+                        },
+                        "label": {
+                          "type": "string"
+                        },
+                        "provider": {
+                          "type": "string"
+                        },
+                        "_id": {
+                          "type": "string"
+                        },
+                        "createdAt": {
+                          "type": "string"
+                        },
+                        "updatedAt": {
+                          "type": "string"
+                        },
+                        "__v": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "email",
+                        "label",
+                        "provider",
+                        "_id",
+                        "createdAt",
+                        "updatedAt",
+                        "__v"
+                      ]
+                    }
+                  },
+                  "required": ["success", "status", "message", "data"]
+                },
+                "example": {
+                  "success": true,
+                  "status": 201,
+                  "message": "User created",
+                  "data": {
+                    "name": "John Doe",
+                    "email": "johndoe@example.com",
+                    "label": "user",
+                    "provider": "local",
+                    "_id": "67e406d4cab7ac65ac76fb54",
+                    "createdAt": "2025-03-26T13:53:24.177Z",
+                    "updatedAt": "2025-03-26T13:53:24.177Z",
+                    "__v": 0
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  },
+                  "required": ["status", "success", "message", "errors", "data"]
+                },
+                "example": {
+                  "status": 400,
+                  "success": false,
+                  "message": "Password must be at least 8 characters long and contain at least one number, one lowercase letter, and one uppercase letter",
+                  "errors": [],
+                  "data": null
+                }
+              }
+            },
+            "headers": {}
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  },
+                  "required": ["status", "success", "message", "errors", "data"]
+                },
+                "example": {
+                  "status": 409,
+                  "success": false,
+                  "message": "User already exists",
+                  "errors": [],
+                  "data": null
+                }
+              }
+            },
+            "headers": {}
+          },
+          "x-400:invalid email format": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  },
+                  "required": ["status", "success", "message", "errors", "data"]
+                },
+                "example": {
+                  "status": 400,
+                  "success": false,
+                  "message": "Invalid email",
+                  "errors": [],
+                  "data": null
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      },
+      "get": {
+        "summary": "get current user",
+        "deprecated": false,
+        "description": "",
+        "tags": ["users"],
+        "parameters": [],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "email": {
+                          "type": "string"
+                        },
+                        "label": {
+                          "type": "string"
+                        },
+                        "provider": {
+                          "type": "string"
+                        },
+                        "createdAt": {
+                          "type": "string"
+                        },
+                        "updatedAt": {
+                          "type": "string"
+                        },
+                        "__v": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "_id",
+                        "name",
+                        "email",
+                        "label",
+                        "provider",
+                        "createdAt",
+                        "updatedAt",
+                        "__v"
+                      ]
+                    }
+                  },
+                  "required": ["success", "status", "message", "data"]
+                },
+                "example": {
+                  "success": true,
+                  "status": 200,
+                  "message": "User found",
+                  "data": {
+                    "_id": "67e406d4cab7ac65ac76fb54",
+                    "name": "John Doe",
+                    "email": "johndoe@example.com",
+                    "label": "user",
+                    "provider": "local",
+                    "createdAt": "2025-03-26T13:53:24.177Z",
+                    "updatedAt": "2025-03-26T14:11:31.771Z",
+                    "__v": 0
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  },
+                  "required": ["status", "success", "message", "errors", "data"]
+                },
+                "example": {
+                  "status": 401,
+                  "success": false,
+                  "message": "Unauthorized",
+                  "errors": [],
+                  "data": null
+                }
+              }
+            },
+            "headers": {}
           }
-        }
-      }
-    },
-    "/error": {
-      "get": {
-        "description": "",
-        "responses": {
-          "default": {
-            "description": ""
+        },
+        "security": [
+          {
+            "bearer": []
           }
-        }
-      }
-    },
-    "/validObjectId": {
-      "get": {
+        ]
+      },
+      "patch": {
+        "summary": "update user details",
+        "deprecated": false,
         "description": "",
+        "tags": ["users"],
         "parameters": [
           {
-            "name": "authorization",
+            "name": "Authorization",
             "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{vault:json-web-token}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "avatar": {
+                    "type": "string"
+                  }
+                },
+                "required": ["avatar"]
+              },
+              "example": {
+                "avatar": "67e41c839e65b596e2d037fc"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "email": {
+                          "type": "string"
+                        },
+                        "label": {
+                          "type": "string"
+                        },
+                        "provider": {
+                          "type": "string"
+                        },
+                        "createdAt": {
+                          "type": "string"
+                        },
+                        "updatedAt": {
+                          "type": "string"
+                        },
+                        "__v": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "_id",
+                        "name",
+                        "email",
+                        "label",
+                        "provider",
+                        "createdAt",
+                        "updatedAt",
+                        "__v"
+                      ]
+                    }
+                  },
+                  "required": ["success", "status", "message", "data"]
+                },
+                "example": {
+                  "success": true,
+                  "status": 200,
+                  "message": "User Details Updated",
+                  "data": {
+                    "_id": "67e406d4cab7ac65ac76fb54",
+                    "name": "James Deo",
+                    "email": "jamesdeo@example.com",
+                    "label": "user",
+                    "provider": "local",
+                    "createdAt": "2025-03-26T13:53:24.177Z",
+                    "updatedAt": "2025-03-26T14:28:58.764Z",
+                    "__v": 0
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  },
+                  "required": ["status", "success", "message", "errors", "data"]
+                },
+                "example": {
+                  "status": 400,
+                  "success": false,
+                  "message": "Invalid email",
+                  "errors": [],
+                  "data": null
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  },
+                  "required": ["status", "success", "message", "errors", "data"]
+                },
+                "example": {
+                  "status": 401,
+                  "success": false,
+                  "message": "Unauthorized",
+                  "errors": [],
+                  "data": null
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/users/auth/login": {
+      "post": {
+        "summary": "login",
+        "deprecated": false,
+        "description": "",
+        "tags": ["users"],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                },
+                "required": ["email", "password"]
+              },
+              "example": {
+                "email": "subrata@test.com",
+                "password": "@1Iamsubrata"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "accessToken": {
+                          "type": "string"
+                        },
+                        "refreshToken": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["accessToken", "refreshToken"]
+                    }
+                  },
+                  "required": ["success", "status", "message", "data"]
+                },
+                "example": {
+                  "success": true,
+                  "status": 200,
+                  "message": "Login successful",
+                  "data": {
+                    "accessToken": "{{vault:json-web-token}}",
+                    "refreshToken": "{{vault:json-web-token}}"
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  },
+                  "required": ["status", "success", "message", "errors", "data"]
+                },
+                "example": {
+                  "status": 401,
+                  "success": false,
+                  "message": "Invalid email Cannot find user",
+                  "errors": [],
+                  "data": null
+                }
+              }
+            },
+            "headers": {}
+          },
+          "x-401:wrong password": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  },
+                  "required": ["status", "success", "message", "errors", "data"]
+                },
+                "example": {
+                  "status": 401,
+                  "success": false,
+                  "message": "Wrong password",
+                  "errors": [],
+                  "data": null
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/users/auth/logout": {
+      "delete": {
+        "summary": "logout",
+        "deprecated": false,
+        "description": "",
+        "tags": ["users"],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  },
+                  "required": ["success", "status", "message", "data"]
+                },
+                "example": {
+                  "success": true,
+                  "status": 200,
+                  "message": "Logout successful",
+                  "data": {}
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  },
+                  "required": ["status", "success", "message", "errors", "data"]
+                },
+                "example": {
+                  "status": 401,
+                  "success": false,
+                  "message": "Unauthorized",
+                  "errors": [],
+                  "data": null
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/users/auth/refresh-tokens": {
+      "post": {
+        "summary": "refresh access token",
+        "deprecated": false,
+        "description": "send refreshToken from body or header or for web used cookie",
+        "tags": ["users"],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "refreshToken": {
+                    "type": "string"
+                  }
+                },
+                "required": ["refreshToken"]
+              },
+              "example": {
+                "refreshToken": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "accessToken": {
+                          "type": "string"
+                        },
+                        "refreshToken": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["accessToken", "refreshToken"]
+                    }
+                  },
+                  "required": ["success", "status", "message", "data"]
+                },
+                "example": {
+                  "success": true,
+                  "status": 200,
+                  "message": "Access token refreshed",
+                  "data": {
+                    "accessToken": "{{vault:json-web-token}}",
+                    "refreshToken": "{{vault:json-web-token}}"
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  },
+                  "required": ["status", "success", "message", "errors", "data"]
+                },
+                "example": {
+                  "status": 400,
+                  "success": false,
+                  "message": "Refresh token is required",
+                  "errors": [],
+                  "data": null
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/users/auth/google": {
+      "get": {
+        "summary": "google login",
+        "deprecated": false,
+        "description": "This is only for browser it will redirect to the google login page",
+        "tags": ["users"],
+        "parameters": [
+          {
+            "name": "success",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "/",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fails",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "/login",
             "schema": {
               "type": "string"
             }
@@ -45,69 +994,3688 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/files/": {
+      "post": {
+        "summary": "upload file",
+        "deprecated": false,
+        "description": "**entityType** is a required field in API requests to categorize uploaded files. Each file type supports specific roles:\n\n- **avatar** → `admin`, `user`, `shipment`, `seller`, `delivery`\n    \n- **invoice** → `admin`, `shipment`, `delivery`\n    \n- **product** → `admin`, `seller`\n    \n- **default** → `admin`",
+        "tags": ["files"],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "entityType": {
+                    "example": "product",
+                    "type": "string"
+                  }
+                },
+                "required": ["file", "entityType"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "file": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["file"]
+                    }
+                  },
+                  "required": ["success", "status", "message", "data"]
+                },
+                "example": {
+                  "success": true,
+                  "status": 201,
+                  "message": "File uploaded successfully",
+                  "data": {
+                    "file": "67e41c839e65b596e2d037fc"
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  },
+                  "required": ["status", "success", "message", "errors", "data"]
+                },
+                "example": {
+                  "status": 400,
+                  "success": false,
+                  "message": "Entity Type is required",
+                  "errors": [],
+                  "data": null
+                }
+              }
+            },
+            "headers": {}
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  },
+                  "required": ["status", "success", "message", "errors", "data"]
+                },
+                "example": {
+                  "status": 500,
+                  "success": false,
+                  "message": "File Upload failed",
+                  "errors": [],
+                  "data": null
+                }
+              }
+            },
+            "headers": {}
           }
-        }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
       }
     },
-    "/abort": {
+    "/files/{id}": {
       "get": {
-        "description": "",
+        "summary": "get file preview",
+        "deprecated": false,
+        "description": "This will return a image not any url",
+        "tags": ["files"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": "67e7849b806e563227d47941",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  },
+                  "required": ["status", "success", "message", "errors", "data"]
+                },
+                "example": {
+                  "status": 404,
+                  "success": false,
+                  "message": "File not found",
+                  "errors": [],
+                  "data": null
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      },
+      "delete": {
+        "summary": "delete file",
+        "deprecated": false,
+        "description": "This is a optional route for future usage.",
+        "tags": ["files"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": "67f13b7ba4afcada1d3bb644",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  },
+                  "required": ["success", "status", "message", "data"]
+                },
+                "example": {
+                  "success": true,
+                  "status": 200,
+                  "message": "File deleted successfully",
+                  "data": {}
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  },
+                  "required": ["status", "success", "message", "errors", "data"]
+                },
+                "example": {
+                  "status": 404,
+                  "success": false,
+                  "message": "File not found",
+                  "errors": [],
+                  "data": null
+                }
+              }
+            },
+            "headers": {}
           }
-        }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "patch": {
+        "summary": "update files",
+        "deprecated": false,
+        "description": "",
+        "tags": ["files"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": "67e4ddee0638273a96dfe72b",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "required": ["file"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "file": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["file"]
+                    }
+                  },
+                  "required": ["success", "status", "message", "data"]
+                },
+                "example": {
+                  "success": true,
+                  "status": 200,
+                  "message": "File updated successfully",
+                  "data": {
+                    "file": "67e4ccd2da28b233ea0012ef"
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  },
+                  "required": ["status", "success", "message", "errors", "data"]
+                },
+                "example": {
+                  "status": 500,
+                  "success": false,
+                  "message": "File Upload failed",
+                  "errors": [],
+                  "data": null
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
       }
     },
-    "/sendMail": {
-      "get": {
+    "/products/": {
+      "post": {
+        "summary": "create product",
+        "deprecated": false,
         "description": "",
+        "tags": ["products"],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "price": {
+                    "type": "integer"
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "category": {
+                    "type": "string"
+                  },
+                  "company": {
+                    "type": "string"
+                  },
+                  "image": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "description",
+                  "price",
+                  "tags",
+                  "category",
+                  "company",
+                  "image"
+                ]
+              },
+              "example": {
+                "name": "Samsung Galaxy Watch 7",
+                "description": "Premium smartwatch with Super AMOLED display, fitness tracking, ECG, and long battery life.",
+                "price": 18999,
+                "tags": [
+                  "smartwatch",
+                  "wearable",
+                  "fitness",
+                  "AMOLED",
+                  "Samsung"
+                ],
+                "category": "Wearables",
+                "company": "Samsung",
+                "image": "67e78490806e563227d4793e"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "description": {
+                          "type": "string"
+                        },
+                        "price": {
+                          "type": "integer"
+                        },
+                        "tags": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "category": {
+                          "type": "string"
+                        },
+                        "company": {
+                          "type": "string"
+                        },
+                        "image": {
+                          "type": "string"
+                        },
+                        "sellerId": {
+                          "type": "string"
+                        },
+                        "_id": {
+                          "type": "string"
+                        },
+                        "createdAt": {
+                          "type": "string"
+                        },
+                        "updatedAt": {
+                          "type": "string"
+                        },
+                        "__v": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "description",
+                        "price",
+                        "tags",
+                        "category",
+                        "company",
+                        "image",
+                        "sellerId",
+                        "_id",
+                        "createdAt",
+                        "updatedAt",
+                        "__v"
+                      ]
+                    }
+                  },
+                  "required": ["success", "status", "message", "data"]
+                },
+                "example": {
+                  "success": true,
+                  "status": 201,
+                  "message": "Product created successfully",
+                  "data": {
+                    "name": "Wireless Mechanical Keyboard",
+                    "description": "A high-performance wireless mechanical keyboard with RGB lighting and customizable key switches.",
+                    "price": 10999,
+                    "tags": ["keyboard", "wireless", "mechanical", "RGB"],
+                    "category": "Accessories",
+                    "company": "Logitech",
+                    "image": "67e4d7914b3f35440cb39fc3",
+                    "sellerId": "67e411b8c090932e2a16a4fb",
+                    "_id": "67e4d82f9d50a6eeb5ff2348",
+                    "createdAt": "2025-03-27T04:46:39.297Z",
+                    "updatedAt": "2025-03-27T04:46:39.297Z",
+                    "__v": 0
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  },
+                  "required": ["status", "success", "message", "errors", "data"]
+                },
+                "example": {
+                  "status": 400,
+                  "success": false,
+                  "message": "name is required",
+                  "errors": [],
+                  "data": null
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "get": {
+        "summary": "get multiple products",
+        "deprecated": false,
+        "description": "",
+        "tags": ["products"],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "company",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "a",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "price",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": ["success", "status", "message", "data"]
+                },
+                "example": {
+                  "success": true,
+                  "status": 200,
+                  "message": "Product fetched Successfully",
+                  "data": []
+                }
+              }
+            },
+            "headers": {}
+          },
+          "x-200:success": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "_id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          },
+                          "price": {
+                            "type": "integer"
+                          },
+                          "tags": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "category": {
+                            "type": "string"
+                          },
+                          "company": {
+                            "type": "string"
+                          },
+                          "image": {
+                            "type": "string"
+                          },
+                          "sellerId": {
+                            "type": "string"
+                          },
+                          "createdAt": {
+                            "type": "string"
+                          },
+                          "updatedAt": {
+                            "type": "string"
+                          },
+                          "__v": {
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "_id",
+                          "name",
+                          "description",
+                          "price",
+                          "tags",
+                          "category",
+                          "company",
+                          "image",
+                          "sellerId",
+                          "createdAt",
+                          "updatedAt",
+                          "__v"
+                        ]
+                      }
+                    }
+                  },
+                  "required": ["success", "status", "message", "data"]
+                },
+                "example": {
+                  "success": true,
+                  "status": 200,
+                  "message": "Product fetched Successfully",
+                  "data": [
+                    {
+                      "_id": "67e78094b6f5571d1e68c45c",
+                      "name": "Wireless Noise-Canceling Headphones",
+                      "description": "Premium over-ear headphones with active noise cancellation, 40-hour battery life, and high-fidelity audio for an immersive experience.",
+                      "price": 8999,
+                      "tags": [
+                        "headphones",
+                        "wireless",
+                        "noise-canceling",
+                        "bluetooth",
+                        "audio"
+                      ],
+                      "category": "Audio",
+                      "company": "Sony",
+                      "image": "67e78051b6f5571d1e68c459",
+                      "sellerId": "67e77fd4b6f5571d1e68c452",
+                      "createdAt": "2025-03-29T05:09:40.047Z",
+                      "updatedAt": "2025-03-29T05:09:40.047Z",
+                      "__v": 0
+                    },
+                    {
+                      "_id": "67e4de030638273a96dfe72e",
+                      "name": "RGB Gaming Mechanical Keyboard",
+                      "description": "A premium mechanical keyboard with per-key RGB lighting, customizable macros, and a durable aluminum frame.",
+                      "price": 11999,
+                      "tags": [
+                        "keyboard",
+                        "gaming",
+                        "mechanical",
+                        "RGB",
+                        "hot-swappable",
+                        "wireless"
+                      ],
+                      "category": "Gaming Accessories",
+                      "company": "Razer",
+                      "image": "67e4ddee0638273a96dfe72b",
+                      "sellerId": "67e411b8c090932e2a16a4fb",
+                      "createdAt": "2025-03-27T05:11:31.134Z",
+                      "updatedAt": "2025-03-27T05:16:34.201Z",
+                      "__v": 1
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {}
           }
-        }
+        },
+        "security": []
+      }
+    },
+    "/products/{id}": {
+      "patch": {
+        "summary": "update product",
+        "deprecated": false,
+        "description": "change the image using /files route the file will automatically update",
+        "tags": ["products"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": "67e4de030638273a96dfe72e",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "price": {
+                    "type": "integer"
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "category": {
+                    "type": "string"
+                  },
+                  "company": {
+                    "type": "string"
+                  },
+                  "image": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "description",
+                  "price",
+                  "tags",
+                  "category",
+                  "company",
+                  "image"
+                ]
+              },
+              "example": {
+                "name": "RGB Gaming Mechanical Keyboard",
+                "description": "A premium mechanical keyboard with per-key RGB lighting, customizable macros, and a durable aluminum frame.",
+                "price": 11999,
+                "tags": [
+                  "keyboard",
+                  "gaming",
+                  "mechanical",
+                  "RGB",
+                  "hot-swappable",
+                  "wireless"
+                ],
+                "category": "Gaming Accessories",
+                "company": "Razer",
+                "image": "dfgdjfg"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "description": {
+                          "type": "string"
+                        },
+                        "price": {
+                          "type": "integer"
+                        },
+                        "tags": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "category": {
+                          "type": "string"
+                        },
+                        "company": {
+                          "type": "string"
+                        },
+                        "image": {
+                          "type": "string"
+                        },
+                        "sellerId": {
+                          "type": "string"
+                        },
+                        "createdAt": {
+                          "type": "string"
+                        },
+                        "updatedAt": {
+                          "type": "string"
+                        },
+                        "__v": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "_id",
+                        "name",
+                        "description",
+                        "price",
+                        "tags",
+                        "category",
+                        "company",
+                        "image",
+                        "sellerId",
+                        "createdAt",
+                        "updatedAt",
+                        "__v"
+                      ]
+                    }
+                  },
+                  "required": ["success", "status", "message", "data"]
+                },
+                "example": {
+                  "success": true,
+                  "status": 200,
+                  "message": "Product updated successfully",
+                  "data": {
+                    "_id": "67e4de030638273a96dfe72e",
+                    "name": "RGB Gaming Mechanical Keyboard",
+                    "description": "A premium mechanical keyboard with per-key RGB lighting, customizable macros, and a durable aluminum frame.",
+                    "price": 11999,
+                    "tags": [
+                      "keyboard",
+                      "gaming",
+                      "mechanical",
+                      "RGB",
+                      "hot-swappable",
+                      "wireless"
+                    ],
+                    "category": "Gaming Accessories",
+                    "company": "Razer",
+                    "image": "67e4ddee0638273a96dfe72b",
+                    "sellerId": "67e411b8c090932e2a16a4fb",
+                    "createdAt": "2025-03-27T05:11:31.134Z",
+                    "updatedAt": "2025-03-27T05:16:34.201Z",
+                    "__v": 1
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  },
+                  "required": ["status", "success", "message", "errors", "data"]
+                },
+                "example": {
+                  "status": 400,
+                  "success": false,
+                  "message": "Image is not allowed",
+                  "errors": ["update image with /files endpoint"],
+                  "data": null
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "get": {
+        "summary": "get one product",
+        "deprecated": false,
+        "description": "",
+        "tags": ["products"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": "67e7849b806e563227d47941",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "description": {
+                          "type": "string"
+                        },
+                        "price": {
+                          "type": "integer"
+                        },
+                        "tags": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "category": {
+                          "type": "string"
+                        },
+                        "company": {
+                          "type": "string"
+                        },
+                        "image": {
+                          "type": "string"
+                        },
+                        "sellerId": {
+                          "type": "string"
+                        },
+                        "createdAt": {
+                          "type": "string"
+                        },
+                        "updatedAt": {
+                          "type": "string"
+                        },
+                        "__v": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "_id",
+                        "name",
+                        "description",
+                        "price",
+                        "tags",
+                        "category",
+                        "company",
+                        "image",
+                        "sellerId",
+                        "createdAt",
+                        "updatedAt",
+                        "__v"
+                      ]
+                    }
+                  },
+                  "required": ["success", "status", "message", "data"]
+                },
+                "example": {
+                  "success": true,
+                  "status": 200,
+                  "message": "Product Details Fetched",
+                  "data": {
+                    "_id": "67e4de030638273a96dfe72e",
+                    "name": "RGB Gaming Mechanical Keyboard",
+                    "description": "A premium mechanical keyboard with per-key RGB lighting, customizable macros, and a durable aluminum frame.",
+                    "price": 11999,
+                    "tags": [
+                      "keyboard",
+                      "gaming",
+                      "mechanical",
+                      "RGB",
+                      "hot-swappable",
+                      "wireless"
+                    ],
+                    "category": "Gaming Accessories",
+                    "company": "Razer",
+                    "image": "67e4ddee0638273a96dfe72b",
+                    "sellerId": "67e411b8c090932e2a16a4fb",
+                    "createdAt": "2025-03-27T05:11:31.134Z",
+                    "updatedAt": "2025-03-27T05:16:34.201Z",
+                    "__v": 1
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      },
+      "delete": {
+        "summary": "delete file",
+        "deprecated": false,
+        "description": "",
+        "tags": ["products"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": "67e78094b6f5571d1e68c45c",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/cart/": {
+      "get": {
+        "summary": "get cart",
+        "deprecated": false,
+        "description": "If the cart is not available, add a product first to create the cart. A cart is automatically created when a user adds their first product.\n\n- A user **must add a product** before placing an order.\n    \n- For **new accounts**, the cart will only be created after adding a product.",
+        "tags": ["cart"],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string"
+                        },
+                        "products": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "product": {
+                                "type": "object",
+                                "properties": {
+                                  "_id": {
+                                    "type": "string"
+                                  },
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "description": {
+                                    "type": "string"
+                                  },
+                                  "price": {
+                                    "type": "integer"
+                                  },
+                                  "tags": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "category": {
+                                    "type": "string"
+                                  },
+                                  "company": {
+                                    "type": "string"
+                                  },
+                                  "image": {
+                                    "type": "string"
+                                  },
+                                  "sellerId": {
+                                    "type": "string"
+                                  },
+                                  "createdAt": {
+                                    "type": "string"
+                                  },
+                                  "updatedAt": {
+                                    "type": "string"
+                                  },
+                                  "__v": {
+                                    "type": "integer"
+                                  }
+                                },
+                                "required": [
+                                  "_id",
+                                  "name",
+                                  "description",
+                                  "price",
+                                  "tags",
+                                  "category",
+                                  "company",
+                                  "image",
+                                  "sellerId",
+                                  "createdAt",
+                                  "updatedAt",
+                                  "__v"
+                                ]
+                              },
+                              "quantity": {
+                                "type": "integer"
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "required": ["_id", "products"]
+                    }
+                  },
+                  "required": ["success", "status", "message", "data"]
+                },
+                "example": {
+                  "success": true,
+                  "status": 200,
+                  "message": "Cart fetched successfully",
+                  "data": {
+                    "_id": "67ea091a55dbc6ff2e6f50b2",
+                    "products": [
+                      {
+                        "product": {
+                          "_id": "67e4de030638273a96dfe72e",
+                          "name": "RGB Gaming Mechanical Keyboard",
+                          "description": "A premium mechanical keyboard with per-key RGB lighting, customizable macros, and a durable aluminum frame.",
+                          "price": 11999,
+                          "tags": [
+                            "keyboard",
+                            "gaming",
+                            "mechanical",
+                            "RGB",
+                            "hot-swappable",
+                            "wireless"
+                          ],
+                          "category": "Gaming Accessories",
+                          "company": "Razer",
+                          "image": "67e4ddee0638273a96dfe72b",
+                          "sellerId": "67e411b8c090932e2a16a4fb",
+                          "createdAt": "2025-03-27T05:11:31.134Z",
+                          "updatedAt": "2025-03-27T05:16:34.201Z",
+                          "__v": 1
+                        },
+                        "quantity": 1
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  },
+                  "required": ["status", "success", "message", "errors", "data"]
+                },
+                "example": {
+                  "status": 404,
+                  "success": false,
+                  "message": "Cart not found",
+                  "errors": [],
+                  "data": null
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "put": {
+        "summary": "add and remove product to cart",
+        "deprecated": false,
+        "description": "- **To Add a Product:** Provide `productId`. `quantity` is optional (defaults to `1` if not provided).\n    \n- **To Increase or Decrease Quantity:** Send `productId` and `quantity`. The new `quantity` must be different from the current quantity.\n    \n- **To Remove a Product:** Set `quantity` to `0`. The product must already exist in the cart.",
+        "tags": ["cart"],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "product": {
+                    "type": "object",
+                    "properties": {
+                      "quantity": {
+                        "type": "integer"
+                      },
+                      "productId": {
+                        "type": "string"
+                      }
+                    },
+                    "required": ["quantity", "productId"]
+                  }
+                },
+                "required": ["product"]
+              },
+              "example": {
+                "product": {
+                  "quantity": 2,
+                  "productId": "67e7849b806e563227d47941"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "userId": {
+                          "type": "string"
+                        },
+                        "isOrdered": {
+                          "type": "boolean"
+                        },
+                        "_id": {
+                          "type": "string"
+                        },
+                        "products": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "productId": {
+                                "type": "string"
+                              },
+                              "quantity": {
+                                "type": "integer"
+                              },
+                              "_id": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "createdAt": {
+                          "type": "string"
+                        },
+                        "updatedAt": {
+                          "type": "string"
+                        },
+                        "__v": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "userId",
+                        "isOrdered",
+                        "_id",
+                        "products",
+                        "createdAt",
+                        "updatedAt",
+                        "__v"
+                      ]
+                    }
+                  },
+                  "required": ["success", "status", "message", "data"]
+                },
+                "example": {
+                  "success": true,
+                  "status": 200,
+                  "message": "Cart updated successfully",
+                  "data": {
+                    "userId": "67e77e445c4f4364fe2825d0",
+                    "isOrdered": false,
+                    "_id": "67ea10d70e8ef24323c86d10",
+                    "products": [
+                      {
+                        "productId": "67e4de030638273a96dfe72e",
+                        "quantity": 1,
+                        "_id": "67ea10d70e8ef24323c86d11"
+                      }
+                    ],
+                    "createdAt": "2025-03-31T03:49:43.652Z",
+                    "updatedAt": "2025-03-31T03:49:43.652Z",
+                    "__v": 0
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  },
+                  "required": ["status", "success", "message", "errors", "data"]
+                },
+                "example": {
+                  "status": 400,
+                  "success": false,
+                  "message": "Quantity must be more or less than current",
+                  "errors": [],
+                  "data": null
+                }
+              }
+            },
+            "headers": {}
+          },
+          "x-200:remove product": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string"
+                        },
+                        "userId": {
+                          "type": "string"
+                        },
+                        "isOrdered": {
+                          "type": "boolean"
+                        },
+                        "products": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "createdAt": {
+                          "type": "string"
+                        },
+                        "updatedAt": {
+                          "type": "string"
+                        },
+                        "__v": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "_id",
+                        "userId",
+                        "isOrdered",
+                        "products",
+                        "createdAt",
+                        "updatedAt",
+                        "__v"
+                      ]
+                    }
+                  },
+                  "required": ["success", "status", "message", "data"]
+                },
+                "example": {
+                  "success": true,
+                  "status": 200,
+                  "message": "Cart updated successfully",
+                  "data": {
+                    "_id": "67ea10d70e8ef24323c86d10",
+                    "userId": "67e77e445c4f4364fe2825d0",
+                    "isOrdered": false,
+                    "products": [],
+                    "createdAt": "2025-03-31T03:49:43.652Z",
+                    "updatedAt": "2025-03-31T03:54:07.241Z",
+                    "__v": 1
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "x-200:increase quantity": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string"
+                        },
+                        "userId": {
+                          "type": "string"
+                        },
+                        "isOrdered": {
+                          "type": "boolean"
+                        },
+                        "products": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "productId": {
+                                "type": "string"
+                              },
+                              "quantity": {
+                                "type": "integer"
+                              },
+                              "_id": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "createdAt": {
+                          "type": "string"
+                        },
+                        "updatedAt": {
+                          "type": "string"
+                        },
+                        "__v": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "_id",
+                        "userId",
+                        "isOrdered",
+                        "products",
+                        "createdAt",
+                        "updatedAt",
+                        "__v"
+                      ]
+                    }
+                  },
+                  "required": ["success", "status", "message", "data"]
+                },
+                "example": {
+                  "success": true,
+                  "status": 200,
+                  "message": "Cart updated successfully",
+                  "data": {
+                    "_id": "67ea10d70e8ef24323c86d10",
+                    "userId": "67e77e445c4f4364fe2825d0",
+                    "isOrdered": false,
+                    "products": [
+                      {
+                        "productId": "67e4de030638273a96dfe72e",
+                        "quantity": 2,
+                        "_id": "67ea11f00e8ef24323c86d1b"
+                      }
+                    ],
+                    "createdAt": "2025-03-31T03:49:43.652Z",
+                    "updatedAt": "2025-03-31T03:54:30.561Z",
+                    "__v": 2
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/orders/payment/order": {
+      "post": {
+        "summary": "generate razorpay payment object",
+        "deprecated": false,
+        "description": "",
+        "tags": ["orders"],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "type": "integer"
+                  }
+                },
+                "required": ["amount"]
+              },
+              "example": {
+                "amount": 49997
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "amount": {
+                          "type": "integer"
+                        },
+                        "amount_due": {
+                          "type": "integer"
+                        },
+                        "amount_paid": {
+                          "type": "integer"
+                        },
+                        "attempts": {
+                          "type": "integer"
+                        },
+                        "created_at": {
+                          "type": "integer"
+                        },
+                        "currency": {
+                          "type": "string"
+                        },
+                        "entity": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "type": "string"
+                        },
+                        "notes": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "offer_id": {
+                          "type": "null"
+                        },
+                        "receipt": {
+                          "type": "null"
+                        },
+                        "status": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "amount",
+                        "amount_due",
+                        "amount_paid",
+                        "attempts",
+                        "created_at",
+                        "currency",
+                        "entity",
+                        "id",
+                        "notes",
+                        "offer_id",
+                        "receipt",
+                        "status"
+                      ]
+                    }
+                  },
+                  "required": ["success", "status", "message", "data"]
+                },
+                "example": {
+                  "success": true,
+                  "status": 200,
+                  "message": "Order generated successfully",
+                  "data": {
+                    "amount": 10000,
+                    "amount_due": 10000,
+                    "amount_paid": 0,
+                    "attempts": 0,
+                    "created_at": 1743394928,
+                    "currency": "INR",
+                    "entity": "order",
+                    "id": "order_QDGQbBKbi1ZiiN",
+                    "notes": [],
+                    "offer_id": null,
+                    "receipt": null,
+                    "status": "created"
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  },
+                  "required": ["status", "success", "message", "errors", "data"]
+                },
+                "example": {
+                  "status": 400,
+                  "success": false,
+                  "message": "Amount is required",
+                  "errors": [],
+                  "data": null
+                }
+              }
+            },
+            "headers": {}
+          },
+          "x-400:if amount 0": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  },
+                  "required": ["status", "success", "message", "errors", "data"]
+                },
+                "example": {
+                  "status": 400,
+                  "success": false,
+                  "message": "Amount must be greater than 0",
+                  "errors": [],
+                  "data": null
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/orders/payment/status": {
+      "post": {
+        "summary": "check payment status",
+        "deprecated": false,
+        "description": "",
+        "tags": ["orders"],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "orderId": {
+                    "type": "string"
+                  },
+                  "paymentId": {
+                    "type": "string"
+                  }
+                },
+                "required": ["orderId", "paymentId"]
+              },
+              "example": {
+                "orderId": "order_QFPjC32BziawD6",
+                "paymentId": "pay_QFPkHOqKaxuD7B"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["status", "message"]
+                    }
+                  },
+                  "required": ["success", "status", "message", "data"]
+                },
+                "example": {
+                  "success": true,
+                  "status": 200,
+                  "message": "Payment verified successfully",
+                  "data": {
+                    "status": "attempted",
+                    "message": "Payment Attempted for 2 but not Successful"
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  },
+                  "required": ["status", "success", "message", "errors", "data"]
+                },
+                "example": {
+                  "status": 400,
+                  "success": false,
+                  "message": "The id provided does not exist",
+                  "errors": [],
+                  "data": null
+                }
+              }
+            },
+            "headers": {}
+          },
+          "x-200:success": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "amount": {
+                          "type": "integer"
+                        },
+                        "currency": {
+                          "type": "string"
+                        },
+                        "method": {
+                          "type": "string"
+                        },
+                        "bank": {
+                          "type": "string"
+                        },
+                        "wallet": {
+                          "type": "null"
+                        },
+                        "upi": {
+                          "type": "null"
+                        },
+                        "card": {
+                          "type": "null"
+                        },
+                        "paymentId": {
+                          "type": "string"
+                        },
+                        "orderId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "status",
+                        "message",
+                        "amount",
+                        "currency",
+                        "method",
+                        "bank",
+                        "wallet",
+                        "upi",
+                        "card",
+                        "paymentId",
+                        "orderId"
+                      ]
+                    }
+                  },
+                  "required": ["success", "status", "message", "data"]
+                },
+                "example": {
+                  "success": true,
+                  "status": 200,
+                  "message": "Payment verified successfully",
+                  "data": {
+                    "status": "paid",
+                    "message": "Payment Successful",
+                    "amount": 200,
+                    "currency": "INR",
+                    "method": "netbanking",
+                    "bank": "YESB",
+                    "wallet": null,
+                    "upi": null,
+                    "card": null,
+                    "paymentId": "pay_QDQOEGPCWlB1B8",
+                    "orderId": "order_QDQFzRmo8fypOH"
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/orders/": {
+      "post": {
+        "summary": "create order",
+        "deprecated": false,
+        "description": "### **Phone Field**\n\n- **Format:** `+` (E.164)\n    \n- **Length:** 10-15 digits (excluding `+`)\n    \n- **Valid:** `+919876543210`, `+15551234567`\n    \n- **Invalid:** `9876543210`, `+00123456789`, `+1234567890123456`\n    \n- **Error:** Returns `400 - Invalid phone number format` if incorrect.",
+        "tags": ["orders"],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "cartId": {
+                    "type": "string"
+                  },
+                  "paymentId": {
+                    "type": "string"
+                  },
+                  "customerName": {
+                    "type": "string"
+                  },
+                  "customerPhone": {
+                    "type": "string"
+                  },
+                  "customerAddress": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "cartId",
+                  "paymentId",
+                  "customerName",
+                  "customerPhone",
+                  "customerAddress"
+                ]
+              },
+              "example": {
+                "cartId": "67f140c4010287c5706c7a2f",
+                "paymentId": "pay_QFPkHOqKaxuD7B",
+                "customerName": "Subrata Mondal",
+                "customerPhone": "+919812345678",
+                "customerAddress": "456, Salt Lake Sector V, Kolkata, West Bengal, India - 700091"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "userId": {
+                          "type": "string"
+                        },
+                        "paymentId": {
+                          "type": "string"
+                        },
+                        "cart": {
+                          "type": "string"
+                        },
+                        "totalAmount": {
+                          "type": "integer"
+                        },
+                        "customerName": {
+                          "type": "string"
+                        },
+                        "customerPhone": {
+                          "type": "string"
+                        },
+                        "address": {
+                          "type": "string"
+                        },
+                        "isShipped": {
+                          "type": "boolean"
+                        },
+                        "isDelivered": {
+                          "type": "boolean"
+                        },
+                        "isCancelled": {
+                          "type": "boolean"
+                        },
+                        "isRefund": {
+                          "type": "boolean"
+                        },
+                        "_id": {
+                          "type": "string"
+                        },
+                        "orderDate": {
+                          "type": "string"
+                        },
+                        "createdAt": {
+                          "type": "string"
+                        },
+                        "updatedAt": {
+                          "type": "string"
+                        },
+                        "__v": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "userId",
+                        "paymentId",
+                        "cart",
+                        "totalAmount",
+                        "customerName",
+                        "customerPhone",
+                        "address",
+                        "isShipped",
+                        "isDelivered",
+                        "isCancelled",
+                        "isRefund",
+                        "_id",
+                        "orderDate",
+                        "createdAt",
+                        "updatedAt",
+                        "__v"
+                      ]
+                    }
+                  },
+                  "required": ["success", "status", "message", "data"]
+                },
+                "example": {
+                  "success": true,
+                  "status": 201,
+                  "message": "Order Placed successfully",
+                  "data": {
+                    "userId": "67e77e445c4f4364fe2825d0",
+                    "paymentId": "pay_QE2li7ffEemF23",
+                    "cart": "67ea10d70e8ef24323c86d10",
+                    "totalAmount": 23998,
+                    "customerName": "Rahul Sharma",
+                    "customerPhone": "+919876543210",
+                    "address": "123, MG Road, Kolkata, West Bengal, India - 700001",
+                    "isShipped": false,
+                    "isDelivered": false,
+                    "isCancelled": false,
+                    "isRefund": false,
+                    "_id": "67eccbd95be609023c4e03bd",
+                    "orderDate": "2025-04-02T05:32:09.466Z",
+                    "createdAt": "2025-04-02T05:32:09.469Z",
+                    "updatedAt": "2025-04-02T05:32:09.469Z",
+                    "__v": 0
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  },
+                  "required": ["status", "success", "message", "errors", "data"]
+                },
+                "example": {
+                  "status": 400,
+                  "success": false,
+                  "message": "Invalid phone number format",
+                  "errors": [],
+                  "data": null
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "get": {
+        "summary": "get orders",
+        "deprecated": false,
+        "description": "",
+        "tags": ["orders"],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "_id": {
+                            "type": "string"
+                          },
+                          "userId": {
+                            "type": "string"
+                          },
+                          "paymentId": {
+                            "type": "string"
+                          },
+                          "cart": {
+                            "type": "object",
+                            "properties": {
+                              "_id": {
+                                "type": "string"
+                              },
+                              "products": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "product": {
+                                      "type": "object",
+                                      "properties": {
+                                        "_id": {
+                                          "type": "string"
+                                        },
+                                        "name": {
+                                          "type": "string"
+                                        },
+                                        "description": {
+                                          "type": "string"
+                                        },
+                                        "price": {
+                                          "type": "integer"
+                                        },
+                                        "tags": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "category": {
+                                          "type": "string"
+                                        },
+                                        "company": {
+                                          "type": "string"
+                                        },
+                                        "image": {
+                                          "type": "string"
+                                        },
+                                        "sellerId": {
+                                          "type": "string"
+                                        },
+                                        "createdAt": {
+                                          "type": "string"
+                                        },
+                                        "updatedAt": {
+                                          "type": "string"
+                                        },
+                                        "__v": {
+                                          "type": "integer"
+                                        }
+                                      },
+                                      "required": [
+                                        "_id",
+                                        "name",
+                                        "description",
+                                        "price",
+                                        "tags",
+                                        "category",
+                                        "company",
+                                        "image",
+                                        "sellerId",
+                                        "createdAt",
+                                        "updatedAt",
+                                        "__v"
+                                      ]
+                                    },
+                                    "quantity": {
+                                      "type": "integer"
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "required": ["_id", "products"]
+                          },
+                          "totalAmount": {
+                            "type": "integer"
+                          },
+                          "customerName": {
+                            "type": "string"
+                          },
+                          "customerPhone": {
+                            "type": "string"
+                          },
+                          "address": {
+                            "type": "string"
+                          },
+                          "isShipped": {
+                            "type": "boolean"
+                          },
+                          "isDelivered": {
+                            "type": "boolean"
+                          },
+                          "isCancelled": {
+                            "type": "boolean"
+                          },
+                          "orderDate": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": ["success", "status", "message", "data"]
+                },
+                "example": {
+                  "success": true,
+                  "status": 200,
+                  "message": "Orders Fetched",
+                  "data": [
+                    {
+                      "_id": "67eccbd95be609023c4e03bd",
+                      "userId": "67e77e445c4f4364fe2825d0",
+                      "paymentId": "pay_QE2li7ffEemF23",
+                      "cart": {
+                        "_id": "67ea10d70e8ef24323c86d10",
+                        "products": [
+                          {
+                            "product": {
+                              "_id": "67e4de030638273a96dfe72e",
+                              "name": "RGB Gaming Mechanical Keyboard",
+                              "description": "A premium mechanical keyboard with per-key RGB lighting, customizable macros, and a durable aluminum frame.",
+                              "price": 11999,
+                              "tags": [
+                                "keyboard",
+                                "gaming",
+                                "mechanical",
+                                "RGB",
+                                "hot-swappable",
+                                "wireless"
+                              ],
+                              "category": "Gaming Accessories",
+                              "company": "Razer",
+                              "image": "67e4ddee0638273a96dfe72b",
+                              "sellerId": "67e411b8c090932e2a16a4fb",
+                              "createdAt": "2025-03-27T05:11:31.134Z",
+                              "updatedAt": "2025-03-27T05:16:34.201Z",
+                              "__v": 1
+                            },
+                            "quantity": 2
+                          }
+                        ]
+                      },
+                      "totalAmount": 23998,
+                      "customerName": "Rahul Sharma",
+                      "customerPhone": "+919876543210",
+                      "address": "123, MG Road, Kolkata, West Bengal, India - 700001",
+                      "isShipped": false,
+                      "isDelivered": false,
+                      "isCancelled": false,
+                      "orderDate": "2025-04-02T05:32:09.466Z"
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/orders/{id}": {
+      "get": {
+        "summary": "get order",
+        "deprecated": false,
+        "description": "",
+        "tags": ["orders"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": "67f13571d3b312aed4958ac1",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string"
+                        },
+                        "userId": {
+                          "type": "string"
+                        },
+                        "paymentId": {
+                          "type": "string"
+                        },
+                        "cart": {
+                          "type": "object",
+                          "properties": {
+                            "_id": {
+                              "type": "string"
+                            },
+                            "products": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "product": {
+                                    "type": "object",
+                                    "properties": {
+                                      "_id": {
+                                        "type": "string"
+                                      },
+                                      "name": {
+                                        "type": "string"
+                                      },
+                                      "description": {
+                                        "type": "string"
+                                      },
+                                      "price": {
+                                        "type": "integer"
+                                      },
+                                      "tags": {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "category": {
+                                        "type": "string"
+                                      },
+                                      "company": {
+                                        "type": "string"
+                                      },
+                                      "image": {
+                                        "type": "string"
+                                      },
+                                      "sellerId": {
+                                        "type": "string"
+                                      },
+                                      "createdAt": {
+                                        "type": "string"
+                                      },
+                                      "updatedAt": {
+                                        "type": "string"
+                                      },
+                                      "__v": {
+                                        "type": "integer"
+                                      }
+                                    },
+                                    "required": [
+                                      "_id",
+                                      "name",
+                                      "description",
+                                      "price",
+                                      "tags",
+                                      "category",
+                                      "company",
+                                      "image",
+                                      "sellerId",
+                                      "createdAt",
+                                      "updatedAt",
+                                      "__v"
+                                    ]
+                                  },
+                                  "quantity": {
+                                    "type": "integer"
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "required": ["_id", "products"]
+                        },
+                        "totalAmount": {
+                          "type": "integer"
+                        },
+                        "customerName": {
+                          "type": "string"
+                        },
+                        "customerPhone": {
+                          "type": "string"
+                        },
+                        "address": {
+                          "type": "string"
+                        },
+                        "isShipped": {
+                          "type": "boolean"
+                        },
+                        "isDelivered": {
+                          "type": "boolean"
+                        },
+                        "isCancelled": {
+                          "type": "boolean"
+                        },
+                        "orderDate": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "_id",
+                        "userId",
+                        "paymentId",
+                        "cart",
+                        "totalAmount",
+                        "customerName",
+                        "customerPhone",
+                        "address",
+                        "isShipped",
+                        "isDelivered",
+                        "isCancelled",
+                        "orderDate"
+                      ]
+                    }
+                  },
+                  "required": ["success", "status", "message", "data"]
+                },
+                "example": {
+                  "success": true,
+                  "status": 200,
+                  "message": "Order Details Fetched",
+                  "data": {
+                    "_id": "67eccbd95be609023c4e03bd",
+                    "userId": "67e77e445c4f4364fe2825d0",
+                    "paymentId": "pay_QE2li7ffEemF23",
+                    "cart": {
+                      "_id": "67ea10d70e8ef24323c86d10",
+                      "products": [
+                        {
+                          "product": {
+                            "_id": "67e4de030638273a96dfe72e",
+                            "name": "RGB Gaming Mechanical Keyboard",
+                            "description": "A premium mechanical keyboard with per-key RGB lighting, customizable macros, and a durable aluminum frame.",
+                            "price": 11999,
+                            "tags": [
+                              "keyboard",
+                              "gaming",
+                              "mechanical",
+                              "RGB",
+                              "hot-swappable",
+                              "wireless"
+                            ],
+                            "category": "Gaming Accessories",
+                            "company": "Razer",
+                            "image": "67e4ddee0638273a96dfe72b",
+                            "sellerId": "67e411b8c090932e2a16a4fb",
+                            "createdAt": "2025-03-27T05:11:31.134Z",
+                            "updatedAt": "2025-03-27T05:16:34.201Z",
+                            "__v": 1
+                          },
+                          "quantity": 2
+                        }
+                      ]
+                    },
+                    "totalAmount": 23998,
+                    "customerName": "Rahul Sharma",
+                    "customerPhone": "+919876543210",
+                    "address": "123, MG Road, Kolkata, West Bengal, India - 700001",
+                    "isShipped": false,
+                    "isDelivered": false,
+                    "isCancelled": false,
+                    "orderDate": "2025-04-02T05:32:09.466Z"
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  },
+                  "required": ["status", "success", "message", "errors", "data"]
+                },
+                "example": {
+                  "status": 404,
+                  "success": false,
+                  "message": "Order not found",
+                  "errors": [],
+                  "data": null
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "patch": {
+        "summary": "update contact details",
+        "deprecated": false,
+        "description": "",
+        "tags": ["orders"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": "67eccbd95be609023c4e03bd",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "customerName": {
+                    "type": "string"
+                  },
+                  "customerAddress": {
+                    "type": "string"
+                  },
+                  "customerPhone": {
+                    "type": "string"
+                  }
+                },
+                "required": ["customerName", "customerAddress", "customerPhone"]
+              },
+              "example": {
+                "customerName": "Subrata Mondal",
+                "customerAddress": "123, Park Street, Kolkata, India",
+                "customerPhone": "+919876543210"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string"
+                        },
+                        "userId": {
+                          "type": "string"
+                        },
+                        "paymentId": {
+                          "type": "string"
+                        },
+                        "cart": {
+                          "type": "string"
+                        },
+                        "totalAmount": {
+                          "type": "integer"
+                        },
+                        "customerName": {
+                          "type": "string"
+                        },
+                        "customerPhone": {
+                          "type": "string"
+                        },
+                        "address": {
+                          "type": "string"
+                        },
+                        "isShipped": {
+                          "type": "boolean"
+                        },
+                        "isDelivered": {
+                          "type": "boolean"
+                        },
+                        "isCancelled": {
+                          "type": "boolean"
+                        },
+                        "isRefund": {
+                          "type": "boolean"
+                        },
+                        "orderDate": {
+                          "type": "string"
+                        },
+                        "createdAt": {
+                          "type": "string"
+                        },
+                        "updatedAt": {
+                          "type": "string"
+                        },
+                        "__v": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "_id",
+                        "userId",
+                        "paymentId",
+                        "cart",
+                        "totalAmount",
+                        "customerName",
+                        "customerPhone",
+                        "address",
+                        "isShipped",
+                        "isDelivered",
+                        "isCancelled",
+                        "isRefund",
+                        "orderDate",
+                        "createdAt",
+                        "updatedAt",
+                        "__v"
+                      ]
+                    }
+                  },
+                  "required": ["success", "status", "message", "data"]
+                },
+                "example": {
+                  "success": true,
+                  "status": 200,
+                  "message": "Order updated successfully",
+                  "data": {
+                    "_id": "67eccbd95be609023c4e03bd",
+                    "userId": "67e77e445c4f4364fe2825d0",
+                    "paymentId": "pay_QE2li7ffEemF23",
+                    "cart": "67ea10d70e8ef24323c86d10",
+                    "totalAmount": 23998,
+                    "customerName": "Subrata Mondal",
+                    "customerPhone": "+919876543210",
+                    "address": "123, Park Street, Kolkata, India",
+                    "isShipped": false,
+                    "isDelivered": false,
+                    "isCancelled": false,
+                    "isRefund": false,
+                    "orderDate": "2025-04-02T05:32:09.466Z",
+                    "createdAt": "2025-04-02T05:32:09.469Z",
+                    "updatedAt": "2025-04-02T05:46:59.403Z",
+                    "__v": 0
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "cancel order",
+        "deprecated": false,
+        "description": "",
+        "tags": ["orders"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": "67f142cc727432c568c36760",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string"
+                        },
+                        "userId": {
+                          "type": "string"
+                        },
+                        "paymentId": {
+                          "type": "string"
+                        },
+                        "cart": {
+                          "type": "string"
+                        },
+                        "totalAmount": {
+                          "type": "integer"
+                        },
+                        "customerName": {
+                          "type": "string"
+                        },
+                        "customerPhone": {
+                          "type": "string"
+                        },
+                        "address": {
+                          "type": "string"
+                        },
+                        "isShipped": {
+                          "type": "boolean"
+                        },
+                        "isDelivered": {
+                          "type": "boolean"
+                        },
+                        "isCancelled": {
+                          "type": "boolean"
+                        },
+                        "isRefund": {
+                          "type": "boolean"
+                        },
+                        "orderDate": {
+                          "type": "string"
+                        },
+                        "createdAt": {
+                          "type": "string"
+                        },
+                        "updatedAt": {
+                          "type": "string"
+                        },
+                        "__v": {
+                          "type": "integer"
+                        },
+                        "statusUpdateDate": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "_id",
+                        "userId",
+                        "paymentId",
+                        "cart",
+                        "totalAmount",
+                        "customerName",
+                        "customerPhone",
+                        "address",
+                        "isShipped",
+                        "isDelivered",
+                        "isCancelled",
+                        "isRefund",
+                        "orderDate",
+                        "createdAt",
+                        "updatedAt",
+                        "__v",
+                        "statusUpdateDate"
+                      ]
+                    }
+                  },
+                  "required": ["success", "status", "message", "data"]
+                },
+                "example": {
+                  "success": true,
+                  "status": 200,
+                  "message": "Order cancelled successfully",
+                  "data": {
+                    "_id": "67f142cc727432c568c36760",
+                    "userId": "67e77e445c4f4364fe2825d0",
+                    "paymentId": "pay_QFPkHOqKaxuD7B",
+                    "cart": "67f140c4010287c5706c7a2f",
+                    "totalAmount": 49997,
+                    "customerName": "Subrata Mondal",
+                    "customerPhone": "+919812345678",
+                    "address": "456, Salt Lake Sector V, Kolkata, West Bengal, India - 700091",
+                    "isShipped": false,
+                    "isDelivered": false,
+                    "isCancelled": true,
+                    "isRefund": true,
+                    "orderDate": "2025-04-05T14:48:44.127Z",
+                    "createdAt": "2025-04-05T14:48:44.128Z",
+                    "updatedAt": "2025-04-05T14:49:13.885Z",
+                    "__v": 0,
+                    "statusUpdateDate": "2025-04-05T14:49:13.883Z"
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  },
+                  "required": ["status", "success", "message", "errors", "data"]
+                },
+                "example": {
+                  "status": 400,
+                  "success": false,
+                  "message": "Order is already delivered",
+                  "errors": [
+                    "Order is already delivered",
+                    "Cannot cancel the order",
+                    "cannot cancel the order after delivery"
+                  ],
+                  "data": null
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/orders/status/{id}": {
+      "patch": {
+        "summary": "update status",
+        "deprecated": false,
+        "description": "- **Fields:**\n    \n    - `isShipped` (boolean) – Marks the order as shipped (Allowed for Shipment Master).\n        \n    - `isDelivered` (boolean) – Marks the order as delivered (Allowed for Delivery Boy).\n        \n    - `route` (boolean) – Redirect to order details page require only on **delivery**\n        \n- **Rules:**\n    \n    - Only **Shipment Master** can update `isShipped`.\n        \n    - Only **Delivery Boy** can update `isDelivered`.\n        \n    - Only **route/:id or route?id=** acceptable in `route`.",
+        "tags": ["orders"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": "67f13571d3b312aed4958ac1",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "isDelivered": {
+                    "type": "boolean"
+                  },
+                  "route": {
+                    "type": "string"
+                  }
+                },
+                "required": ["isDelivered", "route"]
+              },
+              "example": "{\n    // \"isShipped\": true\n    // or\n    \"isDelivered\": true,\n    \"route\": \"order/:id\"\n    // or\n    // \"route\": \"order?id=\"\n}"
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string"
+                        },
+                        "userId": {
+                          "type": "string"
+                        },
+                        "paymentId": {
+                          "type": "string"
+                        },
+                        "cart": {
+                          "type": "string"
+                        },
+                        "totalAmount": {
+                          "type": "integer"
+                        },
+                        "customerName": {
+                          "type": "string"
+                        },
+                        "customerPhone": {
+                          "type": "string"
+                        },
+                        "address": {
+                          "type": "string"
+                        },
+                        "isShipped": {
+                          "type": "boolean"
+                        },
+                        "isDelivered": {
+                          "type": "boolean"
+                        },
+                        "isCancelled": {
+                          "type": "boolean"
+                        },
+                        "isRefund": {
+                          "type": "boolean"
+                        },
+                        "orderDate": {
+                          "type": "string"
+                        },
+                        "createdAt": {
+                          "type": "string"
+                        },
+                        "updatedAt": {
+                          "type": "string"
+                        },
+                        "__v": {
+                          "type": "integer"
+                        },
+                        "invoice": {
+                          "type": "string"
+                        },
+                        "statusUpdateDate": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "_id",
+                        "userId",
+                        "paymentId",
+                        "cart",
+                        "totalAmount",
+                        "customerName",
+                        "customerPhone",
+                        "address",
+                        "isShipped",
+                        "isDelivered",
+                        "isCancelled",
+                        "isRefund",
+                        "orderDate",
+                        "createdAt",
+                        "updatedAt",
+                        "__v",
+                        "invoice",
+                        "statusUpdateDate"
+                      ]
+                    }
+                  },
+                  "required": ["success", "status", "message", "data"]
+                },
+                "example": {
+                  "success": true,
+                  "status": 200,
+                  "message": "Order is Shipped successfully",
+                  "data": {
+                    "_id": "67f13571d3b312aed4958ac1",
+                    "userId": "67e77e445c4f4364fe2825d0",
+                    "paymentId": "pay_QE2li7ffEemF23",
+                    "cart": "67ea10d70e8ef24323c86d10",
+                    "totalAmount": 23998,
+                    "customerName": "Rahul Sharma",
+                    "customerPhone": "+919876543210",
+                    "address": "123, MG Road, Kolkata, West Bengal, India - 700001",
+                    "isShipped": true,
+                    "isDelivered": false,
+                    "isCancelled": false,
+                    "isRefund": false,
+                    "orderDate": "2025-04-05T13:51:45.556Z",
+                    "createdAt": "2025-04-05T13:51:45.558Z",
+                    "updatedAt": "2025-04-05T14:22:58.226Z",
+                    "__v": 0,
+                    "invoice": "67f13cc24f8cfa4253789290",
+                    "statusUpdateDate": "2025-04-05T14:22:50.669Z"
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  },
+                  "required": ["status", "success", "message", "errors", "data"]
+                },
+                "example": {
+                  "status": 400,
+                  "success": false,
+                  "message": "Route is required",
+                  "errors": [],
+                  "data": null
+                }
+              }
+            },
+            "headers": {}
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  },
+                  "required": ["status", "success", "message", "errors", "data"]
+                },
+                "example": {
+                  "status": 403,
+                  "success": false,
+                  "message": "Unauthorized request",
+                  "errors": [],
+                  "data": null
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/test/success": {
+      "get": {
+        "summary": "success",
+        "deprecated": false,
+        "description": "",
+        "tags": ["test"],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  },
+                  "required": ["success", "status", "message", "data"]
+                },
+                "example": {
+                  "success": true,
+                  "status": 200,
+                  "message": "Success",
+                  "data": {}
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/test/error": {
+      "get": {
+        "summary": "error",
+        "deprecated": false,
+        "description": "",
+        "tags": ["test"],
+        "parameters": [],
+        "responses": {
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  },
+                  "required": ["status", "success", "message", "errors", "data"]
+                },
+                "examples": {
+                  "1": {
+                    "summary": "error response",
+                    "value": {
+                      "status": 500,
+                      "success": false,
+                      "message": "This is an error",
+                      "errors": [],
+                      "data": null
+                    }
+                  },
+                  "2": {
+                    "summary": "Exception",
+                    "value": {
+                      "status": 500,
+                      "success": false,
+                      "message": "This is an error",
+                      "errors": [],
+                      "data": null
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
       }
     }
   },
   "components": {
-    "responses": {
-      "Success": {
-        "description": "Request was successful",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Success"
-                }
-              }
-            }
-          }
-        }
-      },
-      "Error": {
-        "description": "An error occurred",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "error": {
-                  "type": "string",
-                  "example": "Something went wrong"
-                }
-              }
-            }
-          }
-        }
+    "schemas": {},
+    "securitySchemes": {
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer"
       }
     }
-  }
+  },
+  "security": [
+    {
+      "bearer": []
+    }
+  ]
 }

@@ -1,0 +1,8 @@
+{
+  "ignore": [
+    "test/postman-to-swagger.js",
+    "test/techkart.json",
+    "test/swagger-config.js",
+    "test/test.js"
+  ]
+}
