@@ -231,7 +231,6 @@ const getShipmentHtml = (order) => {
       <p>${order.address}</p>
       <p>${order.customerPhone}</p>
       </div>
-      <!--- TODO: add company logo -->
       <img class="comLogo" src="${
         order.baseUrl
       }/api/v1/files/67eeb1fcfaf070cbfb48da8c" alt="techkart" /> 
