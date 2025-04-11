@@ -1,20 +1,25 @@
-import React, { useEffect } from 'react'
-import { useSelector } from 'react-redux'
-import { useNavigate, useParams } from 'react-router-dom'
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 
-const ProtectedRoute = ({authontication=true, children, isSignUp=true, redirect}) => {
-    const isLogin = useSelector((state) => state.auth.isLogin)
-    const navigate = useNavigate()
+const ProtectedRoute = ({
+  authontication = true,
+  children,
+  isSignUp = true,
+  redirect,
+}) => {
+  const isLogin = useSelector((state) => state.auth.isLogin);
+  const navigate = useNavigate();
+  // TODO: update it for auth pages also
+  useEffect(() => {
+    if (authontication && isLogin !== authontication) {
+      navigate("/login", { state: { isSignUp, redirect } });
+    } else if (!authontication && isLogin !== authontication) {
+      navigate("/");
+    }
+  }, [isLogin, authontication]);
 
-    useEffect(() => {
-        if (authontication && isLogin !== authontication) {
-            navigate('/login', {state: {isSignUp, redirect}})
-        }else if(!authontication && isLogin !== authontication) {
-            navigate('/')
-        }
-    },[isLogin, authontication])
+  return children;
+};
 
-    return children
-}
-
-export default ProtectedRoute
+export default ProtectedRoute;

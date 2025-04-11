@@ -1,11 +1,12 @@
-import React from 'react'
+import React from "react";
 
-const Logo = ({classname, width}) => {
+const Logo = ({ classname, width }) => {
   return (
     <div className={`${classname}`}>
-        <img src="/logo.png" alt="Logo" className={`w-[${width}] rounded-full`}/>
+      {/* TODO: fetch the logo from server */}
+      <img src="/logo.png" alt="Logo" className={`w-[${width}] rounded-full`} />
     </div>
-  )
-}
+  );
+};
 
-export default Logo
+export default Logo;

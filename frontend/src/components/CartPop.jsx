@@ -7,7 +7,6 @@ import { login } from "../store/authSlice";
 import appWriteDb from "../appwrite/DbServise";
 import { storeProducts } from "../store/productSlice";
 
-
 export default function CartPop({ setIsCartOpen }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -18,6 +17,7 @@ export default function CartPop({ setIsCartOpen }) {
   const { products: allProducts } = useSelector((state) => state.products);
 
   useEffect(() => {
+    // TODO: just display already product populated in cart
     const createProducts = otherData.cart.map((cartProduct) => {
       const productDetails = allProducts.find(
         (product) => product.$id === cartProduct.productId
@@ -35,7 +35,7 @@ export default function CartPop({ setIsCartOpen }) {
     setProducts(createProducts.reverse());
   }, [otherData.cart, allProducts]);
 
-  const handleDeleteProduct = async(productId) => {
+  const handleDeleteProduct = async (productId) => {
     setLoadingClass("cursor-wait");
     const filteredProducts = products
       .filter((product) => product.id !== productId)
@@ -44,16 +44,20 @@ export default function CartPop({ setIsCartOpen }) {
         quantity: product.quantity,
       }));
 
-      try {
-        const cart = await appWriteDb.addToCart(filteredProducts, userData.$id, "update");
-        if (cart) {
-          dispatch(login({ otherData: { cart, orders: otherData.orders } }));
-          setLoadingClass("");
-        }
-      } catch (error) {
-        console.warn(error.message);
+    try {
+      const cart = await appWriteDb.addToCart(
+        filteredProducts,
+        userData.$id,
+        "update"
+      );
+      if (cart) {
+        dispatch(login({ otherData: { cart, orders: otherData.orders } }));
         setLoadingClass("");
       }
+    } catch (error) {
+      console.warn(error.message);
+      setLoadingClass("");
+    }
   };
 
   return (
@@ -81,7 +85,9 @@ export default function CartPop({ setIsCartOpen }) {
                   className="h-16 w-16 rounded object-contain"
                 />
                 <div>
-                  <h3 className="text-sm text-gray-900 truncate max-w-40">{product.name}</h3>
+                  <h3 className="text-sm text-gray-900 truncate max-w-40">
+                    {product.name}
+                  </h3>
                   <dl className="mt-0.5 space-y-px text-[10px] text-gray-600">
                     <div>
                       <dd className="inline font-bold">₹{product.price}</dd>
@@ -89,7 +95,9 @@ export default function CartPop({ setIsCartOpen }) {
                     </div>
                   </dl>
                 </div>
-                <div className={`absolute right-0 top-1/4 text-white hover:text-gray-300 bg-black p-1 rounded-md ${loadingClass}`}>
+                <div
+                  className={`absolute right-0 top-1/4 text-white hover:text-gray-300 bg-black p-1 rounded-md ${loadingClass}`}
+                >
                   <X
                     size={24}
                     onClick={(e) => {
@@ -107,13 +115,20 @@ export default function CartPop({ setIsCartOpen }) {
             type="button"
             className="w-full rounded-md border border-black px-3 py-2 text-sm font-semibold text-black shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
             onClick={() => {
-              navigate("/cart")
-               setIsCartOpen(false)
-              }}
+              navigate("/cart");
+              setIsCartOpen(false);
+            }}
           >
             View Cart ({products.length})
           </button>
-          <Button classname="w-full" type="button" onClick={() => {navigate("/checkout"); setIsCartOpen(false)}}>
+          <Button
+            classname="w-full"
+            type="button"
+            onClick={() => {
+              navigate("/checkout");
+              setIsCartOpen(false);
+            }}
+          >
             Checkout
           </Button>
           <Link

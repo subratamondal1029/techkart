@@ -1,13 +1,7 @@
 import React, { useEffect, useState } from "react";
-import {  Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button, ButtonLoading } from "../components";
-import {
-  ArrowLeft,
-  Check,
-  Minus,
-  Plus,
-  ShoppingCart,
-} from "lucide-react";
+import { ArrowLeft, Check, Minus, Plus, ShoppingCart } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import appWriteDb from "../appwrite/DbServise";
 import { login } from "../store/authSlice";
@@ -18,16 +12,21 @@ const ProductDetail = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [addingToCart, setAddingToCart] = useState(false);
-  const { isLogin, isCartCreated, otherData, userData } = useSelector((state) => state.auth);
+  const { isLogin, isCartCreated, otherData, userData } = useSelector(
+    (state) => state.auth
+  );
   const product = useSelector((state) =>
     state.products.products.find((product) => product.$id === productId)
   );
   const [isInCart, setIsInCart] = useState(false);
 
-  useEffect(() =>{
-    setIsInCart(otherData.cart.some((item) => item.productId === productId))
-    setQuantity(otherData.cart.find((item) => item.productId === productId)?.quantity || 1)
-  },[otherData.cart, productId])
+  useEffect(() => {
+    // TODO: update this with new data stacture
+    setIsInCart(otherData.cart.some((item) => item.productId === productId));
+    setQuantity(
+      otherData.cart.find((item) => item.productId === productId)?.quantity || 1
+    );
+  }, [otherData.cart, productId]);
 
   const handleAddToCart = async () => {
     if (!isLogin) {
@@ -37,16 +36,16 @@ const ProductDetail = () => {
       const newData = { productId, quantity };
       const createdCart = [...otherData.cart, newData];
       try {
-        
+        // TODO: just call addToCart to server it will automatically choose update or create
         let type = !isCartCreated ? "create" : "update";
 
         const cart = await appWriteDb.addToCart(
           createdCart,
           userData.$id,
           type
-        ); 
+        );
         if (cart) {
-          if(!isCartCreated) dispatch(login({ isCartCreated: true }));
+          if (!isCartCreated) dispatch(login({ isCartCreated: true }));
           dispatch(login({ otherData: { ...otherData, cart: createdCart } }));
           setAddingToCart(false);
         }
@@ -62,17 +61,14 @@ const ProductDetail = () => {
       <Button
         type="button"
         classname="flex items-center justify-start absolute top-20 left-4"
-      onClick={() => navigate('/')}
+        onClick={() => navigate("/")}
       >
         <ArrowLeft size={20} />
         Go back
       </Button>
       <div className="w-full max-w-[400px] h-auto rounded-lg flex items-center justify-center">
-      <img
-        src={product.image}
-        alt={product.name}
-        className="min-w-52"
-        />
+        {/* TODO: add simmer effect to image */}
+        <img src={product.image} alt={product.name} className="min-w-52" />
       </div>
       <div className="w-full h-full flex justify-start flex-col items-start gap-3">
         <h3 className="text-2xl uppercase text-gray-500">{product.company}</h3>
@@ -127,21 +123,29 @@ const ProductDetail = () => {
           <div className="w-full bg-gray-200 flex justify-between items-center text-2xl py-1 rounded-lg px-2">
             <Minus
               size={30}
-              className={`${isInCart? "cursor-not-allowed" : "cursor-pointer"} hover:text-gray-700`}
-              onClick={() => !isInCart ? setQuantity((prev) => (prev !== 1 ? prev - 1 : 1)) : null}
+              className={`${
+                isInCart ? "cursor-not-allowed" : "cursor-pointer"
+              } hover:text-gray-700`}
+              onClick={() =>
+                !isInCart
+                  ? setQuantity((prev) => (prev !== 1 ? prev - 1 : 1))
+                  : null
+              }
             />
             <p className="select-none">{quantity}</p>
             <Plus
               size={30}
-              className={`${isInCart? "cursor-not-allowed" : "cursor-pointer"} hover:text-gray-700`}
-              onClick={() => !isInCart ? setQuantity((prev) => prev + 1) : null}
+              className={`${
+                isInCart ? "cursor-not-allowed" : "cursor-pointer"
+              } hover:text-gray-700`}
+              onClick={() =>
+                !isInCart ? setQuantity((prev) => prev + 1) : null
+              }
             />
           </div>
           <Button
             classname="w-3/4 max-h-11 flex items-center justify-between py-3 px-3 select-none xl:px-5"
-            onClick={() =>
-              isInCart ? navigate("/cart") : handleAddToCart()
-            }
+            onClick={() => (isInCart ? navigate("/cart") : handleAddToCart())}
           >
             {addingToCart ? (
               <ButtonLoading fillColor="fill-black" classname="w-full" />

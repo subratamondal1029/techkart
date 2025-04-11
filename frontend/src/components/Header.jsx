@@ -14,16 +14,15 @@ import { Button, CartPop, Input, Logo } from "./index";
 import appwriteAuth from "../appwrite/authService";
 import { toast } from "react-toastify";
 
-
 const Header = () => {
-  const { isLogin, otherData } = useSelector((state) => state.auth);
+  const { isLogin, otherData } = useSelector((state) => state.auth); //TODO: get cart from cart slice
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [isCartOpen, setIsCartOpen] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
-   const handleLogout = async () => {
+
+  const handleLogout = async () => {
     try {
       const res = await appwriteAuth.logout();
       if (res) {
@@ -39,7 +38,7 @@ const Header = () => {
 
   const handleSearch = (value) => {
     if (value === "") {
-    value = "all"; 
+      value = "all";
     }
     navigate(`/search/${value}`);
   };
@@ -57,8 +56,8 @@ const Header = () => {
             placeholder="Search"
             classname="min-w-80 rounded-r-none"
             value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value) }
-            onKeyPress={(e) => e.key==="Enter" && handleSearch(searchValue)}
+            onChange={(e) => setSearchValue(e.target.value)}
+            onKeyPress={(e) => e.key === "Enter" && handleSearch(searchValue)}
           />
           <div className="relative flex items-start justify-center">
             <select
@@ -67,9 +66,7 @@ const Header = () => {
               name="category"
               onChange={(e) => handleSearch(e.target.value)}
             >
-              <option value="">
-                All Category
-              </option>
+              <option value="">All Category</option>
               <option value="mobile">Mobile</option>
               <option value="laptop">Laptop</option>
               <option value="audio">Audio</option>
@@ -87,7 +84,10 @@ const Header = () => {
             Account
           </Link>
 
-          <span className="relative cursor-pointer" onClick={() => setIsCartOpen(true)}>
+          <span
+            className="relative cursor-pointer"
+            onClick={() => setIsCartOpen(true)}
+          >
             {otherData.cart.length > 0 ? (
               <div className="absolute -top-2 -right-2 w-4 h-4 p-2 rounded-full bg-black text-white flex justify-center items-center">
                 {otherData.cart.length}
@@ -126,14 +126,17 @@ const Header = () => {
                 <User size={20} />
                 Account
               </Link>
-              <span className="relative cursor-pointer flex mt-4 gap-2" onClick={() => setIsCartOpen(true)}>
-              {otherData.cart.length > 0 ? (
-                <div className="absolute -top-2 -right-2 w-4 h-4 p-2 rounded-full bg-black text-white flex justify-center items-center">
-                  {otherData.cart.length}
-                </div>
-              ) : null}
-              <ShoppingCartIcon size={20} /> Open cart
-            </span>
+              <span
+                className="relative cursor-pointer flex mt-4 gap-2"
+                onClick={() => setIsCartOpen(true)}
+              >
+                {otherData.cart.length > 0 ? (
+                  <div className="absolute -top-2 -right-2 w-4 h-4 p-2 rounded-full bg-black text-white flex justify-center items-center">
+                    {otherData.cart.length}
+                  </div>
+                ) : null}
+                <ShoppingCartIcon size={20} /> Open cart
+              </span>
 
               <form
                 className="w-full flex items-center justify-center mt-4"
@@ -169,10 +172,7 @@ const Header = () => {
         </div>
       )}
 
-      {
-        isCartOpen && <CartPop setIsCartOpen={setIsCartOpen} />
-      }
-     
+      {isCartOpen && <CartPop setIsCartOpen={setIsCartOpen} />}
     </header>
   );
 };

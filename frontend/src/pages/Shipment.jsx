@@ -19,12 +19,13 @@ const Shipment = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   if (!userData?.labels.includes("shipment")) {
-    return <AccessDenied message="Shipment master" />;
+    return <AccessDenied message="Shipment master" />; // TODO: redirect to login page after logout
   }
 
   useEffect(() => {
     async function fetchData() {
       try {
+        // TODO: fetch orders from server with already populated cart
         const getedOrders = await appWriteDb.getOrders();
         if (getedOrders) {
           let orders = [];
@@ -57,6 +58,7 @@ const Shipment = () => {
   }, []);
 
   const handleUpdate = async (orderId) => {
+    // TODO: wrap with loader
     setIsLoading(orderId);
     const order = displayOrders.find((order) => order.orderId === orderId);
     const products = order.cart.map((cartProduct) => {
@@ -70,6 +72,7 @@ const Shipment = () => {
       };
     });
 
+    // TODO: invoice will atomatically created and uploaded
     try {
       const invoicePdf = await generatePdf("shipped", {
         orderId,
@@ -112,6 +115,7 @@ const Shipment = () => {
 
   const downloadInvoice = async (orderId) => {
     try {
+      // TODO: change change the url
       const downloadLink = await appWriteStorage.getDownloadLink(orderId);
       if (downloadLink) {
         window.open(downloadLink, "_blank");
@@ -203,7 +207,7 @@ const Shipment = () => {
                       />
                     ) : shipment.isShipped ? (
                       <>
-                        <Download size={20} className="mr-2"/> Invoice
+                        <Download size={20} className="mr-2" /> Invoice
                       </>
                     ) : (
                       "Dispatch"

@@ -1,3 +1,4 @@
+// TODO: remove this code just remove
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import QRCode from "qrcode";
@@ -28,8 +29,7 @@ function generatePdf(type, data) {
 async function createShipmentPdf(data) {
   const doc = new jsPDF({ unit: "pt", format: "a5" });
 
-
-  doc.setFont('helvetica')
+  doc.setFont("helvetica");
 
   const options = {
     errorCorrectionLevel: "H",
@@ -55,7 +55,7 @@ async function createShipmentPdf(data) {
     product.quantity,
     `RS. ${Number(product.price).toLocaleString("en-IN")}`,
   ]);
-  
+
   const total = data.products.reduce(
     (acc, product) => acc + product.price * product.quantity,
     0
@@ -85,7 +85,7 @@ async function createShipmentPdf(data) {
 async function createDeliveredPdf(data) {
   const doc = new jsPDF({ unit: "pt", format: "a4" });
 
-  doc.setFont('helvetica')
+  doc.setFont("helvetica");
 
   doc.setFontSize(18);
   doc.text(`Invoice for Order #${data.orderId}`, 20, 40);

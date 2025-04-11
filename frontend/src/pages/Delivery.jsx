@@ -10,9 +10,9 @@ import appWriteStorage from "../appwrite/storageService";
 import { invoiceId } from "../config";
 
 const Delivery = () => {
+  // TODO: update the ui
   const { userData } = useSelector((state) => state.auth);
-  
-  const {products: allProducts} = useSelector((state) => state.products);
+  const { products: allProducts } = useSelector((state) => state.products);
   const html5QrcodeScanner = useRef(null);
   const [scanning, setScanning] = useState(false);
   const [order, setOrder] = useState(null);
@@ -20,12 +20,12 @@ const Delivery = () => {
     isScaned: false,
     isDeliverd: false,
     orderId: "",
-  }); 
+  });
   const [isSending, setIsSending] = useState(false);
 
   // Uncomment if access control is needed
   if (!userData?.labels.includes("delivery")) {
-    return <AccessDenied message="Delivery Boy" />;
+    return <AccessDenied message="Delivery Boy" />; //TODO: redirect to login page after logout
   }
 
   const startScanning = () => {
@@ -72,38 +72,61 @@ const Delivery = () => {
           date: order.date,
           address: order.address,
           contact: order.phone,
-          products: order.cart.map((product) => JSON.parse(product)).map((product) =>{
-            const foundProduct = allProducts.find((p) => p.$id === product.productId);
-            return { quantity: product.quantity, name: foundProduct.name, price: foundProduct.price};
-          })
+          products: order.cart
+            .map((product) => JSON.parse(product))
+            .map((product) => {
+              const foundProduct = allProducts.find(
+                (p) => p.$id === product.productId
+              );
+              return {
+                quantity: product.quantity,
+                name: foundProduct.name,
+                price: foundProduct.price,
+              };
+            }),
         });
-        setScanedData({ isScaned: true, orderId: decodedText, isDeliverd: order.isDeliverd });
-      }else setScanedData({ isScaned: false, orderId: "", isDeliverd: false });
-    })
+        setScanedData({
+          isScaned: true,
+          orderId: decodedText,
+          isDeliverd: order.isDeliverd,
+        });
+      } else setScanedData({ isScaned: false, orderId: "", isDeliverd: false });
+    });
   };
 
-  const changeStatus =  async (orderId) => {
+  // TODO: wrap with loader
+  const changeStatus = async (orderId) => {
+    // TODO: just update the order status invoice will automatically created
     setIsSending(true);
     try {
-      const updateOrder = await appWriteDb.updateOrder(orderId, { isDeliverd: true });
+      const updateOrder = await appWriteDb.updateOrder(orderId, {
+        isDeliverd: true,
+      });
       if (updateOrder) {
-        const createInvoice = await generatePdf("delivered", {...order})
-       const deleteFile = await appWriteStorage.deleteFile(orderId, invoiceId)
-       if (deleteFile) {
-         const uploadInvoice = await appWriteStorage.uploadInvoice(createInvoice, `${orderId}_invoice`)
-         if (uploadInvoice) {
-           setScanedData((prev) => ({ ...prev, isDeliverd: true }));
-           setTimeout(
-             () =>
-               setScanedData({ isScaned: false, orderId: "", isDeliverd: false }),
-             2000
-           );
-         }
-       }else throw new Error("Something went wrong");
+        const createInvoice = await generatePdf("delivered", { ...order });
+        const deleteFile = await appWriteStorage.deleteFile(orderId, invoiceId);
+        if (deleteFile) {
+          const uploadInvoice = await appWriteStorage.uploadInvoice(
+            createInvoice,
+            `${orderId}_invoice`
+          );
+          if (uploadInvoice) {
+            setScanedData((prev) => ({ ...prev, isDeliverd: true }));
+            setTimeout(
+              () =>
+                setScanedData({
+                  isScaned: false,
+                  orderId: "",
+                  isDeliverd: false,
+                }),
+              2000
+            );
+          }
+        } else throw new Error("Something went wrong");
       } else throw new Error("Something went wrong");
     } catch (error) {
       toast.error("Something went wrong");
-      console.error(error.message)
+      console.error(error.message);
     }
 
     setIsSending(false);

@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { AccessDenied, Button, ButtonLoading, Input, TextArea } from "../components";
+import {
+  AccessDenied,
+  Button,
+  ButtonLoading,
+  Input,
+  TextArea,
+} from "../components";
 import { useForm } from "react-hook-form";
 import appWriteStorage from "../appwrite/storageService";
 import appWriteDb from "../appwrite/DbServise";
@@ -7,16 +13,22 @@ import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 
 const Seller = () => {
-  const { register, handleSubmit, formState: { errors }, reset} = useForm();
+  // TODO: update ui with update and delete
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm();
   const [isLoading, setIsLoading] = useState(false);
-  const userData = useSelector((state) => state.auth.userData)
-  
-   if (userData?.labels[0] !== "seller") {
-    return <AccessDenied message="seller"/>
-   }
+  const userData = useSelector((state) => state.auth.userData);
 
+  if (userData?.labels[0] !== "seller") {
+    return <AccessDenied message="seller" />; //TODO: redirect to login after logout
+  }
 
   const submit = (data) => {
+    // TODO: wrap with loader
     const toastId = toast.loading("Uploading...");
     setIsLoading(true);
     data = { ...data, tags: makeTags(data.tags), price: parseInt(data.price) };
@@ -35,8 +47,8 @@ const Seller = () => {
               autoClose: 3000,
               isLoading: false,
             });
-            setIsLoading(false)
-          reset();
+            setIsLoading(false);
+            reset();
           } else {
             appWriteStorage.deleteFile(data.image).then((res) => {
               if (res) {
@@ -50,7 +62,7 @@ const Seller = () => {
               autoClose: 3000,
               isLoading: false,
             });
-            setIsLoading(false)
+            setIsLoading(false);
           }
         });
       });
@@ -63,6 +75,8 @@ const Seller = () => {
     }
   };
 
+  // TODO: change the tags field
+
   return (
     <div className="w-full min-h-screen flex justify-center items-center flex-col bg-slate-100 pb-10 pt-3">
       <h1 className="font-bold text-3xl my-4">Submit Your Product</h1>
@@ -70,7 +84,6 @@ const Seller = () => {
         className="space-y-6 w-full max-w-md p-5 bg-white shadow-md rounded-md"
         onSubmit={handleSubmit(submit)}
       >
-
         <Input
           label="Product Name"
           required
@@ -91,17 +104,28 @@ const Seller = () => {
           required
           error={errors.price && true}
           placeholder="Price (1-99,999)"
-          {...register("price", { required: true, validate: (value) => Number(value) !== 0})}
+          {...register("price", {
+            required: true,
+            validate: (value) => Number(value) !== 0,
+          })}
         />
         <div className="w-full">
-       <select className="w-full bg-transparent p-2 border rounded-lg" {...register("category", { required: true })}>
-        <option value="" hidden>Category</option>
-         <option value="mobile">Mobile</option>
-         <option value="laptop">Laptop</option>
-         <option value="computer">Computer</option>
-         <option value="audio">Audio</option>
-       </select>
-       <p className="mt-1 text-xs text-gray-500"> <span className="text-red-500">*</span> This field is required</p>
+          <select
+            className="w-full bg-transparent p-2 border rounded-lg"
+            {...register("category", { required: true })}
+          >
+            <option value="" hidden>
+              Category
+            </option>
+            <option value="mobile">Mobile</option>
+            <option value="laptop">Laptop</option>
+            <option value="computer">Computer</option>
+            <option value="audio">Audio</option>
+          </select>
+          <p className="mt-1 text-xs text-gray-500">
+            {" "}
+            <span className="text-red-500">*</span> This field is required
+          </p>
         </div>
 
         <Input
@@ -116,7 +140,11 @@ const Seller = () => {
           error={errors.description && true}
           required
           placeholder="Enter Your Product Description"
-          {...register("description", { required: true, minLength: 10, maxLength: 555 })}
+          {...register("description", {
+            required: true,
+            minLength: 10,
+            maxLength: 555,
+          })}
         />
         <Input
           type="file"

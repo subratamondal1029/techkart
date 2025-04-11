@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
 const OrderConfirm = () => {
+  // TODO: chnage the ui
   const [count, setCount] = useState(5);
   const navigate = useNavigate();
   const { state: orderId } = useLocation();
@@ -10,11 +11,11 @@ const OrderConfirm = () => {
   useEffect(() => {
     if (!orderId) {
       navigate("/");
-    }else{   
+    } else {
       const interval = setInterval(() => {
         setCount((prevCount) => prevCount - 1);
       }, 1000);
-  
+
       if (count === 0) {
         clearInterval(interval);
         navigate(`/orders/${orderId}`);

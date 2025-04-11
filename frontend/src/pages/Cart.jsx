@@ -15,33 +15,42 @@ export default function Cart() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-
   useEffect(() => {
-      const createProducts = otherData.cart.map((cartProduct) => {
-        const productDetails = allProducts.find(
-          (product) => product.$id === cartProduct.productId
-        );
-  
-        return {
-          id: productDetails.$id,
-          name: productDetails.name,
-          price: productDetails.price,
-          image: productDetails.image,
-          quantity: cartProduct.quantity,
-        };
-      });
-  
-      setProducts(createProducts.reverse());
-      setTotal(createProducts.reduce((acc, curr) => acc + curr.price * curr.quantity, 0).toLocaleString("en-IN"));
+    // TODO: only fetch the cart from store products are already populated
+    const createProducts = otherData.cart.map((cartProduct) => {
+      const productDetails = allProducts.find(
+        (product) => product.$id === cartProduct.productId
+      );
+
+      return {
+        id: productDetails.$id,
+        name: productDetails.name,
+        price: productDetails.price,
+        image: productDetails.image,
+        quantity: cartProduct.quantity,
+      };
+    });
+
+    setProducts(createProducts.reverse());
+    setTotal(
+      createProducts
+        .reduce((acc, curr) => acc + curr.price * curr.quantity, 0)
+        .toLocaleString("en-IN")
+    );
   }, [otherData.cart, allProducts]);
 
-  const handleDelete = async(productId) => {
+  const handleDelete = async (productId) => {
     setLoadingClass("cursor-wait");
-    const filteredProducts = otherData.cart
-      .filter((product) => product.productId !== productId)
+    const filteredProducts = otherData.cart.filter(
+      (product) => product.productId !== productId
+    );
 
-      try {
-      const cart = await appWriteDb.addToCart(filteredProducts, userData.$id, "update");
+    try {
+      const cart = await appWriteDb.addToCart(
+        filteredProducts,
+        userData.$id,
+        "update"
+      );
       if (cart) {
         dispatch(login({ otherData: { cart, orders: otherData.orders } }));
         setLoadingClass("");
@@ -52,29 +61,31 @@ export default function Cart() {
     }
   };
 
-  const handleQuantityChange = async(productId, quantity) => {
+  const handleQuantityChange = async (productId, quantity) => {
     if (quantity < 1) {
       handleDelete(productId);
       return;
-    }else{
-    setLoadingClass("cursor-wait");
-    const updatedProducts = otherData.cart.map((product) =>
-      product.productId === productId
-        ? { ...product, quantity }
-        : product
-    );
+    } else {
+      setLoadingClass("cursor-wait");
+      const updatedProducts = otherData.cart.map((product) =>
+        product.productId === productId ? { ...product, quantity } : product
+      );
 
-    try {
-      const cart = await appWriteDb.addToCart(updatedProducts, userData.$id, "update");
-      if (cart) {
-        dispatch(login({ otherData: { cart, orders: otherData.orders } }));
+      try {
+        const cart = await appWriteDb.addToCart(
+          updatedProducts,
+          userData.$id,
+          "update"
+        );
+        if (cart) {
+          dispatch(login({ otherData: { cart, orders: otherData.orders } }));
+          setLoadingClass("");
+        }
+      } catch (error) {
+        console.warn(error.message);
         setLoadingClass("");
       }
-    } catch (error) {
-      console.warn(error.message);
-      setLoadingClass("");
     }
-  }
   };
 
   return (
@@ -188,8 +199,7 @@ export default function Cart() {
                     Price ({products.length} item)
                   </dt>
                   <dd className="text-sm font-medium text-gray-900">
-                    ₹{" "}
-                    {total}
+                    ₹ {total}
                   </dd>
                 </div>
 
@@ -204,8 +214,7 @@ export default function Cart() {
                     Total Amount
                   </dt>
                   <dd className="text-base font-medium text-gray-900">
-                    ₹{" "}
-                    {total}
+                    ₹ {total}
                   </dd>
                 </div>
               </dl>
@@ -216,7 +225,10 @@ export default function Cart() {
                 >
                   <ArrowLeft size={16} className="mr-2" /> continue shopping
                 </Link>
-                <Button classname="w-full flex items-center justify-center" onClick={() => navigate("/checkout")}>
+                <Button
+                  classname="w-full flex items-center justify-center"
+                  onClick={() => navigate("/checkout")}
+                >
                   Checkout <CreditCard size={16} className="ml-2" />{" "}
                 </Button>
               </div>

@@ -16,6 +16,8 @@ const Account = () => {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
+    // TODO: add avatar update
+    // TODO: change ui for update user details with optimestic update
     try {
       const res = await appwriteAuth.logout();
       if (res) {
@@ -30,6 +32,8 @@ const Account = () => {
   };
 
   useEffect(() => {
+    // TODO: fetch order from server cart already polulated
+    // TODO: fetch order with scroll page by page
     const getProducts = (cart) => {
       return cart
         .map((product) => JSON.parse(product))
@@ -80,6 +84,7 @@ const Account = () => {
           </div>
           <ul className="mt-5 flex flex-col items-start justify-center gap-3">
             <li
+              // TODO: change section with url
               onClick={() => setSection(0)}
               className="cursor-pointer hover:text-gray-700"
             >
@@ -132,6 +137,7 @@ const Account = () => {
                 }
                 value={userData?.labels[0] ? userData?.labels[0] : "User"}
               />
+              {/* TODO: remove language */}
               <AccountInfoCard
                 label="Language"
                 logo={
@@ -152,7 +158,10 @@ const Account = () => {
             </div>
 
             {orders.map((order) => (
-              <div className="w-full shadow-sm rounded-md px-5 py-2" key={order.id}>
+              <div
+                className="w-full shadow-sm rounded-md px-5 py-2"
+                key={order.id}
+              >
                 <div className="w-full">
                   <div className="flex justify-between items-center pb-3 flex-wrap sm:flex-nowrap">
                     <h3 className="font-bold text-2xl">Order #{order.id}</h3>
@@ -160,27 +169,32 @@ const Account = () => {
                   </div>
                   <hr />
                 </div>
-              {
-                order.products.map((product) => (
-                  <div className="w-full flex flex-col justify-start sm:justify-between sm:flex-row items-center" key={product.id}>
-                  <div className="w-full space-y-5  mt-2 sm:mt-5">
-                    <img
-                      src={product.imageSrc}
-                      alt={product.name}
-                      className="w-40 h-auto rounded-lg"
-                    />
-                    <p className="text-gray-500 font-semibold max-w-72 truncate">
-                     {product.name}
-                    </p>
+                {order.products.map((product) => (
+                  <div
+                    className="w-full flex flex-col justify-start sm:justify-between sm:flex-row items-center"
+                    key={product.id}
+                  >
+                    <div className="w-full space-y-5  mt-2 sm:mt-5">
+                      <img
+                        src={product.imageSrc}
+                        alt={product.name}
+                        className="w-40 h-auto rounded-lg"
+                      />
+                      <p className="text-gray-500 font-semibold max-w-72 truncate">
+                        {product.name}
+                      </p>
+                    </div>
+                    <div className="w-full text-right sm:pt-10">
+                      <p className="font-semibold">
+                        ₹ {product.price.toLocaleString("en-IN")}
+                      </p>
+                      <p className="font-semibold">
+                        Quantity: {product.quantity}
+                      </p>
+                    </div>
+                    <hr />
                   </div>
-                  <div className="w-full text-right sm:pt-10">
-                    <p className="font-semibold">₹ {product.price.toLocaleString("en-IN")}</p>
-                    <p className="font-semibold">Quantity: {product.quantity}</p>
-                  </div>
-                  <hr />
-                </div>
-                ))
-              }
+                ))}
 
                 <Link to={`/orders/${order.id}`} className="flex justify-end">
                   <Button

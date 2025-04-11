@@ -21,10 +21,12 @@ function App() {
     async function fetchUser() {
       setIsLoading(true);
       try {
+        // TODO: fetch product in home page on go to product section
         const products = await appWriteDb.getProducts();
         if (products) {
           const getWithImage = products.map((product) => ({
             ...product,
+            // TODO: update image url from central function
             image: appWriteStorage.getImage(product.image).href,
           }));
 
@@ -33,14 +35,22 @@ function App() {
 
         const userData = await appwriteAuth.getCurrentUser();
         if (userData) {
+          // TODO: just fetch the cart and store in cart slice
           const cart = await appWriteDb.getCart(userData.$id);
-          const orders = await appWriteDb.getOrders([Query.equal("userId", userData.$id)]);
+          const orders = await appWriteDb.getOrders([
+            Query.equal("userId", userData.$id),
+          ]);
 
           if (cart || orders.length !== 0) {
             dispatch(
-              login({ userData, isCartCreated: true, otherData: { cart: cart || [], orders: orders || []} })
+              login({
+                userData,
+                isCartCreated: true,
+                otherData: { cart: cart || [], orders: orders || [] },
+              })
             );
           } else dispatch(login({ userData }));
+          // TODO: don't redirect on user found handle but something else
           if (currentLocation !== "/login" || currentLocation !== "/signup") {
             navigate(currentLocation);
           } else navigate("/");
@@ -52,8 +62,9 @@ function App() {
       }
     }
 
+    // TODO: wrap in leader hook
     fetchUser();
-  }, []);
+  }, []); //TODO: run if the isLogin chnage in store
 
   return (
     <>

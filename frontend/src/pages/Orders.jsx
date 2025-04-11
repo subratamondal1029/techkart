@@ -30,6 +30,7 @@ export default function Orders() {
   });
 
   useEffect(() => {
+    // TODO: fetch order from server or slice
     if (!orderId) navigate("/account");
     const getProducts = (cart) => {
       return cart
@@ -77,6 +78,7 @@ export default function Orders() {
 
   const downloadInvoice = async () => {
     try {
+      // TODO: chnage change the url
       const downloadLink = await appWriteStorage.getDownloadLink(
         `${order.id}_invoice`
       );
@@ -89,6 +91,7 @@ export default function Orders() {
   };
 
   const deleteOrder = async () => {
+    // TODO: cancel order not delete and wrap with loader
     setIsLoading(true);
     try {
       const deleteOrder = await appWriteDb.deleteOrder(orderId);

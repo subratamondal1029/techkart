@@ -28,7 +28,7 @@ const Login = () => {
     const currentUrl = window.location.host;
     const redirectUrl = `http://${currentUrl}/${state?.redirect || ""}`;
     appwriteAuth
-      .loginWithGogle(redirectUrl, `http://${currentUrl}`)
+      .loginWithGogle(redirectUrl, `http://${currentUrl}`) //TODO: send success and fails redirect url
       .catch((error) => toast.error(error));
   };
 
@@ -43,6 +43,7 @@ const Login = () => {
       });
       setIsLoading(false);
       if (session) {
+        // TODO: just login and app.jsx will fetch all the data
         const userData = await appwriteAuth.getCurrentUser();
         const cart = await appWriteDb.getCart(userData.$id);
         const orders = await appWriteDb.getOrders([

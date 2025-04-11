@@ -2,7 +2,8 @@ import { ArrowLeft } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
 
-const AccessDenied = ({message}) => {
+const AccessDenied = ({ message }) => {
+  // TODO: remove this page and redirect to login
   return (
     <div className="text-center flex justify-center items-center flex-col">
       <h1 className="font-bold text-3xl pt-20 min-h-64">

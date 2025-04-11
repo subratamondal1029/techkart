@@ -31,7 +31,7 @@ const countryCodes = [
 const Checkout = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { otherData, userData } = useSelector((state) => state.auth);
+  const { otherData, userData } = useSelector((state) => state.auth); // TODO: get cart from cart slice
   const { products: allProducts } = useSelector((state) => state.products);
 
   const {
@@ -70,6 +70,7 @@ const Checkout = () => {
     );
   }, [allProducts, otherData.cart]);
 
+  // TODO: refactor with useMemo or react 19
   const initAddress = () => {
     let pincodeCashe;
     let postOfficeCashe;
@@ -105,6 +106,7 @@ const Checkout = () => {
 
   const addAddress = initAddress();
 
+  // TODO: wrap with loader
   const checkout = async (data) => {
     setIsLoading(true);
     const order = await createOrder(totalAmount);
@@ -134,6 +136,7 @@ const Checkout = () => {
     setIsLoading(false);
   };
 
+  // TODO: wrap with loader
   async function addOrder(res, data) {
     setIsLoading(true);
     const orderObj = {
@@ -147,13 +150,22 @@ const Checkout = () => {
     const orderId = res.razorpay_order_id.split("_")[1];
 
     try {
-    const order = await appWriteDb.createOrder(orderObj, orderId);
-    if (order) {
-      const oldOrders = otherData.orders.map((order) => order.$id);
+      const order = await appWriteDb.createOrder(orderObj, orderId);
+      if (order) {
+        const oldOrders = otherData.orders.map((order) => order.$id);
         await appWriteDb.addOrder([...oldOrders, order.$id], userData.$id);
         await appWriteDb.addToCart([], userData.$id, "update");
 
-        dispatch(login({ otherData: { cart: [], orders: await appWriteDb.getOrders([Query.equal("userId", userData.$id)]) } }));
+        dispatch(
+          login({
+            otherData: {
+              cart: [],
+              orders: await appWriteDb.getOrders([
+                Query.equal("userId", userData.$id),
+              ]),
+            },
+          })
+        );
         navigate("/placed", { state: orderId });
       } else toast.error("Something went wrong");
       setIsLoading(false);
