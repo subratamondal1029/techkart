@@ -4662,6 +4662,70 @@
         },
         "security": []
       }
+    },
+    "/test/health": {
+      "get": {
+        "summary": "health check",
+        "deprecated": false,
+        "description": "",
+        "tags": ["test"],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "uptime": {
+                          "type": "number"
+                        },
+                        "db": {
+                          "type": "string"
+                        },
+                        "environment": {
+                          "type": "string"
+                        },
+                        "timeStamp": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["uptime", "db", "environment", "timeStamp"]
+                    }
+                  },
+                  "required": ["success", "status", "message", "data"]
+                },
+                "example": {
+                  "success": true,
+                  "status": 200,
+                  "message": "Success",
+                  "data": {
+                    "uptime": 41.436499389,
+                    "db": "techkart",
+                    "environment": "development",
+                    "timeStamp": "2025-04-11T18:06:09.054Z"
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
     }
   },
   "components": {
