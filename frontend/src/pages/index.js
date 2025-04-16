@@ -1,18 +1,19 @@
-import Home from "./Home";
-import Seller from "./Seller";
-import ProtectedRoute from "./ProtectedRoute";
-import Login from "../components/auth/Login";
-import SignUp from "../components/auth/SignUp";
-import Error from "./Error";
-import ProductDetail from "./ProductDetail";
-import Account from "./Account";
-import Orders from "./Orders";
-import Search from "./Search";
-import Cart from "./Cart";
-import Checkout from "./Checkout";
-import OrderConfirm from "./OrderConfirm";
-import Shipment from "./Shipment";
-import Delivery from "./Delivery";
+import { lazy } from "react";
+const Home = lazy(() => import("./Home"));
+const Seller = lazy(() => import("./Seller"));
+const ProtectedRoute = lazy(() => import("./ProtectedRoute"));
+const Login = lazy(() => import("../components/auth/Login"));
+const SignUp = lazy(() => import("../components/auth/SignUp"));
+const Error = lazy(() => import("./Error"));
+const ProductDetail = lazy(() => import("./ProductDetail"));
+const Account = lazy(() => import("./Account"));
+const Orders = lazy(() => import("./Orders"));
+const Search = lazy(() => import("./Search"));
+const Cart = lazy(() => import("./Cart"));
+const Checkout = lazy(() => import("./Checkout"));
+const OrderConfirm = lazy(() => import("./OrderConfirm"));
+const Shipment = lazy(() => import("./Shipment"));
+const Delivery = lazy(() => import("./Delivery"));
 
 export {
   Home,

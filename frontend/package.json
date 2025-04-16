@@ -13,6 +13,7 @@
     "@reduxjs/toolkit": "^2.6.1",
     "appwrite": "^15.0.0",
     "axios": "^1.8.4",
+    "crypto-js": "^4.2.0",
     "html5-qrcode": "^2.3.8",
     "jspdf": "^2.5.2",
     "jspdf-autotable": "^3.8.4",

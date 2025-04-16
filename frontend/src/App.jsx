@@ -9,6 +9,7 @@ import appWriteDb from "./appwrite/DbServise";
 import { storeProducts } from "./store/productSlice";
 import appWriteStorage from "./appwrite/storageService";
 import { Query } from "appwrite";
+import { Suspense } from "react";
 
 function App() {
   const dispatch = useDispatch();
@@ -73,7 +74,9 @@ function App() {
       ) : (
         <>
           <Header />
-          <Outlet />
+          <Suspense fallback={<div>Loading...</div>}>
+            <Outlet />
+          </Suspense>
           <Footer />
         </>
       )}
