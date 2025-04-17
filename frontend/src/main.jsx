@@ -103,7 +103,13 @@ const router = createBrowserRouter(
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>
     <React.StrictMode>
-      <RouterProvider router={router} />
+      <RouterProvider
+        router={router}
+        future={{
+          v7_startTransition: true,
+          v7_relativeSplatPath: true,
+        }}
+      />
       {/* TODO: chnage the style of toast */}
       <ToastContainer
         position="top-right"
