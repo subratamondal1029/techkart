@@ -19,7 +19,7 @@ const encryptPassword = (password) => {
 
 class AuthService extends baseService {
   createUser({ email, password, name, label = "user" }) {
-    return this.hanlder(async () => {
+    return this.handler(async () => {
       const response = await this.api.post("/users/", {
         email,
         password: encryptPassword(password),
@@ -31,7 +31,7 @@ class AuthService extends baseService {
   }
 
   emailPassLogin({ email, password }) {
-    return this.hanlder(async () => {
+    return this.handler(async () => {
       const response = await this.api.post("/users/auth/login", {
         email,
         password: encryptPassword(password),
@@ -44,7 +44,7 @@ class AuthService extends baseService {
   }
 
   logout() {
-    return this.hanlder(async () => {
+    return this.handler(async () => {
       const response = await this.api.delete("/users/auth/logout");
       removeAuth();
       return response.data;
@@ -52,7 +52,7 @@ class AuthService extends baseService {
   }
 
   getCurrentUser() {
-    return this.hanlder(async () => {
+    return this.handler(async () => {
       const response = await this.api.get("/users/");
 
       addAuth(response.headers["x-access-token"]);
@@ -61,7 +61,7 @@ class AuthService extends baseService {
   }
 
   updateUser({ avatar, name, email }) {
-    return this.hanlder(async () => {
+    return this.handler(async () => {
       const body = {};
       if (avatar) body.avatar = avatar;
       if (name.trim()) body.name = name.trim().toLowerCase();
@@ -73,7 +73,7 @@ class AuthService extends baseService {
   }
 
   refreshToken(token) {
-    return this.hanlder(async () => {
+    return this.handler(async () => {
       const headers = token ? { "x-refresh-token": token } : {};
       const response = await this.api.post(
         "/users/auth/refresh-tokens",

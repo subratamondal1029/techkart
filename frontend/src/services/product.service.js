@@ -2,7 +2,7 @@ import baseService from "./service.base";
 
 class ProductService extends baseService {
   create({ name, description, price, tags = [], category, company, image }) {
-    return this.hanlder(async () => {
+    return this.handler(async () => {
       const data = {
         name,
         description,
@@ -18,7 +18,7 @@ class ProductService extends baseService {
     }, "creating product");
   }
   getOne({ id }) {
-    return this.hanlder(async () => {
+    return this.handler(async () => {
       const response = this.api.get(`/products/${id}`);
       return response.data;
     }, "getting product");
@@ -31,7 +31,7 @@ class ProductService extends baseService {
     sortBy = "price",
     query,
   }) {
-    return this.hanlder(async () => {
+    return this.handler(async () => {
       const queries = [];
       if (category?.trim())
         queries.push(`category=${category?.trim().toLowerCase()}`);
@@ -56,7 +56,7 @@ class ProductService extends baseService {
     company,
     image,
   }) {
-    return this.hanlder(async () => {
+    return this.handler(async () => {
       const data = {};
       if (name) data.name = name;
       if (description) data.description = description;
@@ -71,7 +71,7 @@ class ProductService extends baseService {
     }, "updating product");
   }
   delete({ id }) {
-    return this.hanlder(async () => {
+    return this.handler(async () => {
       const response = this.api.delete(`/products/${id}`);
       return response.data;
     }, "deleting product");

@@ -14,7 +14,7 @@ class baseService {
     return this.#api;
   }
 
-  get hanlder() {
+  get handler() {
     return this.#requestHandler;
   }
 }

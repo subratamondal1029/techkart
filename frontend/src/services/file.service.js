@@ -2,7 +2,7 @@ import baseService from "./service.base";
 
 class FileService extends baseService {
   upload({ formData }) {
-    return this.hanlder(async () => {
+    return this.handler(async () => {
       const response = await this.api.post("/files/", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -10,7 +10,7 @@ class FileService extends baseService {
     }, "uploading file");
   }
   update({ id, formData }) {
-    return this.hanlder(async () => {
+    return this.handler(async () => {
       const response = await this.api.patch(`/files/${id}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -18,7 +18,7 @@ class FileService extends baseService {
     }, "updating file");
   }
   delete({ id }) {
-    return this.hanlder(async () => {
+    return this.handler(async () => {
       const response = await this.api.delete(`/files/${id}`);
       return response.data;
     }, "deleting file");
