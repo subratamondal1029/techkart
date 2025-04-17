@@ -2,16 +2,18 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const productSlice = createSlice({
   name: "product",
-  initialState: {
-    products: [],
-  },
+  initialState: [],
   reducers: {
     storeProducts: (state, action) => {
-      state.products = action.payload;
+      state = action.payload;
     },
     addProduct: (state, action) => {
-      // TODO: check if product already exists
-      state.products = [action.payload];
+      const existingProduct = state.find(
+        (product) => product._id === action.payload?._id
+      );
+      if (existingProduct) return;
+
+      state.push(action.payload);
     },
   },
 });
