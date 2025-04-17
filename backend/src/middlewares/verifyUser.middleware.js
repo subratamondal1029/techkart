@@ -11,7 +11,7 @@ export default async (req, res, next) => {
       req.body?.accessToken;
 
     if (!token) throw new ApiError(401, "Unauthorized");
-
+    req.token = token;
     // login with accessToken
     const payload = jwt.verify(token, process.env.JWT_SECRET_KEY);
 

@@ -172,7 +172,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   const refreshToken =
     req.cookies?.refreshToken ||
     req.body?.refreshToken ||
-    req.headers?.["refreshToken"];
+    req.headers?.["x-refresh-token"];
 
   if (!refreshToken) {
     throw new ApiError(400, "Refresh token is required");
@@ -273,7 +273,7 @@ const googleLoginCallback = async (req, res) => {
 const getUser = asyncHandler(async (req, res) => {
   const user = req.user;
   res
-    .header("x-access-token", accessToken)
+    .header("x-access-token", req.token)
     .json(new ApiResponse(200, "User found", user));
 });
 
