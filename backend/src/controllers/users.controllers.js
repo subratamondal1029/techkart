@@ -272,7 +272,9 @@ const googleLoginCallback = async (req, res) => {
 
 const getUser = asyncHandler(async (req, res) => {
   const user = req.user;
-  res.json(new ApiResponse(200, "User found", user));
+  res
+    .header("x-access-token", accessToken)
+    .json(new ApiResponse(200, "User found", user));
 });
 
 export {
