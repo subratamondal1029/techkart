@@ -54,6 +54,8 @@ class AuthService extends baseService {
   getCurrentUser() {
     return this.hanlder(async () => {
       const response = await this.api.get("/users/");
+
+      addAuth(response.headers["x-access-token"]);
       return response.data;
     }, "getting current user");
   }
