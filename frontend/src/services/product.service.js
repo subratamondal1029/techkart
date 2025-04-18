@@ -13,13 +13,13 @@ class ProductService extends baseService {
         image,
       };
 
-      const response = this.api.post("/products/", data);
+      const response = await this.api.post("/products/", data);
       return response.data;
     }, "creating product");
   }
   getOne({ id }) {
     return this.handler(async () => {
-      const response = this.api.get(`/products/${id}`);
+      const response = await this.api.get(`/products/${id}`);
       return response.data;
     }, "getting product");
   }
@@ -42,7 +42,10 @@ class ProductService extends baseService {
       if (sortBy?.trim())
         queries.push(`sortBy=${sortBy?.trim().toLowerCase()}`);
 
-      const response = this.api.get(`/products/?${queries.join("&")}`);
+      const response = await this.api.get(
+        `/products/?page=${page}&${queries.join("&")}`
+      );
+
       return response.data;
     }, "getting products");
   }
@@ -66,13 +69,13 @@ class ProductService extends baseService {
       if (company) data.company = company;
       if (image) data.image = image;
 
-      const response = this.api.patch(`/products/${id}`, data);
+      const response = await this.api.patch(`/products/${id}`, data);
       return response.data;
     }, "updating product");
   }
   delete({ id }) {
     return this.handler(async () => {
-      const response = this.api.delete(`/products/${id}`);
+      const response = await this.api.delete(`/products/${id}`);
       return response.data;
     }, "deleting product");
   }
