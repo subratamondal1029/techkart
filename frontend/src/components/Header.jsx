@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../store/authSlice";
+import { logout } from "../store/auth.slice";
 import { Link, useNavigate } from "react-router-dom";
 import {
   ChevronDown,
@@ -11,11 +11,12 @@ import {
   X,
 } from "lucide-react";
 import { Button, CartPop, Input, Logo } from "./index";
-import appwriteAuth from "../appwrite/authService";
+import authService from "../services/auth.service";
 import { toast } from "react-toastify";
 
 const Header = () => {
-  const { isLogin, otherData } = useSelector((state) => state.auth); //TODO: get cart from cart slice
+  const { isLoggedIn } = useSelector((state) => state.auth);
+  const cart = useSelector((state) => state.cart);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -24,7 +25,7 @@ const Header = () => {
 
   const handleLogout = async () => {
     try {
-      const res = await appwriteAuth.logout();
+      const res = await authService.logout();
       if (res) {
         dispatch(logout());
         navigate("/");
@@ -32,7 +33,6 @@ const Header = () => {
       }
     } catch (error) {
       toast.error("Failed to Logout");
-      console.log("handleLogout :: error", error);
     }
   };
 
@@ -88,9 +88,9 @@ const Header = () => {
             className="relative cursor-pointer"
             onClick={() => setIsCartOpen(true)}
           >
-            {otherData.cart.length > 0 ? (
+            {cart?.products?.length > 0 ? (
               <div className="absolute -top-2 -right-2 w-4 h-4 p-2 rounded-full bg-black text-white flex justify-center items-center">
-                {otherData.cart.length}
+                {cart?.products?.length}
               </div>
             ) : null}
             <ShoppingCartIcon size={20} />
@@ -98,9 +98,9 @@ const Header = () => {
 
           <Button
             type="button"
-            onClick={isLogin ? handleLogout : () => navigate("/login")}
+            onClick={isLoggedIn ? handleLogout : () => navigate("/login")}
           >
-            {isLogin ? "Logout" : "Login"}
+            {isLoggedIn ? "Logout" : "Login"}
           </Button>
         </div>
 
@@ -130,9 +130,9 @@ const Header = () => {
                 className="relative cursor-pointer flex mt-4 gap-2"
                 onClick={() => setIsCartOpen(true)}
               >
-                {otherData.cart.length > 0 ? (
+                {cart?.products?.length > 0 ? (
                   <div className="absolute -top-2 -right-2 w-4 h-4 p-2 rounded-full bg-black text-white flex justify-center items-center">
-                    {otherData.cart.length}
+                    {cart?.products?.length}
                   </div>
                 ) : null}
                 <ShoppingCartIcon size={20} /> Open cart
@@ -163,9 +163,9 @@ const Header = () => {
               <Button
                 type="button"
                 classname="w-full mt-10"
-                onClick={isLogin ? handleLogout : () => navigate("/login")}
+                onClick={isLoggedIn ? handleLogout : () => navigate("/login")}
               >
-                {isLogin ? "Logout" : "Login"}
+                {isLoggedIn ? "Logout" : "Login"}
               </Button>
             </div>
           </div>

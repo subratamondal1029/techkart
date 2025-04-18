@@ -1,64 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { X } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
-import Button from "./Button";
 import { Link, useNavigate } from "react-router-dom";
-import { login } from "../store/authSlice";
-import appWriteDb from "../appwrite/DbServise";
-import { storeProducts } from "../store/productSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { X } from "lucide-react";
+import Button from "./Button";
+import { useLoading } from "../hooks";
+import { removeFromCart } from "../store/cart.slice";
+import cartService from "../services/cart.service";
+import fileService from "../services/file.service";
 
 export default function CartPop({ setIsCartOpen }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [products, setProducts] = useState([]);
-  const [loadingClass, setLoadingClass] = useState("");
-  const { otherData } = useSelector((state) => state.auth);
+  const products = useSelector((state) => state.cart?.products);
   const userData = useSelector((state) => state.auth.userData);
-  const { products: allProducts } = useSelector((state) => state.products);
 
-  useEffect(() => {
-    // TODO: just display already product populated in cart
-    const createProducts = otherData.cart.map((cartProduct) => {
-      const productDetails = allProducts.find(
-        (product) => product.$id === cartProduct.productId
-      );
-
-      return {
-        id: productDetails.$id,
-        name: productDetails.name,
-        price: productDetails.price,
-        image: productDetails.image,
-        quantity: cartProduct.quantity,
-      };
-    });
-
-    setProducts(createProducts.reverse());
-  }, [otherData.cart, allProducts]);
-
-  const handleDeleteProduct = async (productId) => {
-    setLoadingClass("cursor-wait");
-    const filteredProducts = products
-      .filter((product) => product.id !== productId)
-      .map((product) => ({
-        productId: product.id,
-        quantity: product.quantity,
-      }));
-
+  const [handleDeleteProduct, isLoading] = useLoading(async (productId) => {
     try {
-      const cart = await appWriteDb.addToCart(
-        filteredProducts,
-        userData.$id,
-        "update"
-      );
-      if (cart) {
-        dispatch(login({ otherData: { cart, orders: otherData.orders } }));
-        setLoadingClass("");
-      }
+      await cartService.update({ id: productId, quantity: 0 });
+      dispatch(removeFromCart(productId));
+      toast.success("Product removed from cart");
     } catch (error) {
-      console.warn(error.message);
-      setLoadingClass("");
+      toast.error("Failed to delete product");
     }
-  };
+  });
 
   return (
     <div
@@ -73,42 +37,50 @@ export default function CartPop({ setIsCartOpen }) {
       </button>
       <div className="mt-6 space-y-6">
         <ul className="space-y-4 overflow-y-auto max-h-72 hide-scroll">
-          {products.map((product) => (
-            <li key={product.id}>
-              <Link
-                to={`/product/${product.id}`}
-                className="flex items-center gap-4 relative"
-              >
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="h-16 w-16 rounded object-contain"
-                />
-                <div>
-                  <h3 className="text-sm text-gray-900 truncate max-w-40">
-                    {product.name}
-                  </h3>
-                  <dl className="mt-0.5 space-y-px text-[10px] text-gray-600">
-                    <div>
-                      <dd className="inline font-bold">₹{product.price}</dd>
-                      <dd className="inline"> x {product.quantity}</dd>
-                    </div>
-                  </dl>
-                </div>
-                <div
-                  className={`absolute right-0 top-1/4 text-white hover:text-gray-300 bg-black p-1 rounded-md ${loadingClass}`}
+          {products &&
+            products.map((product) => (
+              <li key={product.product._id}>
+                <Link
+                  to={`/product/${product.product._id}`}
+                  className="flex items-center gap-4 relative"
                 >
-                  <X
-                    size={24}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleDeleteProduct(product.id);
-                    }}
+                  <img
+                    src={fileService.get({ id: product.product.image })}
+                    alt={product.product.name}
+                    className="h-16 w-16 rounded object-contain"
                   />
-                </div>
-              </Link>
-            </li>
-          ))}
+                  <div>
+                    <h3 className="text-sm text-gray-900 truncate max-w-40">
+                      {product.product.name}
+                    </h3>
+                    <dl className="mt-0.5 space-y-px text-[10px] text-gray-600">
+                      <div>
+                        <dd className="inline font-bold">
+                          ₹{product.product.price}
+                        </dd>
+                        <dd className="inline">
+                          {" "}
+                          x {product.product.quantity}
+                        </dd>
+                      </div>
+                    </dl>
+                  </div>
+                  <div
+                    className={`absolute right-0 top-1/4 text-white hover:text-gray-300 bg-black p-1 rounded-md ${
+                      isLoading ? "cursor-wait" : ""
+                    }`}
+                  >
+                    <X
+                      size={24}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleDeleteProduct(product.product._id);
+                      }}
+                    />
+                  </div>
+                </Link>
+              </li>
+            ))}
         </ul>
         <div className="space-y-4 text-center">
           <button
@@ -119,18 +91,20 @@ export default function CartPop({ setIsCartOpen }) {
               setIsCartOpen(false);
             }}
           >
-            View Cart ({products.length})
+            View Cart ({products?.length || 0})
           </button>
-          <Button
-            classname="w-full"
-            type="button"
-            onClick={() => {
-              navigate("/checkout");
-              setIsCartOpen(false);
-            }}
-          >
-            Checkout
-          </Button>
+          {products?.length > 0 && (
+            <Button
+              classname="w-full"
+              type="button"
+              onClick={() => {
+                navigate("/checkout");
+                setIsCartOpen(false);
+              }}
+            >
+              Checkout
+            </Button>
+          )}
           <Link
             to="/"
             onClick={() => setIsCartOpen(false)}
