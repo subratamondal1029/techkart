@@ -24,7 +24,6 @@ class FileService extends baseService {
     }, "deleting file");
   }
   get({ id }) {
-    console.log(id);
     return `${import.meta.env.VITE_BACKEND_BASE_URL}/files/${id}`;
   }
 }
