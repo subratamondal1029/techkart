@@ -1675,7 +1675,7 @@
             "name": "category",
             "in": "query",
             "description": "",
-            "required": true,
+            "required": false,
             "example": "",
             "schema": {
               "type": "string"
@@ -1685,7 +1685,7 @@
             "name": "company",
             "in": "query",
             "description": "",
-            "required": true,
+            "required": false,
             "example": "",
             "schema": {
               "type": "string"
@@ -1695,7 +1695,7 @@
             "name": "sort",
             "in": "query",
             "description": "",
-            "required": true,
+            "required": false,
             "example": "a",
             "schema": {
               "type": "string"
@@ -1705,7 +1705,7 @@
             "name": "sortBy",
             "in": "query",
             "description": "",
-            "required": true,
+            "required": false,
             "example": "price",
             "schema": {
               "type": "string"
@@ -1715,7 +1715,7 @@
             "name": "query",
             "in": "query",
             "description": "",
-            "required": true,
+            "required": false,
             "example": "",
             "schema": {
               "type": "string"
@@ -1740,10 +1740,23 @@
                       "type": "string"
                     },
                     "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
+                      "type": "object",
+                      "properties": {
+                        "products": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {}
+                          }
+                        },
+                        "currentPage": {
+                          "type": "number"
+                        },
+                        "totalPages": {
+                          "type": "number"
+                        }
+                      },
+                      "required": ["products", "currentPage", "totalPages"]
                     }
                   },
                   "required": ["success", "status", "message", "data"]
@@ -2296,7 +2309,7 @@
       "get": {
         "summary": "get cart",
         "deprecated": false,
-        "description": "If the cart is not available, add a product first to create the cart. A cart is automatically created when a user adds their first product.\n\n- A user **must add a product** before placing an order.\n    \n- For **new accounts**, the cart will only be created after adding a product.",
+        "description": "If the cart is not available, add a product first to create the cart. A cart is automatically created when a user adds their first product.\n\n- A user **must add a product** before placing an order.\n    \n- For the cart will only be created after adding a product.",
         "tags": ["cart"],
         "parameters": [],
         "responses": {
@@ -4305,7 +4318,7 @@
       "patch": {
         "summary": "update status",
         "deprecated": false,
-        "description": "- **Fields:**\n    \n    - `isShipped` (boolean) – Marks the order as shipped (Allowed for Shipment Master).\n        \n    - `isDelivered` (boolean) – Marks the order as delivered (Allowed for Delivery Boy).\n        \n    - `route` (boolean) – Redirect to order details page require only on **delivery**\n        \n- **Rules:**\n    \n    - Only **Shipment Master** can update `isShipped`.\n        \n    - Only **Delivery Boy** can update `isDelivered`.\n        \n    - Only **route/:id or route?id=** acceptable in `route`.",
+        "description": "- **Fields:**\n    \n    - `isShipped` (boolean) – Marks the order as shipped (Allowed for Shipment Master).\n        \n    - `isDelivered` (boolean) – Marks the order as delivered (Allowed for Delivery Boy).\n        \n    - `route` (string) – Redirect to order details page require only on **delivery**\n        \n- **Rules:**\n    \n    - Only **Shipment Master** can update `isShipped`.\n        \n    - Only **Delivery Boy** can update `isDelivered`.\n        \n    - Only **route/:id or route?id=** acceptable in `route`.",
         "tags": ["orders"],
         "parameters": [
           {
@@ -4724,7 +4737,11 @@
             "headers": {}
           }
         },
-        "security": []
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
       }
     }
   },

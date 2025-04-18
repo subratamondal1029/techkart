@@ -107,12 +107,21 @@ const getProducts = asyncHandler(async (req, res) => {
     ];
   }
 
+  page = Number(page);
+  const totalProducts = await Product.countDocuments(filter);
+
   const products = await Product.find(filter)
     .limit(15)
     .skip(15 * (page - 1))
     .sort({ [sortBy]: sortFilter });
 
-  res.json(new ApiResponse(200, "Product fetched Successfully", products));
+  res.json(
+    new ApiResponse(200, "Product fetched Successfully", {
+      products,
+      currentPage: page,
+      totalPages: Math.ceil(totalProducts / 15),
+    })
+  );
 });
 
 const deleteProduct = asyncHandler(async (req, res) => {
