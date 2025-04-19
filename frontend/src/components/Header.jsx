@@ -54,7 +54,7 @@ const Header = () => {
           <Input
             required={false}
             placeholder="Search"
-            classname="min-w-80 rounded-r-none"
+            classname="min-w-80 rounded-r-none mt-1"
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
             onKeyPress={(e) => e.key === "Enter" && handleSearch(searchValue)}
@@ -148,7 +148,7 @@ const Header = () => {
                 <Input
                   required={false}
                   placeholder="Search"
-                  classname="rounded-r-none w-full"
+                  classname="rounded-r-none w-full mt-1"
                   value={searchValue}
                   onChange={(e) => setSearchValue(e.target.value)}
                 />
