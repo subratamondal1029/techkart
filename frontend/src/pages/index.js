@@ -3,7 +3,6 @@ const Home = lazy(() => import("./Home"));
 const Seller = lazy(() => import("./Seller"));
 const ProtectedRoute = lazy(() => import("./ProtectedRoute"));
 const Auth = lazy(() => import("../components/auth/Auth"));
-const SignUp = lazy(() => import("../components/auth/SignUp"));
 const Error = lazy(() => import("./Error"));
 const ProductDetail = lazy(() => import("./ProductDetail"));
 const Account = lazy(() => import("./Account"));
@@ -20,7 +19,6 @@ export {
   Seller,
   ProtectedRoute,
   Auth,
-  SignUp,
   Error,
   ProductDetail,
   Account,
