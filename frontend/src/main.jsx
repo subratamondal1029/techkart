@@ -14,9 +14,8 @@ import {
   Home,
   Seller,
   ProtectedRoute,
-  Login,
+  Auth,
   Error,
-  SignUp,
   ProductDetail,
   Account,
   Orders,
@@ -27,16 +26,18 @@ import {
   Shipment,
   Delivery,
 } from "./pages";
+import Test from "./components/Test.jsx";
 import { Provider } from "react-redux";
 import { store } from "./store/store.js";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
+      <Route path="test" element={<Test />} />
       <Route path="*" element={<Error />} />
       <Route path="" element={<Home />} />
-      <Route path="login" element={<Login />} />
-      <Route path="signup" element={<SignUp />} />
+      <Route path="login" element={<Auth isSignupPage={false} />} />
+      <Route path="signup" element={<Auth isSignupPage={true} />} />
       <Route path="/search/:searchValue" element={<Search />} />
       <Route path="placed" element={<OrderConfirm />} />
       <Route

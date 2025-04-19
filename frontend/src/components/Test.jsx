@@ -3,23 +3,22 @@ import testService from "../services/test.service";
 import { useEffect } from "react";
 import Button from "./Button";
 import fileService from "../services/file.service";
+import { useRef } from "react";
+
+const Input = (props) => {
+  const { ref: externalRef, ...rest } = props;
+  return <input ref={externalRef} {...rest} />;
+};
 
 const Test = () => {
-  async function test() {
-    try {
-      const response = fileService.get({ id: "63d5b9b7b9b9b9b9b9b9" });
-      console.log(response);
-    } catch (error) {
-      //   console.log(error);
-    }
-  }
-
+  const inputRef = useRef(null);
+  useEffect(() => {
+    console.log(inputRef.current);
+  }, []);
   return (
     <div className="bg-gray-700 text-white h-screen w-full">
       <h1 className="text-3xl ">Test</h1>
-      <Button type="button" onClick={test}>
-        make a request
-      </Button>
+      <Input ref={inputRef} />
     </div>
   );
 };
