@@ -11,7 +11,7 @@ const encryptPassword = (password) => {
 
   const encrypted = cryptoJS.AES.encrypt(
     data,
-    process.env.ENCRYPT_KEY
+    import.meta.env.VITE_ENCRYPT_KEY
   ).toString();
 
   return encrypted;

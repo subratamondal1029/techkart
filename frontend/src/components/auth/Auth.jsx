@@ -26,35 +26,45 @@ const Auth = ({ isSignupPage = false }) => {
     authService.loginWithGogle(successPath, failsPath);
   };
 
-  const [handleLogin, isLoading] = useLoading(async (data) => {
-    setError("");
-    const toastId = toast.loading("Logging in...");
-    try {
-      await authService.emailPassLogin({
-        email: data.email,
-        password: data.password,
-      });
-      toast.update(toastId, {
-        render: "Login successful",
-        type: "success",
-        autoClose: 3000,
-        isLoading: false,
-      });
+  const [handleSubmit, isLoading] = useLoading(
+    async ({ name, email, password }) => {
+      setError("");
+      const toastMessage = isSignUp ? "Signing up..." : "Logging in...";
+      const successToastMessage = isSignUp
+        ? "Signup successful"
+        : "Login successful";
+      const failToastMessage = isSignUp ? "Signup failed" : "Login failed";
 
-      // TODO: send state to fetch data in root
-      if (state?.redirect) {
-        navigate(`/${state.redirect}`);
-      } else navigate("/");
-    } catch (error) {
-      toast.update(toastId, {
-        render: "Login failed",
-        type: "error",
-        autoClose: 3000,
-        isLoading: false,
-      });
-      setError(error.message);
+      const toastId = toast.loading(toastMessage);
+      try {
+        if (isSignUp) {
+          await authService.createUser({ name, email, password });
+        } else {
+          await authService.emailPassLogin({ email, password });
+        }
+
+        toast.update(toastId, {
+          render: successToastMessage,
+          type: "success",
+          autoClose: 3000,
+          isLoading: false,
+        });
+
+        if (state?.redirect) {
+          navigate(`/${state.redirect}`, { state: { fetchData: true } });
+        } else navigate("/", { state: { fetchData: true } });
+      } catch (error) {
+        toast.update(toastId, {
+          render: failToastMessage,
+          type: "error",
+          autoClose: 3000,
+          isLoading: false,
+        });
+        setError(error.message);
+        console.error("auth error", error);
+      }
     }
-  });
+  );
 
   const [isSignUp, setIsSignUp] = useState(false);
   const [isUser, setIsUser] = useState(true);
@@ -80,10 +90,6 @@ const Auth = ({ isSignupPage = false }) => {
     console.log("state", state);
   }, [state]);
 
-  const onSubmit = (data) => {
-    console.log("submit Data", data);
-  };
-
   return (
     <section>
       <div className="flex items-center justify-center px-4 py-10 sm:px-6 sm:py-8 lg:px-8 lg:py-12">
@@ -96,7 +102,7 @@ const Auth = ({ isSignupPage = false }) => {
           </h2>
           {isSignUp ? (
             <p className="mt-2 text-center text-sm text-gray-600 ">
-              have an account?{" "}
+              Have an account?{" "}
               <Link
                 to={`/login`}
                 state={state}
@@ -117,12 +123,11 @@ const Auth = ({ isSignupPage = false }) => {
               </Link>
             </p>
           ) : null}
-          <p className="text-center text-sm text-red-500">{error}</p>
           <FormProvider {...methods}>
             <form
               method="POST"
-              className="mt-8"
-              onSubmit={methods.handleSubmit(onSubmit)}
+              className="mt-5"
+              onSubmit={methods.handleSubmit(handleSubmit)}
             >
               <div className="space-y-5">
                 {isSignUp && (
@@ -175,6 +180,7 @@ const Auth = ({ isSignupPage = false }) => {
                     )}
                   </div>
                 </div>
+                <p className="text-center text-sm text-red-500">{error}</p>
                 <Button
                   classname="w-full flex justify-center items-center text-3xl select-none"
                   type="submit"
@@ -193,21 +199,30 @@ const Auth = ({ isSignupPage = false }) => {
           </FormProvider>
           {isUser && (
             <div className="mt-3 space-y-3" onClick={handleGoogleLogin}>
-              <button
-                type="button"
-                className="relative inline-flex w-full items-center justify-center rounded-md border border-gray-400 bg-white px-3.5 py-2.5 font-semibold text-gray-700 transition-all duration-200 hover:bg-gray-100 hover:text-black focus:bg-gray-100 focus:text-black focus:outline-none"
-              >
-                <span className="mr-2 inline-block">
-                  <svg
-                    className="h-6 w-6 text-rose-500"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                  >
-                    <path d="M20.283 10.356h-8.327v3.451h4.792c-.446 2.193-2.313 3.453-4.792 3.453a5.27 5.27 0 0 1-5.279-5.28 5.27 5.27 0 0 1 5.279-5.279c1.259 0 2.397.447 3.29 1.178l2.6-2.599c-1.584-1.381-3.615-2.233-5.89-2.233a8.908 8.908 0 0 0-8.934 8.934 8.907 8.907 0 0 0 8.934 8.934c4.467 0 8.529-3.249 8.529-8.934 0-.528-.081-1.097-.202-1.625z"></path>
-                  </svg>
-                </span>
-                Sign in with Google
+              <button className="w-full cursor-pointer text-black flex gap-2 items-center justify-center bg-gray-100 px-4 py-2 rounded-lg font-medium text-sm hover:bg-zinc-300 transition-all ease-in duration-200">
+                <svg
+                  viewBox="0 0 48 48"
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-6"
+                >
+                  <path
+                    d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"
+                    fill="#FFC107"
+                  ></path>
+                  <path
+                    d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"
+                    fill="#FF3D00"
+                  ></path>
+                  <path
+                    d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"
+                    fill="#4CAF50"
+                  ></path>
+                  <path
+                    d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"
+                    fill="#1976D2"
+                  ></path>
+                </svg>
+                Continue with Google
               </button>
             </div>
           )}
