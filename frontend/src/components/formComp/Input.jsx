@@ -1,6 +1,11 @@
 import React, { useId } from "react";
 import { useFormContext } from "react-hook-form";
 
+/**
+ *
+ * @param {React.InputHTMLAttributes<HTMLInputElement>} props
+ */
+
 function Input({
   type = "text",
   label,
