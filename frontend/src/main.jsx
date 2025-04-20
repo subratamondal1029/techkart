@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, Zoom } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {
   createBrowserRouter,
@@ -115,16 +115,17 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <ToastContainer
         position="top-right"
         autoClose={3000}
+        closeButton={false}
+        closeOnClick={true}
         hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        bodyClassName="toastBody"
-        rtl={false}
+        newestOnTop
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="colored"
-        transition:Bounce
+        theme="light"
+        transition={Zoom}
+        bodyClassName="toastBody"
+        toastClassName="!min-h-10 !h-auto !p-2 text-sm rounded-md shadow-md flex items-center overflow-visible break-words "
       />
     </React.StrictMode>
   </Provider>
