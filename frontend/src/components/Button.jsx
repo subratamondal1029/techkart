@@ -4,11 +4,11 @@ import React from "react";
  * @param {React.ButtonHTMLAttributes<HTMLButtonElement>} props
  */
 
-const Button = ({ children, type = "button", classname, ...props }) => {
+const Button = ({ children, type = "button", classname = "", ...props }) => {
   return (
     <button
       type={type}
-      className={`rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black ${classname}`}
+      className={`inline-flex items-center justify-center rounded-lg bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium px-4 py-2 text-sm text-white shadow-sm transition-colors duration-200 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 ${classname}`}
       {...props}
     >
       {children}

@@ -5,7 +5,16 @@ const productSlice = createSlice({
   initialState: [],
   reducers: {
     storeProducts: (state, action) => {
-      state = action.payload;
+      const newItems = action.payload;
+
+      const uniqueItems = [
+        ...state,
+        ...newItems.filter(
+          (newItem) => !state.some((existing) => existing._id === newItem._id)
+        ),
+      ];
+
+      return uniqueItems;
     },
     addProduct: (state, action) => {
       const existingProduct = state.find(

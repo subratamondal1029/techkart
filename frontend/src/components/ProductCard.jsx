@@ -1,30 +1,39 @@
 import React from "react";
 import { Button } from "./index";
-import { ViewIcon } from "lucide-react";
+import fileService from "../services/file.service";
+import { Link } from "react-router-dom";
+import { Eye } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
-export default function ProductCard({ name, price, image, openProduct }) {
+export default function ProductCard({ product }) {
+  const { _id, image, name, price } = product;
+  const navigate = useNavigate();
+
   return (
-    <div className="w-80 h-96 flex flex-col items-center justify-between mb-5 shadow-sm">
-      {/* TODO: add simmer effect to image leading */}
-      <img
-        src={image}
-        alt={`${name} image`}
-        className="w-full h-56 object-contain"
-      />
-
-      <div className="px-5 pb-5">
-        <p className="text-sm font-[400] mb-4">{name}</p>
-
-        <div className="flex items-center justify-between">
-          <p className="text-sm font-semibold mt-2">
-            ₹ {price.toLocaleString("en-IN")}
-          </p>
+    <div className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-md p-5 flex flex-col justify-between ">
+      <Link to={`/product/${_id}`}>
+        {/* TODO: add simmer Effect */}
+        <img
+          className="rounded-lg"
+          src={fileService.get({ id: image })}
+          alt="product image"
+        />
+      </Link>
+      <div className="mt-5">
+        <Link to={`/product/${_id}`}>
+          <h5 className="text-xl font-semibold tracking-tight text-gray-800">
+            {name}
+          </h5>
+        </Link>
+        <div className="flex items-center justify-between mt-5">
+          <span className="text-2xl font-bold text-gray-900">
+            ₹ {price?.toLocaleString()}
+          </span>
           <Button
-            onClick={openProduct}
-            type="button"
-            classname="w-1/2 flex items-center justify-center py-2.5"
+            onClick={() => navigate(`/product/${_id}`)}
+            classname="text-white rounded-lg text-sm px-5 py-2.5 text-center w-32 flex justify-between items-center"
           >
-            <ViewIcon size={20} className="mr-2" />
+            <Eye />
             View
           </Button>
         </div>
