@@ -57,7 +57,7 @@ const Header = () => {
             classname="min-w-80 rounded-r-none mt-1"
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
-            onKeyPress={(e) => e.key === "Enter" && handleSearch(searchValue)}
+            onKeyUp={(e) => e.key === "Enter" && handleSearch(searchValue)}
           />
           <div className="relative flex items-start justify-center">
             <select
@@ -128,7 +128,7 @@ const Header = () => {
               </Link>
               <span
                 className="relative cursor-pointer flex mt-4 gap-2"
-                onClick={() => setIsCartOpen(true)}
+                onClick={() => navigate("/cart")}
               >
                 {cart?.products?.length > 0 ? (
                   <div className="absolute -top-2 -right-2 w-4 h-4 p-2 rounded-full bg-black text-white flex justify-center items-center">
