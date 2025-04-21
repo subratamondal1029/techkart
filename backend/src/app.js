@@ -45,6 +45,13 @@ app.use(
   swaggerUi.setup(require("../test/swagger.json"))
 );
 
+// slowdown the response for testing in development mode
+if (process.env.NODE_ENV === "development") {
+  app.use((req, res, next) => {
+    setTimeout(next, 1000);
+  });
+}
+
 // Routes define
 app.get("/favicon.ico", (req, res) =>
   res.redirect("/api/v1/files/67eeb1fcfaf070cbfb48da8c")
