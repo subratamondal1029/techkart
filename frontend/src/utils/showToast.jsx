@@ -6,16 +6,12 @@ import { toast } from "react-toastify";
  *
  * @function showToast
  * @param {"success" | "error" | "info" | "warning"} [status="success"] - The status/type of the toast.
- * @param {string} [message=""] - The message to display in the toast.
+ * @param {string} [message="successful"] - The message to display in the toast.
  * @param {Object} [config={}] - Additional configuration for the toast (passed to toastify).
  * @returns {void}
  */
 
-const showToast = ({
-  status = "success",
-  message = "Successful",
-  config = {},
-}) => {
+const showToast = (status = "success", message = "Successful", config = {}) => {
   toast[status](
     <div className="flex items-center gap-3 justify-between">
       <p className="text-xs text-gray-600">{message}</p>

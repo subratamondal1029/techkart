@@ -8,7 +8,9 @@ const Test = () => {
   return (
     <div className="bg-gray-700 text-white h-screen w-full">
       <h1 className="text-3xl ">Test</h1>
-      <Button onClick={showToast}>Show Toast</Button>
+      <Button onClick={() => showToast("error", "Error message")}>
+        Show Toast
+      </Button>
     </div>
   );
 };
