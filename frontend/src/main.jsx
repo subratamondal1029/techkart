@@ -43,7 +43,7 @@ const router = createBrowserRouter(
       <Route
         path="cart"
         element={
-          <ProtectedRoute authontication isSignUp={true} redirect="cart">
+          <ProtectedRoute authentication isSignUp={true} redirect="cart">
             <Cart />
           </ProtectedRoute>
         }
@@ -51,7 +51,7 @@ const router = createBrowserRouter(
       <Route
         path="checkout"
         element={
-          <ProtectedRoute authontication isSignUp={true} redirect="cart">
+          <ProtectedRoute authentication isSignUp={true} redirect="cart">
             <Checkout />
           </ProtectedRoute>
         }
@@ -60,7 +60,7 @@ const router = createBrowserRouter(
       <Route
         path="account"
         element={
-          <ProtectedRoute authontication redirect="account">
+          <ProtectedRoute authentication redirect="account">
             <Account />
           </ProtectedRoute>
         }
@@ -68,7 +68,7 @@ const router = createBrowserRouter(
       <Route
         path="orders/:orderId"
         element={
-          <ProtectedRoute authontication redirect="account">
+          <ProtectedRoute authentication redirect="account">
             <Orders />
           </ProtectedRoute>
         }
@@ -76,7 +76,7 @@ const router = createBrowserRouter(
       <Route
         path="seller"
         element={
-          <ProtectedRoute authontication isSignUp={false} redirect="seller">
+          <ProtectedRoute authentication isSignUp={false} redirect="seller">
             <Seller />
           </ProtectedRoute>
         }
@@ -84,7 +84,7 @@ const router = createBrowserRouter(
       <Route
         path="shipment"
         element={
-          <ProtectedRoute authontication isSignUp={false} redirect="shipment">
+          <ProtectedRoute authentication isSignUp={false} redirect="shipment">
             <Shipment />
           </ProtectedRoute>
         }
@@ -92,7 +92,7 @@ const router = createBrowserRouter(
       <Route
         path="delivery"
         element={
-          <ProtectedRoute authontication isSignUp={false} redirect="delivery">
+          <ProtectedRoute authentication isSignUp={false} redirect="delivery">
             <Delivery />
           </ProtectedRoute>
         }
@@ -111,7 +111,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           v7_relativeSplatPath: true,
         }}
       />
-      {/* TODO: chnage the style of toast */}
       <ToastContainer
         position="top-right"
         autoClose={3000}

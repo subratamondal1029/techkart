@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 
 const ProtectedRoute = ({
-  authontication = true,
+  authentication = true,
   children,
   isSignUp = true,
   redirect,
@@ -12,12 +12,12 @@ const ProtectedRoute = ({
   const navigate = useNavigate();
   // TODO: update it for auth pages also
   useEffect(() => {
-    if (authontication && isLogin !== authontication) {
+    if (authentication && isLogin !== authentication) {
       navigate("/login", { state: { isSignUp, redirect } });
-    } else if (!authontication && isLogin !== authontication) {
+    } else if (!authentication && isLogin !== authentication) {
       navigate("/");
     }
-  }, [isLogin, authontication]);
+  }, [isLogin, authentication]);
 
   return children;
 };
