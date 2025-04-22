@@ -45,7 +45,7 @@ export default function CartPop({ setIsCartOpen }) {
                   className="flex items-center gap-4 relative"
                 >
                   <img
-                    src={fileService.get({ id: product.product.image })}
+                    src={fileService.get(product.product.image)}
                     alt={product.product.name}
                     className="h-16 w-16 rounded object-contain"
                   />

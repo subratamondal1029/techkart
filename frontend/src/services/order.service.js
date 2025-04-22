@@ -34,7 +34,7 @@ class OrderService extends baseService {
     }, "creating order");
   }
 
-  getOne({ id }) {
+  getOne(id) {
     return this.handler(async () => {
       const response = await this.api.get(`/orders/${id}`);
       return response.data;
@@ -60,7 +60,7 @@ class OrderService extends baseService {
     }, "updating order");
   }
 
-  cancel({ id }) {
+  cancel(id) {
     return this.handler(async () => {
       const response = await this.api.delete(`/orders/${id}`);
       return response.data;

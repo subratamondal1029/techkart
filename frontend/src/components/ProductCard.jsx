@@ -15,7 +15,7 @@ export default function ProductCard({ product }) {
         {/* TODO: add simmer Effect */}
         <img
           className="rounded-lg"
-          src={fileService.get({ id: image })}
+          src={fileService.get(image)}
           alt="product image"
         />
       </Link>

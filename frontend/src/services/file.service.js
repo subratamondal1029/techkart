@@ -17,13 +17,13 @@ class FileService extends baseService {
       return response.data;
     }, "updating file");
   }
-  delete({ id }) {
+  delete(id) {
     return this.handler(async () => {
       const response = await this.api.delete(`/files/${id}`);
       return response.data;
     }, "deleting file");
   }
-  get({ id }) {
+  get(id) {
     return `${import.meta.env.VITE_BACKEND_BASE_URL}/files/${id}`;
   }
 }

@@ -17,7 +17,7 @@ class ProductService extends baseService {
       return response.data;
     }, "creating product");
   }
-  getOne({ id }) {
+  getOne(id) {
     return this.handler(async () => {
       const response = await this.api.get(`/products/${id}`);
       return response.data;
@@ -73,7 +73,7 @@ class ProductService extends baseService {
       return response.data;
     }, "updating product");
   }
-  delete({ id }) {
+  delete(id) {
     return this.handler(async () => {
       const response = await this.api.delete(`/products/${id}`);
       return response.data;
