@@ -13,6 +13,7 @@ import {
 import { Button, CartPop, Input, Logo } from "./index";
 import authService from "../services/auth.service";
 import { toast } from "react-toastify";
+import { NavLink } from "react-router-dom";
 
 const Header = () => {
   const { isLoggedIn } = useSelector((state) => state.auth);
@@ -79,21 +80,32 @@ const Header = () => {
         </div>
 
         <div className="hidden justify-center items-center space-x-7 md:flex">
-          <Link to="/account" className="flex justify-center items-center">
+          <NavLink
+            to="/account"
+            className={({ isActive }) =>
+              `flex justify-center items-center ${
+                isActive ? "text-blue-600" : ""
+              }`
+            }
+          >
             <User size={20} />
             Account
-          </Link>
+          </NavLink>
 
           <span
             className="relative cursor-pointer"
-            onClick={() => setIsCartOpen(true)}
+            onClick={() => setIsCartOpen((prev) => !prev)}
           >
             {cart?.products?.length > 0 ? (
               <div className="absolute -top-2 -right-2 w-4 h-4 p-2 rounded-full bg-black text-white flex justify-center items-center">
                 {cart?.products?.length}
               </div>
             ) : null}
-            <ShoppingCartIcon size={20} />
+            {isCartOpen ? (
+              <ShoppingCartIcon size={20} color="rgb(37 99 235)" />
+            ) : (
+              <ShoppingCartIcon size={20} />
+            )}
           </span>
 
           <Button
@@ -122,13 +134,23 @@ const Header = () => {
             />
 
             <div className="w-full mt-5 px-10">
-              <Link className="w-full flex">
+              <NavLink
+                to="/account"
+                className={({ isActive }) =>
+                  `w-full flex ${isActive ? "text-blue-600" : ""}`
+                }
+              >
                 <User size={20} />
                 Account
-              </Link>
-              <span
-                className="relative cursor-pointer flex mt-4 gap-2"
-                onClick={() => navigate("/cart")}
+              </NavLink>
+
+              <NavLink
+                className={({ isActive }) =>
+                  `relative cursor-pointer flex mt-4 gap-2 ${
+                    isActive ? "text-blue-600" : ""
+                  }`
+                }
+                to="/cart"
               >
                 {cart?.products?.length > 0 ? (
                   <div className="absolute -top-2 -right-2 w-4 h-4 p-2 rounded-full bg-black text-white flex justify-center items-center">
@@ -136,7 +158,7 @@ const Header = () => {
                   </div>
                 ) : null}
                 <ShoppingCartIcon size={20} /> Open cart
-              </span>
+              </NavLink>
 
               <form
                 className="w-full flex items-center justify-center mt-4"

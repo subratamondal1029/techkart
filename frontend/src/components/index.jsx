@@ -2,6 +2,7 @@ import Logo from "./Logo";
 import Image from "./Image";
 import MainLoader from "./MainLoader";
 import Header from "./Header";
+import Input from "./formComp/Input";
 import Footer from "./Footer";
 import ProtectedRoute from "../pages/ProtectedRoute";
 import Button from "./Button";
@@ -17,7 +18,6 @@ const lazyWrapper = (importFunc) => {
   );
 };
 
-const Input = lazyWrapper(() => import("./formComp/Input"));
 const TextArea = lazyWrapper(() => import("./formComp/TextArea"));
 const ButtonLoading = lazyWrapper(() => import("./ButtonLoading"));
 const ProductCard = lazyWrapper(() => import("./ProductCard"));
