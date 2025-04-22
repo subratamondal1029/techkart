@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import { ArrowRight, EyeIcon, EyeOffIcon } from "lucide-react";
-import { Button, ButtonLoading, Input, Logo } from "../index";
+import { Button, ButtonLoading, Input, Logo } from "../components";
 import { FormProvider, useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import authService from "../../services/auth.service";
+import authService from "../services/auth.service";
 import { useSelector } from "react-redux";
-import { login } from "../../store/auth.slice";
 import { toast } from "react-toastify";
-import { useLoading } from "../../hooks";
+import { useLoading } from "../hooks";
 import { useEffect } from "react";
 
 const Auth = ({ isSignupPage = false }) => {
@@ -35,31 +34,26 @@ const Auth = ({ isSignupPage = false }) => {
         : "Login successful";
       const failToastMessage = isSignUp ? "Signup failed" : "Login failed";
 
-      const toastId = toast.loading(toastMessage);
       try {
+        let promise;
         if (isSignUp) {
-          await authService.createUser({ name, email, password });
+          promise = authService.createUser({ name, email, password });
         } else {
-          await authService.emailPassLogin({ email, password });
+          promise = authService.emailPassLogin({ email, password });
         }
 
-        toast.update(toastId, {
-          render: successToastMessage,
-          type: "success",
-          autoClose: 3000,
-          isLoading: false,
+        toast.promise(promise, {
+          pending: toastMessage,
+          success: successToastMessage,
+          error: failToastMessage,
         });
+
+        await promise;
 
         if (state?.redirect) {
           navigate(`/${state.redirect}`, { state: { fetchData: true } });
         } else navigate("/", { state: { fetchData: true } });
       } catch (error) {
-        toast.update(toastId, {
-          render: failToastMessage,
-          type: "error",
-          autoClose: 3000,
-          isLoading: false,
-        });
         setError(error.message);
         console.error("auth error", error);
       }
@@ -203,7 +197,7 @@ const Auth = ({ isSignupPage = false }) => {
                 <svg
                   viewBox="0 0 48 48"
                   xmlns="http://www.w3.org/2000/svg"
-                  class="w-6"
+                  className="w-6"
                 >
                   <path
                     d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"
