@@ -26,7 +26,9 @@ class AuthService extends baseService {
         name,
         label,
       });
-      return response.data;
+
+      const data = await this.emailPassLogin({ email, password });
+      return data;
     }, "creating user");
   }
 

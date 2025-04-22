@@ -14,7 +14,6 @@ const Auth = ({ isSignupPage = false }) => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const { state, pathname, search } = useLocation();
   const [isPassword, setIspassword] = useState(true);
-  const [error, setError] = useState("");
 
   const methods = useForm();
 
@@ -25,38 +24,32 @@ const Auth = ({ isSignupPage = false }) => {
     authService.loginWithGogle(successPath, failsPath);
   };
 
-  const [handleSubmit, isLoading] = useLoading(
+  const [handleSubmit, isLoading, error] = useLoading(
     async ({ name, email, password }) => {
-      setError("");
       const toastMessage = isSignUp ? "Signing up..." : "Logging in...";
       const successToastMessage = isSignUp
         ? "Signup successful"
         : "Login successful";
       const failToastMessage = isSignUp ? "Signup failed" : "Login failed";
 
-      try {
-        let promise;
-        if (isSignUp) {
-          promise = authService.createUser({ name, email, password });
-        } else {
-          promise = authService.emailPassLogin({ email, password });
-        }
-
-        toast.promise(promise, {
-          pending: toastMessage,
-          success: successToastMessage,
-          error: failToastMessage,
-        });
-
-        await promise;
-
-        if (state?.redirect) {
-          navigate(`/${state.redirect}`, { state: { fetchData: true } });
-        } else navigate("/", { state: { fetchData: true } });
-      } catch (error) {
-        setError(error.message);
-        console.error("auth error", error);
+      let promise;
+      if (isSignUp) {
+        promise = authService.createUser({ name, email, password });
+      } else {
+        promise = authService.emailPassLogin({ email, password });
       }
+
+      toast.promise(promise, {
+        pending: toastMessage,
+        success: successToastMessage,
+        error: failToastMessage,
+      });
+
+      await promise;
+
+      if (state?.redirect) {
+        navigate(`/${state.redirect}`, { state: { fetchData: true } });
+      } else navigate("/", { state: { fetchData: true } });
     }
   );
 
@@ -76,13 +69,6 @@ const Auth = ({ isSignupPage = false }) => {
     setIsSignUp(isSignUp);
     setIsUser(isUser);
   }, [pathname, search]);
-
-  useEffect(() => {
-    console.log("isLoggedIn", isLoggedIn);
-    console.log(`isSignUp`, isSignUp);
-
-    console.log("state", state);
-  }, [state]);
 
   return (
     <section>
@@ -174,13 +160,30 @@ const Auth = ({ isSignupPage = false }) => {
                     )}
                   </div>
                 </div>
+                {isSignUp && (
+                  <Input
+                    label="Confirm Password"
+                    name="password_confirmation"
+                    type={isPassword ? "password" : "text"}
+                    placeholder="Confirm Password"
+                    rules={{
+                      required: true,
+                      validate: (value) =>
+                        value === methods.watch("password") ||
+                        "Passwords do not match",
+                    }}
+                  />
+                )}
                 <p className="text-center text-sm text-red-500">{error}</p>
                 <Button
-                  classname="w-full flex justify-center items-center text-3xl select-none"
+                  classname={`w-full h-10 flex justify-center items-center text-3xl select-none ${
+                    isLoading ? "cursor-not-allowed disabled:bg-blue-500" : ""
+                  }`}
                   type="submit"
+                  disabled={isLoading}
                 >
                   {isLoading ? (
-                    <ButtonLoading fillColor="fill-black" />
+                    <ButtonLoading />
                   ) : (
                     <>
                       {isSignUp ? "Create Account" : "Login"}{" "}
