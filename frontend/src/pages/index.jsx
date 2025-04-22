@@ -1,27 +1,24 @@
-import { lazy } from "react";
-import { Suspense } from "react";
+import { lazy, Suspense } from "react";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
-import { LoaderCircleIcon } from "lucide-react";
+import { MainLoader } from "../components";
 
 NProgress.configure({ showSpinner: false, minimum: 0.3, trickleSpeed: 200 });
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const lazyWrapper = (importFunc) => {
-  const LazyComponent = lazy(() => {
+  const LazyComponent = lazy(async () => {
     NProgress.start();
-    return importFunc().finally(() => {
+    // await delay(2000);
+    try {
+      return await importFunc();
+    } finally {
       NProgress.done();
-    });
+    }
   });
 
   return (props) => (
-    <Suspense
-      fallback={
-        <div className="min-h-screen w-full flex justify-center items-center">
-          <LoaderCircleIcon className="animate-spin" size={50} />
-        </div>
-      }
-    >
+    <Suspense fallback={<MainLoader />}>
       <LazyComponent {...props} />
     </Suspense>
   );
