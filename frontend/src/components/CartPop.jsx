@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { X } from "lucide-react";
-import Button from "./Button";
+import { Button, Image } from "./index";
 import { useLoading } from "../hooks";
 import { removeFromCart } from "../store/cart.slice";
 import cartService from "../services/cart.service";
@@ -44,7 +44,7 @@ export default function CartPop({ setIsCartOpen }) {
                   to={`/product/${product.product._id}`}
                   className="flex items-center gap-4 relative"
                 >
-                  <img
+                  <Image
                     src={fileService.get(product.product.image)}
                     alt={product.product.name}
                     className="h-16 w-16 rounded object-contain"

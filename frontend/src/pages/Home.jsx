@@ -8,7 +8,7 @@ import {
   LoaderCircleIcon,
 } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
-import { Button, ProductCard } from "../components";
+import { Button, Image, ProductCard } from "../components";
 import { useLoading } from "../hooks";
 import landingImage from "../assets/landingImage.png";
 import productService from "../services/product.service";
@@ -66,8 +66,7 @@ const Home = () => {
   return (
     <main>
       <div className="w-full">
-        {/* TODO: add simmer effect to image */}
-        <img src={landingImage} alt="landing image" className="w-full" />
+        <Image src={landingImage} alt="landing image" className="w-full" />
       </div>
       <div className="w-full p-2 flex justify-center items-center space-x-20 mt-10">
         <Link
