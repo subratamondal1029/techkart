@@ -32,9 +32,8 @@ import { store } from "./store/store.js";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<App />}>
+    <Route path="/" element={<App />} errorElement={<Error />}>
       <Route path="test" element={<Test />} />
-      <Route path="*" element={<Error />} />
       <Route path="" element={<Home />} />
       <Route path="login" element={<Auth isSignupPage={false} />} />
       <Route path="signup" element={<Auth isSignupPage={true} />} />
