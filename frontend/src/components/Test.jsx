@@ -13,11 +13,17 @@ const Test = () => {
   });
 
   return (
-    <div className="bg-gray-700 text-white h-screen w-full">
+    <div className="bg-gray-700 text-white w-full">
       <h1 className="text-3xl ">Test</h1>
       <p>{error}</p>
+      <div className="w-full h-screen bg-gray-500"></div>
       <Image
         src={fileService.get("67eeb1fcfaf070cbfb48da8c")}
+        className="rounded-xl w-48 h-48"
+      />
+      <div className="w-full h-screen bg-blue-300"></div>
+      <Image
+        src={fileService.get("67eesb1fcfaf070cbfb48da8c")}
         className="rounded-xl w-48 h-48"
       />
     </div>

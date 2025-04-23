@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 /**
  *
@@ -6,7 +6,8 @@ import React, { useEffect, useState } from "react";
  * @returns {React.ReactElement}
  */
 
-const Image = ({ src, alt = "image", className = "", ...props }) => {
+const Image = ({ src, alt = "", className = "", ...props }) => {
+  const imgRef = useRef(null);
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
 
@@ -20,25 +21,34 @@ const Image = ({ src, alt = "image", className = "", ...props }) => {
   };
 
   useEffect(() => {
-    const msg = error
-      ? "Image Loading error"
-      : !loaded
-      ? "Image Loading"
-      : "Image Loaded";
-    console.log(msg);
-  }, [error, loaded]);
+    const imageElm = imgRef.current;
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          imageElm.src = src;
+          observer.unobserve(imageElm);
+        }
+      });
+    });
+
+    if (imageElm) {
+      observer.observe(imageElm);
+    }
+
+    return () => imageElm && observer.unobserve(imageElm);
+  }, []);
 
   return (
     <div className={`overflow-hidden ${className}`}>
       {error ? (
-        <div className="w-full h-full bg-gray-200">Image Loading error</div>
-      ) : !loaded ? (
-        <div className="w-full h-full bg-gray-300 animate-pulse">
-          Image Loading
+        <div className="w-full h-full bg-gray-200">
+          {alt || "Image Load Error"}
         </div>
+      ) : !loaded ? (
+        <div className="w-full h-full bg-gray-300 animate-pulse"></div>
       ) : null}
       <img
-        src={src}
+        ref={imgRef}
         onLoad={handleLoad}
         onError={handleError}
         className={`transition-opacity duration-500 w-full h-full object-cover`}
