@@ -1,7 +1,6 @@
-import { lazy, Suspense } from "react";
+import { lazy } from "react";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
-import { MainLoader } from "../components";
 
 NProgress.configure({ showSpinner: false, minimum: 0.3, trickleSpeed: 200 });
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -17,11 +16,7 @@ const lazyWrapper = (importFunc) => {
     }
   });
 
-  return (props) => (
-    <Suspense fallback={<MainLoader />}>
-      <LazyComponent {...props} />
-    </Suspense>
-  );
+  return (props) => <LazyComponent {...props} />;
 };
 
 const Home = lazyWrapper(() => import("./Home"));
