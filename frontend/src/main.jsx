@@ -42,7 +42,7 @@ const router = createBrowserRouter(
       <Route
         path="cart"
         element={
-          <ProtectedRoute authentication isSignUp={true} redirect="cart">
+          <ProtectedRoute>
             <Cart />
           </ProtectedRoute>
         }
@@ -50,24 +50,24 @@ const router = createBrowserRouter(
       <Route
         path="checkout"
         element={
-          <ProtectedRoute authentication isSignUp={true} redirect="cart">
+          <ProtectedRoute>
             <Checkout />
           </ProtectedRoute>
         }
       />
-      <Route path="product/:productId" element={<ProductDetail />} />
+      <Route path="product/:id" element={<ProductDetail />} />
       <Route
-        path="account"
+        path="account/:page?"
         element={
-          <ProtectedRoute authentication redirect="account">
+          <ProtectedRoute>
             <Account />
           </ProtectedRoute>
         }
       />
       <Route
-        path="orders/:orderId"
+        path="orders/:id"
         element={
-          <ProtectedRoute authentication redirect="account">
+          <ProtectedRoute>
             <Orders />
           </ProtectedRoute>
         }
@@ -75,7 +75,7 @@ const router = createBrowserRouter(
       <Route
         path="seller"
         element={
-          <ProtectedRoute authentication isSignUp={false} redirect="seller">
+          <ProtectedRoute role="seller">
             <Seller />
           </ProtectedRoute>
         }
@@ -83,7 +83,7 @@ const router = createBrowserRouter(
       <Route
         path="shipment"
         element={
-          <ProtectedRoute authentication isSignUp={false} redirect="shipment">
+          <ProtectedRoute role="shipment">
             <Shipment />
           </ProtectedRoute>
         }
@@ -91,7 +91,7 @@ const router = createBrowserRouter(
       <Route
         path="delivery"
         element={
-          <ProtectedRoute authentication isSignUp={false} redirect="delivery">
+          <ProtectedRoute role="delivery">
             <Delivery />
           </ProtectedRoute>
         }

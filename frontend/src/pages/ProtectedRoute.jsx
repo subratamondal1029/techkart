@@ -1,23 +1,29 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import showToast from "../utils/showToast";
 
-const ProtectedRoute = ({
-  authentication = true,
-  children,
-  isSignUp = true,
-  redirect,
-}) => {
-  const isLogin = useSelector((state) => state.auth.isLogin);
+const ProtectedRoute = ({ children, redirect = "", role = "user" }) => {
+  const { isLoggedIn, userData } = useSelector((state) => state.auth);
   const navigate = useNavigate();
-  // TODO: update it for auth pages also
+  const { pathname } = useLocation();
+  redirect = redirect || pathname;
+
   useEffect(() => {
-    if (authentication && isLogin !== authentication) {
-      navigate("/login", { state: { isSignUp, redirect } });
-    } else if (!authentication && isLogin !== authentication) {
-      navigate("/");
+    if (!isLoggedIn) {
+      navigate("/login", { state: { isUser: true, redirect } });
+    } else {
+      const isAuthorized =
+        userData.label === "admin" || userData.label === role;
+
+      if (!isAuthorized) {
+        showToast("error", "You are not authorized to access this page");
+        navigate("/login", {
+          state: { isUser: false, redirect, isStayReq: true },
+        });
+      }
     }
-  }, [isLogin, authentication]);
+  }, [isLoggedIn, pathname, userData]);
 
   return children;
 };

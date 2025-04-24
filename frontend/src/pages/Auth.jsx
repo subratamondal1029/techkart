@@ -48,7 +48,10 @@ const Auth = ({ isSignupPage = false }) => {
       await promise;
 
       if (state?.redirect) {
-        navigate(`/${state.redirect}`, { state: { fetchData: true } });
+        navigate(
+          `${state.redirect.startsWith("/") ? "" : "/"}${state.redirect}`,
+          { state: { fetchData: true } }
+        );
       } else navigate("/", { state: { fetchData: true } });
     }
   );
