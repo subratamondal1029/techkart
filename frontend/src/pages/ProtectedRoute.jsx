@@ -1,13 +1,15 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import showToast from "../utils/showToast";
+import { MainLoader } from "../components";
 
 const ProtectedRoute = ({ children, redirect = "", role = "user" }) => {
   const { isLoggedIn, userData } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const { pathname } = useLocation();
   redirect = redirect || pathname;
+  const [isSendChild, setIsSendChild] = useState(false);
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -21,11 +23,19 @@ const ProtectedRoute = ({ children, redirect = "", role = "user" }) => {
         navigate("/login", {
           state: { isUser: false, redirect, isStayReq: true },
         });
+      } else {
+        setIsSendChild(true);
       }
     }
   }, [isLoggedIn, pathname, userData]);
 
-  return children;
+  return isSendChild ? (
+    children
+  ) : (
+    <div className="w-full h-screen">
+      <MainLoader />
+    </div>
+  );
 };
 
 export default ProtectedRoute;
