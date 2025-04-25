@@ -5,7 +5,16 @@ const orderSlice = createSlice({
   initialState: [],
   reducers: {
     storeOrders: (state, action) => {
-      state = action.payload;
+      const newItems = action.payload;
+
+      const uniqueItems = [
+        ...state,
+        ...newItems.filter(
+          (newItem) => !state.some((existing) => existing._id === newItem._id)
+        ),
+      ];
+
+      return uniqueItems;
     },
     addOrder: (state, action) => {
       const index = state.findIndex(

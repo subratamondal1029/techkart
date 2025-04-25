@@ -2,9 +2,16 @@ import testService from "../services/test.service";
 import fileService from "../services/file.service";
 import showToast from "../utils/showToast";
 import { useLoading } from "../hooks";
-import { ButtonLoading, Button, Image } from ".";
+import { ButtonLoading, Button, Image, OrderStatus } from ".";
 import { useOptimistic, useState, startTransition } from "react";
 import delay from "../utils/delay";
+
+const sampleStatus = {
+  isShipped: true,
+  isDelivered: true,
+  isCancelled: true,
+  isRefund: true,
+};
 
 const Test = () => {
   const [data, setData] = useState([
@@ -77,6 +84,9 @@ const Test = () => {
             />
           </div>
         ))}
+      </div>
+      <div className="mt-10">
+        status: <OrderStatus order={sampleStatus} />
       </div>
     </div>
   );
