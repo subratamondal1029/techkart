@@ -179,9 +179,7 @@ const Auth = ({ isSignupPage = false }) => {
                 )}
                 <p className="text-center text-sm text-red-500">{error}</p>
                 <Button
-                  classname={`w-full h-10 flex justify-center items-center text-3xl select-none ${
-                    isLoading ? "cursor-not-allowed disabled:bg-blue-500" : ""
-                  }`}
+                  classname="w-full h-10 flex justify-center items-center text-3xl select-none"
                   type="submit"
                   disabled={isLoading}
                 >

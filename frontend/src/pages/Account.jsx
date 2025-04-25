@@ -58,12 +58,7 @@ const Account = () => {
     <div className="w-full min-h-96 mt-5 px-5 md:px-28">
       <div className="flex justify-between items-center">
         <h1 className="font-bold text-2xl">TechKart Account</h1>
-        <Button
-          onClick={handleLogout}
-          type="button"
-          disabled={isLogoutLoading}
-          classname="disabled:cursor-not-allowed disabled:bg-gray-500"
-        >
+        <Button onClick={handleLogout} type="button" disabled={isLogoutLoading}>
           Signout
         </Button>
       </div>
