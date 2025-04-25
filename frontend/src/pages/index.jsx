@@ -1,23 +1,4 @@
-import { lazy } from "react";
-import NProgress from "nprogress";
-import "nprogress/nprogress.css";
-
-NProgress.configure({ showSpinner: false, minimum: 0.3, trickleSpeed: 200 });
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-const lazyWrapper = (importFunc) => {
-  const LazyComponent = lazy(async () => {
-    NProgress.start();
-    // await delay(2000);
-    try {
-      return await importFunc();
-    } finally {
-      NProgress.done();
-    }
-  });
-
-  return (props) => <LazyComponent {...props} />;
-};
+import lazyWrapper from "../utils/lazyWrapper";
 
 const Home = lazyWrapper(() => import("./Home"));
 const Seller = lazyWrapper(() => import("./Seller"));
