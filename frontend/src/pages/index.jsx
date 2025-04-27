@@ -7,7 +7,7 @@ const Auth = lazyWrapper(() => import("./Auth"));
 const Error = lazyWrapper(() => import("./Error"));
 const ProductDetail = lazyWrapper(() => import("./ProductDetail"));
 const Account = lazyWrapper(() => import("./Account"));
-const Orders = lazyWrapper(() => import("./Orders"));
+const Order = lazyWrapper(() => import("./Order"));
 const Search = lazyWrapper(() => import("./Search"));
 const Cart = lazyWrapper(() => import("./Cart"));
 const Checkout = lazyWrapper(() => import("./Checkout"));
@@ -23,7 +23,7 @@ export {
   Error,
   ProductDetail,
   Account,
-  Orders,
+  Order,
   Search,
   Cart,
   Checkout,

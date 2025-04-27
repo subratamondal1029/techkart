@@ -21,7 +21,6 @@ const lazyWrapper = (importFunc) => {
 const TextArea = lazyWrapper(() => import("./formComp/TextArea"));
 const ButtonLoading = lazyWrapper(() => import("./ButtonLoading"));
 const ProductCard = lazyWrapper(() => import("./ProductCard"));
-const AccountInfoCard = lazyWrapper(() => import("./account/AccountInfoCard"));
 const OrderStatus = lazyWrapper(() => import("./OrderStatus"));
 const CartPop = lazyWrapper(() => import("./CartPop"));
 const InfiniteLoadingError = lazyWrapper(() =>
@@ -40,7 +39,6 @@ export {
   TextArea,
   ButtonLoading,
   ProductCard,
-  AccountInfoCard,
   OrderStatus,
   CartPop,
   InfiniteLoadingError,

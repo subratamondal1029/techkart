@@ -18,7 +18,7 @@ import {
   Error,
   ProductDetail,
   Account,
-  Orders,
+  Order,
   Search,
   Cart,
   Checkout,
@@ -68,7 +68,7 @@ const router = createBrowserRouter(
         path="orders/:id"
         element={
           <ProtectedRoute>
-            <Orders />
+            <Order />
           </ProtectedRoute>
         }
       />

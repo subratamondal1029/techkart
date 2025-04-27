@@ -10,7 +10,7 @@ import fileService from "../services/file.service";
 import orderService from "../services/order.service";
 import { addOrder } from "../store/order.slice";
 
-export default function Orders() {
+export default function Order() {
   const { id } = useParams();
   const existingOrder = useSelector((state) =>
     state.orders.find((order) => order._id === id)
