@@ -1,67 +1,44 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import {
   Smartphone,
   Laptop,
   Computer,
   Headset,
   LoaderCircleIcon,
+  RotateCcw,
+  Info,
 } from "lucide-react";
-import { useSelector, useDispatch } from "react-redux";
 import { Button, Image, ProductCard } from "../components";
-import { useLoading } from "../hooks";
+import useInfiniteScroll from "../hooks/useInfiniteScroll";
 import landingImage from "../assets/landingImage.png";
 import productService from "../services/product.service";
 import { storeProducts } from "../store/product.slice";
-import { useRef } from "react";
-import { useEffect } from "react";
-import { RotateCcw } from "lucide-react";
-import { Info } from "lucide-react";
 
 const Home = () => {
   const dispatch = useDispatch();
   const products = useSelector((state) => state.products);
-  const [page, setPage] = useState(0);
-  const [totalPages, setTotalPages] = useState(1);
   const loaderRef = useRef(null);
+  const totalPages = useRef(1);
 
-  const [fetchProduct, isLoading, error] = useLoading(async (page) => {
-    const { data } = await productService.getMany({
-      page,
-      sortBy: "createdAt",
-      sort: "d",
-    });
+  const [page, isLoading, error, retry, setPage] = useInfiniteScroll(
+    async (page) => {
+      const { data } = await productService.getMany({
+        page,
 
-    setTotalPages(data.totalPages);
-    const products = data.products;
-    console.log(`Total product response: ${products.length}`);
+        sortBy: "createdAt",
+        sort: "d",
+      });
 
-    dispatch(storeProducts(products));
-  });
+      totalPages.current = data.totalPages;
+      const products = data.products;
+      console.log(`Total product response: ${products.length}`);
 
-  useEffect(() => {
-    if (!page) return;
-    console.log(`fetching page: ${page} at time: ${Date.now()}`);
-    fetchProduct(page);
-  }, [page]);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entries]) => {
-        if (!isLoading && entries.isIntersecting && page < totalPages) {
-          setPage((prev) => prev + 1);
-        }
-      },
-      {
-        threshold: 1,
-      }
-    );
-
-    const loader = loaderRef.current;
-    if (loader) observer.observe(loader);
-
-    return () => loader && observer.unobserve(loader);
-  }, [isLoading, page, totalPages]);
+      dispatch(storeProducts(products));
+    },
+    loaderRef
+  );
 
   return (
     <main>
@@ -101,7 +78,12 @@ const Home = () => {
         >
           What's New
         </h1>
-        {error && (
+        <div className="w-full flex flex-wrap items-start justify-evenly gap-3 gap-y-10">
+          {products.map((product) => (
+            <ProductCard key={product?._id} product={product} />
+          ))}
+        </div>
+        {error ? (
           <div
             id="alert-additional-content-2"
             className="p-4 mb-4 text-red-800 border border-red-300 rounded-lg bg-red-50"
@@ -113,21 +95,14 @@ const Home = () => {
             </div>
             <div className="mt-2 mb-4 text-sm">{error}</div>
             <div className="flex">
-              <Button
-                classname="w-24 justify-between"
-                onClick={() => fetchProduct(page)}
-              >
+              <Button classname="w-24 justify-between" onClick={retry}>
                 <RotateCcw />
                 Retry
               </Button>
             </div>
           </div>
-        )}
-        <div className="w-full flex flex-wrap items-start justify-evenly gap-3 gap-y-10">
-          {products.map((product) => (
-            <ProductCard key={product?._id} product={product} />
-          ))}
-          {(page !== totalPages || isLoading) && (
+        ) : (
+          (page !== totalPages.current || isLoading) && (
             <div className="w-full flex justify-center items-center">
               <LoaderCircleIcon
                 size={40}
@@ -135,8 +110,8 @@ const Home = () => {
                 ref={loaderRef}
               />
             </div>
-          )}
-        </div>
+          )
+        )}
       </div>
     </main>
   );
