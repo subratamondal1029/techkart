@@ -195,7 +195,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   );
 
   res
-    .cookie("refreshToken", refreshToken, {
+    .cookie("refreshToken", newRefreshToken, {
       ...cookieOptions,
       maxAge: calculateExpiresInMilliseconds(
         process.env.JWT_REFRESH_TOKEN_EXPIRE
