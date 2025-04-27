@@ -17,7 +17,6 @@ import useLoading from "./useLoading";
 
 const useInfiniteScroll = (cb, loaderRef, ...args) => {
   const [page, setPage] = useState(0);
-
   const [fetchData, isLoading, error] = useLoading(cb);
   const isLoadingRef = useRef(isLoading);
 
@@ -36,7 +35,7 @@ const useInfiniteScroll = (cb, loaderRef, ...args) => {
       { threshold: 1 }
     );
 
-    const target = loaderRef.current;
+    const target = loaderRef?.current;
     if (target) observer.observe(target);
 
     return () => {

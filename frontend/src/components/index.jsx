@@ -21,9 +21,12 @@ const lazyWrapper = (importFunc) => {
 const TextArea = lazyWrapper(() => import("./formComp/TextArea"));
 const ButtonLoading = lazyWrapper(() => import("./ButtonLoading"));
 const ProductCard = lazyWrapper(() => import("./ProductCard"));
-const AccountInfoCard = lazyWrapper(() => import("./AccountInfoCard"));
+const AccountInfoCard = lazyWrapper(() => import("./account/AccountInfoCard"));
 const OrderStatus = lazyWrapper(() => import("./OrderStatus"));
 const CartPop = lazyWrapper(() => import("./CartPop"));
+const InfiniteLoadingError = lazyWrapper(() =>
+  import("./InfiniteLoadingError")
+);
 
 export {
   Logo,
@@ -40,4 +43,5 @@ export {
   AccountInfoCard,
   OrderStatus,
   CartPop,
+  InfiniteLoadingError,
 };

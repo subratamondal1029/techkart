@@ -59,7 +59,7 @@ const Test = () => {
 
   const loaderRef = useRef(null);
   const [products, setProducts] = useState([]);
-  const totalPages = useRef(2);
+  const totalPages = useRef(5);
   const [filter, setFilter] = useState({
     sort: "a",
     sortBy: "price",
@@ -70,7 +70,7 @@ const Test = () => {
     async (page, filter) => {
       console.log("filter", filter);
 
-      console.log(`fetching page: ${page} with query ${filter.query}`);
+      console.log(`fetching page: ${page} with query ${filter?.query}`);
       await apiCall();
       console.log(`fetched page: ${page}`);
       if (page === 1) {
