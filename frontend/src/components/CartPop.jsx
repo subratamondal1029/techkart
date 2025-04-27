@@ -38,30 +38,25 @@ export default function CartPop({ setIsCartOpen }) {
       <div className="mt-6 space-y-6">
         <ul className="space-y-4 overflow-y-auto max-h-72 hide-scroll">
           {products &&
-            products.map((product) => (
-              <li key={product.product._id}>
+            products.map(({ product, quantity }) => (
+              <li key={product._id}>
                 <Link
-                  to={`/product/${product.product._id}`}
+                  to={`/product/${product._id}`}
                   className="flex items-center gap-4 relative"
                 >
                   <Image
-                    src={fileService.get(product.product.image)}
-                    alt={product.product.name}
+                    src={fileService.get(product.image)}
+                    alt={product.name}
                     className="h-16 w-16 rounded object-contain"
                   />
                   <div>
                     <h3 className="text-sm text-gray-900 truncate max-w-40">
-                      {product.product.name}
+                      {product.name}
                     </h3>
                     <dl className="mt-0.5 space-y-px text-[10px] text-gray-600">
                       <div>
-                        <dd className="inline font-bold">
-                          ₹{product.product.price}
-                        </dd>
-                        <dd className="inline">
-                          {" "}
-                          x {product.product.quantity}
-                        </dd>
+                        <dd className="inline font-bold">₹{product.price}</dd>
+                        <dd className="inline"> x {quantity}</dd>
                       </div>
                     </dl>
                   </div>
