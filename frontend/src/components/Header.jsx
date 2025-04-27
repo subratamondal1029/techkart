@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/auth.slice";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import {
   ChevronDown,
   Menu,
@@ -13,7 +13,9 @@ import {
 import { Button, CartPop, Input, Logo } from "./index";
 import authService from "../services/auth.service";
 import { toast } from "react-toastify";
-import { NavLink } from "react-router-dom";
+import useLoading from "../hooks/useLoading";
+import { storeCart } from "../store/cart.slice";
+import { storeOrders } from "../store/order.slice";
 
 const Header = () => {
   const { isLoggedIn } = useSelector((state) => state.auth);
@@ -24,18 +26,21 @@ const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleLogout = async () => {
-    try {
-      const res = await authService.logout();
-      if (res) {
-        dispatch(logout());
-        navigate("/");
-        toast.success("Logged out successfully");
-      }
-    } catch (error) {
-      toast.error("Failed to Logout");
-    }
-  };
+  const [handleLogout] = useLoading(async () => {
+    const logoutReq = authService.logout();
+
+    toast.promise(logoutReq, {
+      pending: "Logging out",
+      success: "Logged out successfully",
+      error: "Failed to Logout",
+    });
+
+    await logoutReq;
+    dispatch(logout());
+    dispatch(storeCart(null));
+    dispatch(storeOrders([]));
+    navigate("/");
+  });
 
   const handleSearch = (value) => {
     if (value === "") {
