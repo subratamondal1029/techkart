@@ -1,74 +1,106 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { Button, ButtonLoading } from "../components";
-import { ArrowLeft, Check, Minus, Plus, ShoppingCart } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import appWriteDb from "../appwrite/DbServise";
-import { login } from "../store/authSlice";
+import { toast } from "react-toastify";
+
+import { Button, ButtonLoading, Image, LoadingError } from "../components";
+import ProductShimmer from "../components/shimmers/Product.shimmer";
+
+import useLoading from "../hooks/useLoading";
+
+import productService from "../services/product.service";
+import fileService from "../services/file.service";
+import cartService from "../services/cart.service";
+
+import { addProduct } from "../store/product.slice";
+import { addToCart } from "../store/cart.slice";
+
+import { ArrowLeft, Check, Minus, Plus, ShoppingCart } from "lucide-react";
 
 const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
-  const { productId } = useParams();
+  const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [addingToCart, setAddingToCart] = useState(false);
-  const { isLogin, isCartCreated, otherData, userData } = useSelector(
-    (state) => state.auth
-  );
-  const product = useSelector((state) =>
-    state.products.products.find((product) => product.$id === productId)
-  );
+  const { isLoggedIn, userData } = useSelector((state) => state.auth);
+  const cart = useSelector((state) => state.cart);
   const [isInCart, setIsInCart] = useState(false);
+  const product = useSelector((state) =>
+    state.products.find((p) => p._id === id)
+  );
+  const [productError, setProductError] = useState("");
+
+  const [fetchProduct, isProductLoading] = useLoading(async () => {
+    setProductError("");
+    try {
+      const { data: product } = await productService.getOne(id);
+      dispatch(addProduct(product));
+    } catch (error) {
+      if (error.status === 404) {
+        navigate("/404");
+        return;
+      }
+      setProductError(error.message || "Something went wrong");
+    }
+  });
 
   useEffect(() => {
-    // TODO: update this with new data stacture
-    setIsInCart(otherData.cart.some((item) => item.productId === productId));
-    setQuantity(
-      otherData.cart.find((item) => item.productId === productId)?.quantity || 1
-    );
-  }, [otherData.cart, productId]);
-
-  const handleAddToCart = async () => {
-    if (!isLogin) {
-      navigate("/login", { state: { redirect: `product/${productId}` } });
-    } else {
-      setAddingToCart(true);
-      const newData = { productId, quantity };
-      const createdCart = [...otherData.cart, newData];
-      try {
-        // TODO: just call addToCart to server it will automatically choose update or create
-        let type = !isCartCreated ? "create" : "update";
-
-        const cart = await appWriteDb.addToCart(
-          createdCart,
-          userData.$id,
-          type
-        );
-        if (cart) {
-          if (!isCartCreated) dispatch(login({ isCartCreated: true }));
-          dispatch(login({ otherData: { ...otherData, cart: createdCart } }));
-          setAddingToCart(false);
-        }
-      } catch (error) {
-        console.error(error.message);
-        setAddingToCart(false);
-      }
+    if (!product) {
+      fetchProduct();
     }
+  }, [product]);
+
+  useEffect(() => {
+    setIsInCart(cart?.products?.some((p) => p.product._id === id) || false);
+    setQuantity(
+      cart?.products?.find((p) => p.product._id === id)?.quantity || 1
+    );
+  }, [cart, id]);
+
+  const [handleAddToCart, isAddingToCart] = useLoading(async () => {
+    if (isLoggedIn) {
+      if (isInCart) {
+        navigate("/cart");
+      } else {
+        const cartUpdateRequest = cartService.update({ id, quantity });
+
+        toast.promise(cartUpdateRequest, {
+          pending: "Adding to cart",
+          success: "Added to cart",
+          error: "Error adding to cart",
+        });
+
+        await cartUpdateRequest;
+        dispatch(addToCart({ quantity, product }));
+      }
+    } else {
+      navigate("/login", { state: { redirect: `/product/${id}` } });
+    }
+  });
+
+  const back = () => {
+    const history = window.history;
+    if (history.length > 1) {
+      history.back();
+    } else navigate("/");
   };
 
-  return (
-    <div className="w-full min-h-[80vh] flex items-center justify-center gap-20 p-5 px-5 sm:px-20 mt-5 xl:flex-row flex-col lg:items-center">
+  return product ? (
+    <div className="w-full min-h-[80vh] flex items-center justify-center gap-20 p-5 px-5 sm:px-20 mt-10 xl:mt-5 xl:flex-row flex-col lg:items-center">
       <Button
         type="button"
         classname="flex items-center justify-start absolute top-20 left-4"
-        onClick={() => navigate("/")}
+        onClick={back}
       >
         <ArrowLeft size={20} />
         Go back
       </Button>
       <div className="w-full max-w-[400px] h-auto rounded-lg flex items-center justify-center">
-        {/* TODO: add simmer effect to image */}
-        <img src={product.image} alt={product.name} className="min-w-52" />
+        <Image
+          src={fileService.get(product.image)}
+          alt={product.name}
+          className="min-w-52"
+        />
       </div>
       <div className="w-full h-full flex justify-start flex-col items-start gap-3">
         <h3 className="text-2xl uppercase text-gray-500">{product.company}</h3>
@@ -100,18 +132,16 @@ const ProductDetail = () => {
                 {product.category}
               </Link>
             </li>
-            <li className="productTags">
-              <span className="text-heading inline-block pr-2 font-semibold">
-                Tags:
-              </span>
-              <p className="hover:text-headingpr-1.5 transition last:pr-0 flex flex-wrap justify-start gap-1">
+            <li className="productTags flex items-center justify-start">
+              <p className="hover:text-heading pr-1.5 transition last:pr-0 flex flex-wrap justify-start gap-1">
                 {product.tags.map((tag) => (
-                  <span
+                  <Link
                     key={tag}
                     className="py-2 px-4 border rounded-full cursor-pointer hover:bg-gray-50"
+                    to={`/search/${tag}`}
                   >
                     {tag}
-                  </span>
+                  </Link>
                 ))}
               </p>
             </li>
@@ -120,34 +150,27 @@ const ProductDetail = () => {
 
         <hr className="w-full " />
         <div className="flex gap-3 items-center xl:w-3/4 mt-3 md:w-2/4 w-full sm:w-3/4 ">
-          <div className="w-full bg-gray-200 flex justify-between items-center text-2xl py-1 rounded-lg px-2">
+          <Button
+            classname="w-full max-w-44 bg-gray-200 flex justify-between text-2xl py-1 rounded-lg px-2"
+            disabled={isInCart}
+          >
             <Minus
               size={30}
-              className={`${
-                isInCart ? "cursor-not-allowed" : "cursor-pointer"
-              } hover:text-gray-700`}
-              onClick={() =>
-                !isInCart
-                  ? setQuantity((prev) => (prev !== 1 ? prev - 1 : 1))
-                  : null
-              }
+              className={`hover:text-gray-700`}
+              onClick={() => setQuantity((prev) => (prev !== 1 ? prev - 1 : 1))}
             />
             <p className="select-none">{quantity}</p>
             <Plus
               size={30}
-              className={`${
-                isInCart ? "cursor-not-allowed" : "cursor-pointer"
-              } hover:text-gray-700`}
-              onClick={() =>
-                !isInCart ? setQuantity((prev) => prev + 1) : null
-              }
+              className={`hover:text-gray-700`}
+              onClick={() => setQuantity((prev) => prev + 1)}
             />
-          </div>
+          </Button>
           <Button
-            classname="w-3/4 max-h-11 flex items-center justify-between py-3 px-3 select-none xl:px-5"
-            onClick={() => (isInCart ? navigate("/cart") : handleAddToCart())}
+            classname="w-full max-w-36 flex items-center justify-between py-3 px-3 select-none xl:px-5"
+            onClick={handleAddToCart}
           >
-            {addingToCart ? (
+            {isAddingToCart ? (
               <ButtonLoading fillColor="fill-black" classname="w-full" />
             ) : isInCart ? (
               <>
@@ -162,6 +185,17 @@ const ProductDetail = () => {
           </Button>
         </div>
       </div>
+    </div>
+  ) : (
+    <div className="w-full min-h-[80vh] flex justify-center">
+      {productError && (
+        <LoadingError
+          error={productError}
+          retry={fetchProduct}
+          classname="w-full"
+        />
+      )}
+      {isProductLoading && <ProductShimmer />}
     </div>
   );
 };
