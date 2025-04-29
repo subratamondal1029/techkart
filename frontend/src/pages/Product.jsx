@@ -17,7 +17,7 @@ import { addToCart } from "../store/cart.slice";
 
 import { ArrowLeft, Check, Minus, Plus, ShoppingCart } from "lucide-react";
 
-const ProductDetail = () => {
+const Product = () => {
   const [quantity, setQuantity] = useState(1);
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -200,4 +200,4 @@ const ProductDetail = () => {
   );
 };
 
-export default ProductDetail;
+export default Product;

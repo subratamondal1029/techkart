@@ -16,7 +16,7 @@ import {
   ProtectedRoute,
   Auth,
   Error,
-  ProductDetail,
+  Product,
   Account,
   Order,
   Search,
@@ -55,7 +55,7 @@ const router = createBrowserRouter(
           </ProtectedRoute>
         }
       />
-      <Route path="product/:id" element={<ProductDetail />} />
+      <Route path="product/:id" element={<Product />} />
       <Route
         path="account/:page?"
         element={

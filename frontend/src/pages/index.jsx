@@ -5,7 +5,7 @@ const Seller = lazyWrapper(() => import("./Seller"));
 const ProtectedRoute = lazyWrapper(() => import("./ProtectedRoute"));
 const Auth = lazyWrapper(() => import("./Auth"));
 const Error = lazyWrapper(() => import("./Error"));
-const ProductDetail = lazyWrapper(() => import("./ProductDetail"));
+const Product = lazyWrapper(() => import("./Product"));
 const Account = lazyWrapper(() => import("./Account"));
 const Order = lazyWrapper(() => import("./Order"));
 const Search = lazyWrapper(() => import("./Search"));
@@ -21,7 +21,7 @@ export {
   ProtectedRoute,
   Auth,
   Error,
-  ProductDetail,
+  Product,
   Account,
   Order,
   Search,
