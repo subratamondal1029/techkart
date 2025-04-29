@@ -23,9 +23,7 @@ const ButtonLoading = lazyWrapper(() => import("./ButtonLoading"));
 const ProductCard = lazyWrapper(() => import("./ProductCard"));
 const OrderStatus = lazyWrapper(() => import("./OrderStatus"));
 const CartPop = lazyWrapper(() => import("./CartPop"));
-const InfiniteLoadingError = lazyWrapper(() =>
-  import("./InfiniteLoadingError")
-);
+const LoadingError = lazyWrapper(() => import("./LoadingError"));
 
 export {
   Logo,
@@ -41,5 +39,5 @@ export {
   ProductCard,
   OrderStatus,
   CartPop,
-  InfiniteLoadingError,
+  LoadingError,
 };

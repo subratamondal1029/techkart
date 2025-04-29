@@ -1,11 +1,11 @@
 import { Info, RotateCcw } from "lucide-react";
 import Button from "./Button";
 
-const InfiniteLoadingError = ({ error, retry }) => {
+const LoadingError = ({ error, retry, classname }) => {
   return (
     <div
       id="alert-additional-content-2"
-      className="p-4 mb-4 text-red-800 border border-red-300 rounded-lg bg-red-50"
+      className={`p-4 mb-4 text-red-800 border border-red-300 rounded-lg bg-red-50 ${classname}`}
       role="alert"
     >
       <div className="flex items-center gap-2">
@@ -23,4 +23,4 @@ const InfiniteLoadingError = ({ error, retry }) => {
   );
 };
 
-export default InfiniteLoadingError;
+export default LoadingError;

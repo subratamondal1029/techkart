@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { LoaderCircle, ViewIcon } from "lucide-react";
-import { Button, Image, InfiniteLoadingError, OrderStatus } from "../";
+import { Button, Image, LoadingError, OrderStatus } from "../";
 import { useInfiniteScroll } from "../../hooks";
 import { storeOrders } from "../../store/order.slice";
 import orderService from "../../services/order.service";
@@ -70,7 +70,7 @@ const Orders = () => {
       ))}
 
       {error ? (
-        <InfiniteLoadingError error={error} retry={retry} />
+        <LoadingError error={error} retry={retry} />
       ) : page !== totalPages.current || isLoading ? (
         <div className="w-full flex justify-center items-center">
           <LoaderCircle size={40} className="animate-spin" ref={loaderRef} />
