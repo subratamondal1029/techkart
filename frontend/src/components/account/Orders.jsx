@@ -18,9 +18,8 @@ const Orders = () => {
 
   const fetchOrders = async (page) => {
     const { data } = await orderService.getMany({ page });
-    // FIXME: get the totalPages from server and store it in ref
     totalPages.current = data?.totalPages || 1;
-    dispatch(storeOrders({ data, page }));
+    dispatch(storeOrders({ data: data.orders, page }));
   };
 
   const [page, isLoading, error, retry] = useInfiniteScroll({

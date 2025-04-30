@@ -248,6 +248,10 @@ const getOrder = asyncHandler(async (req, res) => {
 const getOrders = asyncHandler(async (req, res) => {
   const { page = 1 } = req.query;
 
+  const pageSize = 10;
+  const totalOrders = await Order.countDocuments({ userId: req.user._id });
+  const totalPages = Math.ceil(totalOrders / pageSize);
+
   const orders = await Order.aggregate([
     { $match: { userId: req.user._id } },
     {
@@ -312,10 +316,16 @@ const getOrders = asyncHandler(async (req, res) => {
       },
     },
   ])
-    .limit(10)
-    .skip((page - 1) * 10);
+    .limit(pageSize)
+    .skip((page - 1) * pageSize);
 
-  res.json(new ApiResponse(200, "Orders Fetched", orders));
+  res.json(
+    new ApiResponse(200, "Orders Fetched", {
+      orders,
+      totalPages,
+      currentPage: Number(page),
+    })
+  );
 });
 
 const updateContact = asyncHandler(async (req, res) => {
