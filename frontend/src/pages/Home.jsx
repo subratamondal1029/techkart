@@ -18,27 +18,32 @@ import { storeProducts } from "../store/product.slice";
 
 const Home = () => {
   const dispatch = useDispatch();
-  const products = useSelector((state) => state.products);
+  const { page: initialPage, data: products } = useSelector(
+    (state) => state.products
+  );
   const loaderRef = useRef(null);
   const totalPages = useRef(1);
 
-  const [page, isLoading, error, retry, setPage] = useInfiniteScroll(
-    async (page) => {
-      const { data } = await productService.getMany({
-        page,
+  const fetchProducts = async (page) => {
+    const { data } = await productService.getMany({
+      page,
 
-        sortBy: "createdAt",
-        sort: "d",
-      });
+      sortBy: "createdAt",
+      sort: "d",
+    });
 
-      totalPages.current = data.totalPages;
-      const products = data.products;
-      console.log(`Total product response: ${products.length}`);
+    totalPages.current = data.totalPages;
+    const products = data.products;
+    console.log(`Total product response: ${products.length}`);
 
-      dispatch(storeProducts(products));
-    },
-    loaderRef
-  );
+    dispatch(storeProducts({ page, data: products }));
+  };
+
+  const [page, isLoading, error, retry, setPage] = useInfiniteScroll({
+    cb: fetchProducts,
+    loaderRef,
+    initialPage,
+  });
 
   return (
     <main>

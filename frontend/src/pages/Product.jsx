@@ -26,7 +26,7 @@ const Product = () => {
   const cart = useSelector((state) => state.cart);
   const [isInCart, setIsInCart] = useState(false);
   const product = useSelector((state) =>
-    state.products.find((p) => p._id === id)
+    state.products.data.find((p) => p._id === id)
   );
   const [productError, setProductError] = useState("");
 
