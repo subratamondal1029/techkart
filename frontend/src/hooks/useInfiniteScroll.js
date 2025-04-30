@@ -4,8 +4,10 @@ import useLoading from "./useLoading";
 /**
  * A custom hook for implementing infinite scrolling using the Intersection Observer API.
  *
- * @param {Function} cb - The callback function to fetch data. It should accept the current page number as an argument.
- * @param {React.RefObject<HTMLElement>} loaderRef - A React ref pointing to the loader element that triggers the next page load when visible.
+ * @param {Object} params - The parameters object.
+ * @param {Function} params.cb - The callback function to fetch data. It should accept the current page number as an argument.
+ * @param {React.RefObject<HTMLElement>} params.loaderRef - A React ref pointing to the loader element that triggers the next page load when visible.
+ * @param {number} [params.initialPage=0] - The initial page number (default: 0).
  * @param {...any} args - Additional arguments to pass to the callback function.
  * @returns {[number, boolean, string, Function, Function]} - Returns an array containing:
  *   - `page` (number): The current page number.
@@ -15,8 +17,8 @@ import useLoading from "./useLoading";
  *   - `setPage` (Function): A function to manually set the page number.
  */
 
-const useInfiniteScroll = (cb, loaderRef, ...args) => {
-  const [page, setPage] = useState(0);
+const useInfiniteScroll = ({ cb, loaderRef, initialPage = 0 }, ...args) => {
+  const [page, setPage] = useState(initialPage);
   const [fetchData, isLoading, error] = useLoading(cb);
   const isLoadingRef = useRef(isLoading);
 
@@ -47,9 +49,14 @@ const useInfiniteScroll = (cb, loaderRef, ...args) => {
   }, [error]);
 
   useEffect(() => {
-    if (!page) return;
+    // console.log("initialPage", initialPage, "page", page);
+    if (!page || page === initialPage) return;
+    if (page < initialPage) {
+      setPage(initialPage);
+      return;
+    }
     fetchData(page, ...args);
-  }, [page]);
+  }, [page, initialPage]);
 
   const retry = useCallback(() => fetchData(page), [fetchData, page]);
 

@@ -6,11 +6,13 @@ import { ButtonLoading, Button, Image, OrderStatus } from ".";
 import { useOptimistic, useState, startTransition } from "react";
 import delay from "../utils/delay";
 import { LoaderCircle } from "lucide-react";
-import { useRef } from "react";
-import { useEffect } from "react";
+import { useRef, useEffect } from "react";
 import useInfiniteScroll from "../hooks/useInfiniteScroll";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Test = () => {
+  const navigate = useNavigate();
+  const { state, pathname, search } = useLocation();
   const [data, setData] = useState([
     { title: "name", value: "Subrata Mondal", id: crypto.randomUUID() },
     {
@@ -58,7 +60,10 @@ const Test = () => {
   };
 
   const loaderRef = useRef(null);
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState({
+    page: 0,
+    data: [],
+  });
   const totalPages = useRef(5);
   const [filter, setFilter] = useState({
     sort: "a",
@@ -66,32 +71,33 @@ const Test = () => {
     query: "",
   });
 
-  const [page, isLoading, error, retry, setPage] = useInfiniteScroll(
-    async (page, filter) => {
-      console.log("filter", filter);
-
-      console.log(`fetching page: ${page} with query ${filter?.query}`);
-      await apiCall();
-      console.log(`fetched page: ${page}`);
-      if (page === 1) {
-        setProducts(Array.from({ length: 10 }));
-      } else {
-        setProducts((prev) => [...prev, ...Array.from({ length: 10 })]);
-      }
-    },
-    loaderRef,
-    filter
-  );
+  const fetchProducts = async (page, filter) => {
+    console.log(`fetching page: ${page}`);
+    await apiCall();
+    console.log(`fetched page: ${page}`);
+    setProducts((prev) => ({
+      page,
+      data: [...prev.data, ...Array.from({ length: 10 })],
+    }));
+  };
 
   useEffect(() => {
-    if (!page) return;
-    setPage(0);
-    setProducts([]);
-  }, [filter]);
+    const cacheData = state?.products;
+    if (cacheData) {
+      setProducts({ page: cacheData.page, data: cacheData.data });
+    }
+  }, [state]);
+
+  const [page, isLoading, error, retry, setPage] = useInfiniteScroll({
+    cb: fetchProducts,
+    loaderRef,
+    initialPage: products.page,
+  });
 
   return (
     <div className="bg-gray-700 text-white w-full min-h-screen flex  items-center flex-col">
       <h1 className="text-3xl ">Test</h1>
+      {/* Optimistic update test */}
       <div className="flex justify-center items-center w-full space-x-5">
         {optimisticData.map((item) => (
           <div
@@ -114,6 +120,7 @@ const Test = () => {
           </div>
         ))}
       </div>
+      {/* Infinite Scroll Test */}
       <div className="w-full min-h-screen bg-gray-900 flex flex-col justify-start items-center space-y-5 flex-wrap py-2 mt-3">
         <div className="fixed bottom-10 right-0">
           <input
@@ -131,10 +138,19 @@ const Test = () => {
             className="focus:outline-none text-black p-2"
           />
         </div>
-        {products.map((_, index) => (
+        {products?.data?.map((_, index) => (
           <div
             className="bg-gray-400 w-32 h-32 rounded flex justify-center items-center text-2xl"
             key={index}
+            onClick={() =>
+              navigate("/test2", {
+                state: {
+                  data: `product ${index + 1}`,
+                  products,
+                  redirect: pathname + search,
+                },
+              })
+            }
           >
             product {index + 1}
           </div>
