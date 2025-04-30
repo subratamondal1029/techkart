@@ -1,21 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { Button, ButtonLoading, Image, OrderStatus } from "../components";
 import OrderShimmer from "../components/shimmers/Order.shimmer";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Download } from "lucide-react";
 import { toast } from "react-toastify";
 import { useLoading } from "../hooks";
 import fileService from "../services/file.service";
 import orderService from "../services/order.service";
-import { addOrder } from "../store/order.slice";
+import { addOrder, updateOrder } from "../store/order.slice";
+import { ArrowRight } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 export default function Order() {
   const { id } = useParams();
   const existingOrder = useSelector((state) =>
-    state.orders.find((order) => order._id === id)
+    state.orders.data.find((order) => order._id === id)
   );
-  const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
   const [order, setOrder] = useState(null);
 
@@ -51,7 +53,7 @@ export default function Order() {
 
     const { data } = await cancelRequest;
     dispatch(
-      addOrder({
+      updateOrder({
         ...order,
         isCancelled: data?.isCancelled,
         isRefund: data?.isRefund,

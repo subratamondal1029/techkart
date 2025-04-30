@@ -10,15 +10,24 @@ import fileService from "../../services/file.service";
 
 const Orders = () => {
   const dispatch = useDispatch();
-  const orders = useSelector((state) => state.orders);
+  const { page: initialPage, data: orders } = useSelector(
+    (state) => state.orders
+  );
   const loaderRef = useRef(null);
   const totalPages = useRef(1);
 
-  const [page, isLoading, error, retry] = useInfiniteScroll(async (page) => {
-    const { data: orders } = await orderService.getMany({ page });
+  const fetchOrders = async (page) => {
+    const { data } = await orderService.getMany({ page });
     // FIXME: get the totalPages from server and store it in ref
-    dispatch(storeOrders(orders));
-  }, loaderRef);
+    totalPages.current = data?.totalPages || 1;
+    dispatch(storeOrders({ data, page }));
+  };
+
+  const [page, isLoading, error, retry] = useInfiniteScroll({
+    cb: fetchOrders,
+    loaderRef,
+    initialPage,
+  });
 
   return (
     <div className="w-full md:w-3/4 space-y-5">

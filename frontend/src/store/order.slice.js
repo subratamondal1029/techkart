@@ -2,42 +2,49 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const orderSlice = createSlice({
   name: "order",
-  initialState: [],
+  initialState: {
+    page: 0,
+    data: [],
+  },
   reducers: {
     storeOrders: (state, action) => {
-      const newItems = action.payload;
+      const { page, data: newItems } = action.payload;
 
       const uniqueItems = [
-        ...state,
-        ...newItems.filter(
-          (newItem) => !state.some((existing) => existing._id === newItem._id)
+        ...state.data,
+        ...newItems?.filter(
+          (newItem) =>
+            !state.data.some((existing) => existing._id === newItem._id)
         ),
       ];
 
-      return uniqueItems;
+      return {
+        page,
+        data: uniqueItems,
+      };
     },
     addOrder: (state, action) => {
-      const index = state.findIndex(
+      const index = state.data.findIndex(
         (order) => order._id === action.payload?._id
       );
 
       if (index !== -1) {
         const isSame =
-          JSON.stringify(state[index]) === JSON.stringify(action.payload);
+          JSON.stringify(state.data[index]) === JSON.stringify(action.payload);
         if (isSame) return; // no need to update
 
-        Object.assign(state[index], action.payload); // update only if changed
+        Object.assign(state.data[index], action.payload); // update only if changed
         return;
       }
 
-      state.push(action.payload);
+      state.data.push(action.payload);
     },
     updateOrder: (state, action) => {
-      const index = state.findIndex(
+      const index = state.data.findIndex(
         (order) => order._id === action.payload?._id
       );
       if (index !== -1) {
-        Object.assign(state[index], action.payload);
+        Object.assign(state.data[index], action.payload);
       }
     },
   },
