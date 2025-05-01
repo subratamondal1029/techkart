@@ -151,23 +151,39 @@ const Product = () => {
         <hr className="w-full " />
         <div className="flex gap-3 items-center xl:w-3/4 mt-3 md:w-2/4 w-full sm:w-3/4 ">
           <Button
-            classname="w-full max-w-44 bg-gray-200 flex justify-between text-2xl py-1 rounded-lg px-2"
+            classname="w-full max-w-44 bg-gray-100 text-black hover:bg-gray-200 justify-between text-2xl py-2 rounded-xl px-4 shadow-sm transition-colors duration-200 focus:ring-0"
             disabled={isInCart}
           >
             <Minus
-              size={30}
-              className={`hover:text-gray-700`}
-              onClick={() => setQuantity((prev) => (prev !== 1 ? prev - 1 : 1))}
+              size={26}
+              className={`transition-colors duration-200 cursor-pointer ${
+                isInCart
+                  ? "text-gray-400 cursor-not-allowed"
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
+              onClick={() => {
+                if (!isInCart)
+                  setQuantity((prev) => (prev !== 1 ? prev - 1 : 1));
+              }}
             />
-            <p className="select-none">{quantity}</p>
+            <p className="select-none text-black text-xl font-medium">
+              {quantity}
+            </p>
             <Plus
-              size={30}
-              className={`hover:text-gray-700`}
-              onClick={() => setQuantity((prev) => prev + 1)}
+              size={26}
+              className={`transition-colors duration-200 cursor-pointer ${
+                isInCart
+                  ? "text-gray-400 cursor-not-allowed"
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
+              onClick={() => {
+                if (!isInCart) setQuantity((prev) => prev + 1);
+              }}
             />
           </Button>
+
           <Button
-            classname="w-full max-w-36 flex items-center justify-between py-3 px-3 select-none xl:px-5"
+            classname="w-full max-w-36 min-h-10 flex items-center justify-between py-3 px-3 select-none xl:px-5"
             onClick={handleAddToCart}
           >
             {isAddingToCart ? (
