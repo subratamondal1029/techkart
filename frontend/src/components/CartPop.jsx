@@ -1,28 +1,39 @@
+import { useOptimistic, startTransition } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
 import { X } from "lucide-react";
 import { Button, Image } from "./index";
-import { useLoading } from "../hooks";
+import useLoading from "../hooks/useLoading";
 import { removeFromCart } from "../store/cart.slice";
 import cartService from "../services/cart.service";
 import fileService from "../services/file.service";
+import showToast from "../utils/showToast";
 
 export default function CartPop({ setIsCartOpen }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const products = useSelector((state) => state.cart?.products);
-  const userData = useSelector((state) => state.auth.userData);
+  const [optimisticProducts, updateOptimisticProducts] =
+    useOptimistic(products);
 
-  const [handleDeleteProduct, isLoading] = useLoading(async (productId) => {
-    try {
-      await cartService.update({ id: productId, quantity: 0 });
-      dispatch(removeFromCart(productId));
-      toast.success("Product removed from cart");
-    } catch (error) {
-      toast.error("Failed to delete product");
-    }
-  });
+  const [handleDeleteProduct, isLoading] = useLoading(
+    async (productId) =>
+      new Promise((resolve, reject) => {
+        startTransition(async () => {
+          try {
+            updateOptimisticProducts((prev) =>
+              prev.filter((p) => p.product._id !== productId)
+            );
+            await cartService.update({ id: productId, quantity: 0 });
+            dispatch(removeFromCart(productId));
+            resolve();
+          } catch (error) {
+            showToast("error", error.message || "Failed to remove product");
+            reject(error);
+          }
+        });
+      })
+  );
 
   return (
     <div
@@ -37,8 +48,8 @@ export default function CartPop({ setIsCartOpen }) {
       </button>
       <div className="mt-6 space-y-6">
         <ul className="space-y-4 overflow-y-auto max-h-72 hide-scroll">
-          {products &&
-            products.map(({ product, quantity }) => (
+          {optimisticProducts &&
+            optimisticProducts.map(({ product, quantity }) => (
               <li key={product._id}>
                 <Link
                   to={`/product/${product._id}`}
@@ -69,7 +80,7 @@ export default function CartPop({ setIsCartOpen }) {
                       size={24}
                       onClick={(e) => {
                         e.preventDefault();
-                        handleDeleteProduct(product.product._id);
+                        handleDeleteProduct(product._id);
                       }}
                     />
                   </div>
@@ -86,9 +97,9 @@ export default function CartPop({ setIsCartOpen }) {
               setIsCartOpen(false);
             }}
           >
-            View Cart ({products?.length || 0})
+            View Cart ({optimisticProducts?.length || 0})
           </button>
-          {products?.length > 0 && (
+          {optimisticProducts?.length > 0 && (
             <Button
               classname="w-full"
               type="button"
