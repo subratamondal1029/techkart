@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/auth.slice";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import {
   ChevronDown,
   Menu,
@@ -25,6 +25,7 @@ const Header = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   const [handleLogout] = useLoading(async () => {
     const logoutReq = authService.logout();
@@ -98,7 +99,9 @@ const Header = () => {
           </NavLink>
 
           <span
-            className="relative cursor-pointer"
+            className={`relative cursor-pointer ${
+              pathname === "/cart" ? "text-blue-600" : ""
+            }`}
             onClick={() => setIsCartOpen((prev) => !prev)}
           >
             {cart?.products?.length > 0 ? (

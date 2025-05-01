@@ -153,9 +153,8 @@ export default function Cart() {
           <div className="min-w-24 flex">
             <button
               type="button"
-              className={`h-7 w-7 disabled:cursor-wait`}
+              className={`h-7 w-7`}
               onClick={() => handleQuantityChange(product._id, quantity - 1)}
-              disabled={isQuantityLoading}
             >
               -
             </button>
@@ -175,9 +174,8 @@ export default function Cart() {
             />
             <button
               type="button"
-              className={`flex h-7 w-7 items-center justify-center disabled:cursor-wait`}
+              className={`flex h-7 w-7 items-center justify-center`}
               onClick={() => handleQuantityChange(product._id, quantity + 1)}
-              disabled={isQuantityLoading}
             >
               +
             </button>
