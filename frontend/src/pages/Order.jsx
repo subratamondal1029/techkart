@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Button, ButtonLoading, Image, OrderStatus } from "../components";
+import { Button, ButtonLoading, Image, OrderStatus, Back } from "../components";
 import OrderShimmer from "../components/shimmers/Order.shimmer";
-import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
+import { Link, useParams, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Download } from "lucide-react";
 import { toast } from "react-toastify";
-import { useLoading } from "../hooks";
+import useLoading from "../hooks/useLoading";
 import fileService from "../services/file.service";
 import orderService from "../services/order.service";
 import { addOrder, updateOrder } from "../store/order.slice";
-import { ArrowRight } from "lucide-react";
-import { ArrowLeft } from "lucide-react";
 
 export default function Order() {
   const { id } = useParams();
@@ -86,7 +84,8 @@ export default function Order() {
   return (
     order && (
       <div className="mx-auto my-4 max-w-4xl md:my-6">
-        <div className="overflow-hidden rounded-xl border border-gray-100 shadow">
+        <Back />
+        <div className="overflow-hidden rounded-xl border border-gray-100 shadow mt-12">
           <div className="grid grid-cols-1 md:grid-cols-2">
             {/* Product List */}
             <div className="px-5 py-6 md:border-r md:border-r-gray-200 md:px-8">

@@ -3,7 +3,13 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
-import { Button, ButtonLoading, Image, LoadingError } from "../components";
+import {
+  Back,
+  Button,
+  ButtonLoading,
+  Image,
+  LoadingError,
+} from "../components";
 import ProductShimmer from "../components/shimmers/Product.shimmer";
 
 import useLoading from "../hooks/useLoading";
@@ -78,23 +84,9 @@ const Product = () => {
     }
   });
 
-  const back = () => {
-    const history = window.history;
-    if (history.length > 1) {
-      history.back();
-    } else navigate("/");
-  };
-
   return product ? (
     <div className="w-full min-h-[80vh] flex items-center justify-center gap-20 p-5 px-5 sm:px-20 mt-10 xl:mt-5 xl:flex-row flex-col lg:items-center">
-      <Button
-        type="button"
-        classname="flex items-center justify-start absolute top-20 left-4"
-        onClick={back}
-      >
-        <ArrowLeft size={20} />
-        Go back
-      </Button>
+      <Back />
       <div className="w-full max-w-[400px] h-auto rounded-lg flex items-center justify-center">
         <Image
           src={fileService.get(product.image)}
