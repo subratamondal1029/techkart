@@ -1,91 +1,202 @@
-import { ArrowLeft, CreditCard, Trash } from "lucide-react";
-import React, { useEffect, useState } from "react";
-import { Button } from "../components";
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  useOptimistic,
+  startTransition,
+} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../store/authSlice";
-import appWriteDb from "../appwrite/DbServise";
+import { ArrowLeft, CreditCard, Trash } from "lucide-react";
+import { Button, Image } from "../components";
+import CartShimmer from "../components/shimmers/Cart.shimmer";
+import { changeQuantity, removeFromCart } from "../store/cart.slice";
+import fileService from "../services/file.service";
+import cartService from "../services/cart.service";
+import useLoading from "../hooks/useLoading";
+import showToast from "../utils/showToast";
 
 export default function Cart() {
-  const [products, setProducts] = useState([]);
-  const [total, setTotal] = useState(0);
-  const [loadingClass, setLoadingClass] = useState("");
-  const { otherData, userData } = useSelector((state) => state.auth);
-  const { products: allProducts } = useSelector((state) => state.products);
+  const cart = useSelector((state) => state.cart);
+  const [optimisticCart, setOptimisticCart] = useOptimistic(cart);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // TODO: only fetch the cart from store products are already populated
-    const createProducts = otherData.cart.map((cartProduct) => {
-      const productDetails = allProducts.find(
-        (product) => product.$id === cartProduct.productId
-      );
-
-      return {
-        id: productDetails.$id,
-        name: productDetails.name,
-        price: productDetails.price,
-        image: productDetails.image,
-        quantity: cartProduct.quantity,
-      };
-    });
-
-    setProducts(createProducts.reverse());
-    setTotal(
-      createProducts
-        .reduce((acc, curr) => acc + curr.price * curr.quantity, 0)
-        .toLocaleString("en-IN")
+  const calCartPrice = (cart) => {
+    return cart?.products?.reduce(
+      (acc, cur) => acc + cur.product.price * cur.quantity,
+      0
     );
-  }, [otherData.cart, allProducts]);
-
-  const handleDelete = async (productId) => {
-    setLoadingClass("cursor-wait");
-    const filteredProducts = otherData.cart.filter(
-      (product) => product.productId !== productId
-    );
-
-    try {
-      const cart = await appWriteDb.addToCart(
-        filteredProducts,
-        userData.$id,
-        "update"
-      );
-      if (cart) {
-        dispatch(login({ otherData: { cart, orders: otherData.orders } }));
-        setLoadingClass("");
-      }
-    } catch (error) {
-      console.warn(error.message);
-      setLoadingClass("");
-    }
   };
 
-  const handleQuantityChange = async (productId, quantity) => {
-    if (quantity < 1) {
-      handleDelete(productId);
-      return;
-    } else {
-      setLoadingClass("cursor-wait");
-      const updatedProducts = otherData.cart.map((product) =>
-        product.productId === productId ? { ...product, quantity } : product
-      );
+  const [handleDelete, isDeleteLoading, deleteError] = useLoading(
+    async (productId) =>
+      new Promise((resolve, reject) => {
+        startTransition(async () => {
+          try {
+            setOptimisticCart((prev) => ({
+              ...prev,
+              products: prev.products.filter(
+                (p) => p.product._id !== productId
+              ),
+            }));
+            await cartService.update({ id: productId, quantity: 0 });
+            dispatch(removeFromCart(productId));
+            resolve();
+          } catch (error) {
+            reject(error);
+          }
+        });
+      })
+  );
 
-      try {
-        const cart = await appWriteDb.addToCart(
-          updatedProducts,
-          userData.$id,
-          "update"
-        );
-        if (cart) {
-          dispatch(login({ otherData: { cart, orders: otherData.orders } }));
-          setLoadingClass("");
-        }
-      } catch (error) {
-        console.warn(error.message);
-        setLoadingClass("");
+  const [handleQuantityChange, isQuantityLoading, quantityError] = useLoading(
+    async (productId, quantity) => {
+      const product = cart.products.find((p) => p.product._id === productId);
+      if (quantity === product.quantity) return;
+
+      if (quantity <= 0) {
+        handleDelete();
+        return;
       }
+
+      return new Promise((resolve, reject) => {
+        startTransition(async () => {
+          setOptimisticCart((prev) => ({
+            ...prev,
+            products: prev.products.map((p) =>
+              p.product._id === productId ? { ...p, quantity } : p
+            ),
+          }));
+
+          try {
+            await cartService.update({ id: productId, quantity });
+            dispatch(changeQuantity({ productId, quantity }));
+            resolve();
+          } catch (error) {
+            reject(error);
+          }
+        });
+      });
     }
+  );
+
+  useEffect(() => {
+    if (quantityError || deleteError) {
+      showToast(
+        "error",
+        quantityError || deleteError || "Something went wrong"
+      );
+    }
+  }, [quantityError, deleteError]);
+
+  const handleQuantityChangeCall = useCallback(
+    (e) => {
+      const target = e.target;
+      target.readOnly = true;
+      const productId = target.id;
+      const value = Number(target.value);
+
+      const product = cart.products.find((p) => p.product._id === productId);
+      if (value === product.quantity) return;
+
+      handleQuantityChange(productId, value);
+    },
+    [handleQuantityChange]
+  );
+
+  if (!cart) return <CartShimmer />;
+
+  // onetime use Component
+  const CartProduct = ({ product, quantity }) => {
+    const [localQuantity, setLocalQuantity] = useState(quantity);
+
+    useEffect(() => {
+      setLocalQuantity(quantity);
+    }, [quantity]);
+
+    return (
+      <div className="">
+        <li className="flex py-6 sm:py-6 ">
+          <Link to={`/product/${product._id}`} className="flex-shrink-0">
+            <Image
+              src={fileService.get(product.image)}
+              alt={product.name}
+              className="sm:h-38 sm:w-38 h-24 w-24 rounded-md object-contain object-center"
+            />
+          </Link>
+
+          <div className="ml-4 flex flex-1 flex-col justify-between sm:ml-6">
+            <div className="relative pr-9 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:pr-0">
+              <div>
+                <div className="flex justify-between">
+                  <h3 className="text-sm">
+                    <Link
+                      to={`/product/${product._id}`}
+                      className="font-semibold text-black"
+                    >
+                      {product.name}
+                    </Link>
+                  </h3>
+                </div>
+                <div className="mt-3 flex items-end">
+                  <p className="text-sm font-medium text-gray-900">
+                    &nbsp;&nbsp;₹ {product.price.toLocaleString("en-IN")}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </li>
+        <div className="mb-2 flex">
+          {/* quantity update */}
+          <div className="min-w-24 flex">
+            <button
+              type="button"
+              className={`h-7 w-7 disabled:cursor-wait`}
+              onClick={() => handleQuantityChange(product._id, quantity - 1)}
+              disabled={isQuantityLoading}
+            >
+              -
+            </button>
+            <input
+              type="number"
+              className={`mx-1 h-7 w-9 rounded-md border text-center cursor-text focus:outline-none read-only:bg-gray-200 disabled:animate-pulse disabled:cursor-wait disabled:bg-gray-400`}
+              disabled={isQuantityLoading}
+              value={localQuantity}
+              id={product._id}
+              onDoubleClick={(e) => (e.target.readOnly = false)}
+              onBlur={handleQuantityChangeCall}
+              onChange={(e) =>
+                setLocalQuantity(Math.max(0, Number(e.target.value)))
+              }
+              onKeyUp={(e) => e.key === "Enter" && handleQuantityChangeCall(e)}
+              readOnly
+            />
+            <button
+              type="button"
+              className={`flex h-7 w-7 items-center justify-center disabled:cursor-wait`}
+              onClick={() => handleQuantityChange(product._id, quantity + 1)}
+              disabled={isQuantityLoading}
+            >
+              +
+            </button>
+          </div>
+          {/* remove */}
+          <div className="ml-6 flex text-sm">
+            <button
+              type="button"
+              className={`flex items-center space-x-1 px-2 py-1 pl-0 disabled:cursor-wait`}
+              onClick={() => handleDelete(product._id)}
+              disabled={isDeleteLoading}
+            >
+              <Trash size={12} className="text-red-500" />
+              <span className="text-xs font-medium text-red-500">Remove</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -103,82 +214,14 @@ export default function Cart() {
               Items in your shopping cart
             </h2>
             <ul role="list" className="divide-y divide-gray-200">
-              {products.map((product) => (
-                <div key={product.id} className="">
-                  <li className="flex py-6 sm:py-6 ">
-                    <div className="flex-shrink-0">
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="sm:h-38 sm:w-38 h-24 w-24 rounded-md object-contain object-center"
-                      />
-                    </div>
-
-                    <div className="ml-4 flex flex-1 flex-col justify-between sm:ml-6">
-                      <div className="relative pr-9 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:pr-0">
-                        <div>
-                          <div className="flex justify-between">
-                            <h3 className="text-sm">
-                              <Link
-                                to={`/product/${product.id}`}
-                                className="font-semibold text-black"
-                              >
-                                {product.name}
-                              </Link>
-                            </h3>
-                          </div>
-                          <div className="mt-3 flex items-end">
-                            <p className="text-sm font-medium text-gray-900">
-                              &nbsp;&nbsp;₹{" "}
-                              {product.price.toLocaleString("en-IN")}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-                  <div className="mb-2 flex">
-                    <div className="min-w-24 flex">
-                      <button
-                        type="button"
-                        className={`h-7 w-7 ${loadingClass}`}
-                        onClick={() =>
-                          handleQuantityChange(product.id, product.quantity - 1)
-                        }
-                      >
-                        -
-                      </button>
-                      <input
-                        type="text"
-                        className="mx-1 h-7 w-9 rounded-md border text-center"
-                        value={product.quantity}
-                        disabled
-                      />
-                      <button
-                        type="button"
-                        className={`flex h-7 w-7 items-center justify-center ${loadingClass}`}
-                        onClick={() =>
-                          handleQuantityChange(product.id, product.quantity + 1)
-                        }
-                      >
-                        +
-                      </button>
-                    </div>
-                    <div className="ml-6 flex text-sm">
-                      <button
-                        type="button"
-                        className={`flex items-center space-x-1 px-2 py-1 pl-0 ${loadingClass}`}
-                        onClick={() => handleDelete(product.id)}
-                      >
-                        <Trash size={12} className="text-red-500" />
-                        <span className="text-xs font-medium text-red-500">
-                          Remove
-                        </span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
+              {cart &&
+                optimisticCart?.products?.map(({ product, quantity }) => (
+                  <CartProduct
+                    product={product}
+                    quantity={quantity}
+                    key={product._id}
+                  />
+                ))}
             </ul>
           </section>
           {/* Order summary */}
@@ -196,10 +239,10 @@ export default function Cart() {
               <dl className=" space-y-1 px-2 py-4">
                 <div className="flex items-center justify-between">
                   <dt className="text-sm text-gray-800">
-                    Price ({products.length} item)
+                    Price ({optimisticCart?.products?.length} item)
                   </dt>
                   <dd className="text-sm font-medium text-gray-900">
-                    ₹ {total}
+                    ₹ {calCartPrice(optimisticCart)?.toLocaleString("en-In")}
                   </dd>
                 </div>
 
@@ -214,7 +257,7 @@ export default function Cart() {
                     Total Amount
                   </dt>
                   <dd className="text-base font-medium text-gray-900">
-                    ₹ {total}
+                    ₹ {calCartPrice(optimisticCart)?.toLocaleString("en-In")}
                   </dd>
                 </div>
               </dl>

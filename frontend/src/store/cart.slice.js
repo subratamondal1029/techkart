@@ -11,14 +11,15 @@ const cartSlice = createSlice({
       state?.products?.push(action.payload);
     },
     changeQuantity: (state, action) => {
+      const { quantity, productId } = action.payload;
       const existingProduct = state?.products?.find(
-        (product) => product?.product?._id === action.payload?.product._id
+        (product) => product?.product?._id === productId
       );
 
       if (existingProduct) {
-        if (action.payload.quantity === existingProduct.quantity) return;
+        if (quantity === existingProduct.quantity) return;
 
-        existingProduct.quantity = action.payload.quantity;
+        existingProduct.quantity = quantity;
       }
     },
     removeFromCart: (state, action) => {
