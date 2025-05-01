@@ -1,15 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/auth.slice";
 import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
-import {
-  ChevronDown,
-  Menu,
-  SearchIcon,
-  ShoppingCartIcon,
-  User,
-  X,
-} from "lucide-react";
+import { Menu, SearchIcon, ShoppingCartIcon, User, X } from "lucide-react";
 import { Button, CartPop, Input, Logo } from "./index";
 import authService from "../services/auth.service";
 import { toast } from "react-toastify";
@@ -20,9 +13,23 @@ import { storeOrders } from "../store/order.slice";
 const Header = () => {
   const { isLoggedIn } = useSelector((state) => state.auth);
   const cart = useSelector((state) => state.cart);
+  const products = useSelector((state) => state.products.data);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [allTags, setAllTags] = useState([
+    "laptops",
+    "smartphones",
+    "headphones",
+    "keyboards",
+    "monitors",
+    "gaming chairs",
+    "graphic cards",
+    "processors",
+    "motherboards",
+    "storage devices",
+  ]);
+  const [filteredTags, setFilteredTags] = useState([]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -40,15 +47,33 @@ const Header = () => {
     dispatch(logout());
     dispatch(storeCart(null));
     dispatch(storeOrders([]));
-    navigate("/");
   });
 
   const handleSearch = (value) => {
-    if (value === "") {
-      value = "all";
-    }
-    navigate(`/search/${value}`);
+    const queryValue = encodeURIComponent(
+      typeof value === "string" ? value : searchValue
+    );
+    navigate(`/search/?query=${queryValue}`);
   };
+
+  useEffect(() => {
+    const allTags = products
+      .map((p) => p.tags)
+      .flat(1)
+      .map((t) => t.toLowerCase().trim());
+    setAllTags((prev) => Array.from(new Set([...prev, ...allTags])));
+
+    setFilteredTags(allTags.slice(0, 5));
+  }, [products]);
+
+  useEffect(() => {
+    const value = searchValue.trim();
+    if (value === "") {
+      setFilteredTags(allTags.slice(0, 5));
+    } else {
+      setFilteredTags(allTags.filter((tag) => tag.includes(value)).slice(0, 5));
+    }
+  }, [searchValue, allTags]);
 
   return (
     <header className="z-10 relative bg-white">
@@ -57,32 +82,28 @@ const Header = () => {
           <Logo classname="w-10" width="200px" />
         </Link>
 
-        <div className="hidden justify-center items-center md:flex">
+        <div className="hidden justify-center items-center md:flex h-full min-h-10">
           <Input
             required={false}
             placeholder="Search"
-            classname="min-w-80 rounded-r-none mt-1"
+            classname="min-w-80 rounded-r-none"
             value={searchValue}
+            list="search"
             onChange={(e) => setSearchValue(e.target.value)}
-            onKeyUp={(e) => e.key === "Enter" && handleSearch(searchValue)}
+            onKeyUp={(e) => e.key === "Enter" && handleSearch()}
           />
-          <div className="relative flex items-start justify-center">
-            <select
-              className="bg-transparent mt-1 appearance-none border border-gray-300 py-[9px] pl-3 pr-10 text-sm  focus:outline-none select-none rounded-r-lg"
-              id="category"
-              name="category"
-              onChange={(e) => handleSearch(e.target.value)}
-            >
-              <option value="">All Category</option>
-              <option value="mobile">Mobile</option>
-              <option value="laptop">Laptop</option>
-              <option value="audio">Audio</option>
-              <option value="computer">Computer</option>
-            </select>
-            <span className="pointer-events-none absolute right-0 top-0 flex h-full w-10 items-center justify-center text-center text-gray-600">
-              <ChevronDown size={16} />
-            </span>
-          </div>
+          <datalist id="search">
+            {filteredTags.map((tag) => (
+              <option value={tag} key={tag} />
+            ))}
+          </datalist>
+
+          <Button
+            classname="h-full min-h-10 rounded-l-none"
+            onClick={handleSearch}
+          >
+            <SearchIcon size={20} />
+          </Button>
         </div>
 
         <div className="hidden justify-center items-center space-x-7 md:flex">
@@ -129,6 +150,7 @@ const Header = () => {
         </div>
       </div>
       {isMenuOpen && (
+        // TODO: use same nav for all devices
         <div className="z-20 absolute top-2 w-full min-h-10">
           <div className="relative w-11/12 flex flex-col justify-center items-start bg-gray-100 mx-auto shadow-lg rounded-md p-3">
             <Link to="/" className="w-full">
