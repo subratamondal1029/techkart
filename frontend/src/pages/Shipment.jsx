@@ -2,7 +2,7 @@ import { Download } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import {
-  AccessDenied,
+  // AccessDenied,
   Button,
   ButtonLoading,
   OrderStatus,
@@ -18,9 +18,9 @@ const Shipment = () => {
   const { products: allproduct } = useSelector((state) => state.products);
   const [isLoading, setIsLoading] = useState(false);
 
-  if (!userData?.labels.includes("shipment")) {
-    return <AccessDenied message="Shipment master" />; // TODO: redirect to login page after logout
-  }
+  // if (!userData?.labels.includes("shipment")) {
+  //   return <AccessDenied message="Shipment master" />; // TODO: redirect to login page after logout
+  // }
 
   useEffect(() => {
     async function fetchData() {

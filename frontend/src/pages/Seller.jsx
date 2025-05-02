@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  AccessDenied,
-  Button,
-  ButtonLoading,
-  Input,
-  TextArea,
-} from "../components";
+import { Button, ButtonLoading, Input, TextArea } from "../components";
 import { useForm } from "react-hook-form";
 import appWriteStorage from "../appwrite/storageService";
 import appWriteDb from "../appwrite/DbServise";
@@ -23,9 +17,9 @@ const Seller = () => {
   const [isLoading, setIsLoading] = useState(false);
   const userData = useSelector((state) => state.auth.userData);
 
-  if (userData?.labels[0] !== "seller") {
-    return <AccessDenied message="seller" />; //TODO: redirect to login after logout
-  }
+  // if (userData?.labels[0] !== "seller") {
+  //   return <AccessDenied message="seller" />; //TODO: redirect to login after logout
+  // }
 
   const submit = (data) => {
     // TODO: wrap with loader

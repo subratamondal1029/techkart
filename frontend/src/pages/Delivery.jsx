@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { AccessDenied, Button, ButtonLoading } from "../components";
+import { Button, ButtonLoading } from "../components";
 import { Html5Qrcode } from "html5-qrcode";
 import { ScanQrCodeIcon } from "lucide-react";
 import appWriteDb from "../appwrite/DbServise";
@@ -24,9 +24,9 @@ const Delivery = () => {
   const [isSending, setIsSending] = useState(false);
 
   // Uncomment if access control is needed
-  if (!userData?.labels.includes("delivery")) {
-    return <AccessDenied message="Delivery Boy" />; //TODO: redirect to login page after logout
-  }
+  // if (!userData?.labels.includes("delivery")) {
+  //   return <AccessDenied message="Delivery Boy" />; //TODO: redirect to login page after logout
+  // }
 
   const startScanning = () => {
     console.log("start scanning");
