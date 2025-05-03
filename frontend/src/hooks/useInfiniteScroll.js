@@ -6,10 +6,10 @@ import useLoading from "./useLoading";
  *
  * @param {Object} params - The parameters object.
  * @param {Function} params.cb - The callback function to fetch data. It should accept the current page number as an argument.
- * @param {React.RefObject<HTMLElement>} params.loaderRef - A React ref pointing to the loader element that triggers the next page load when visible.
  * @param {number} [params.initialPage=0] - The initial page number (default: 0).
  * @param {...any} args - Additional arguments to pass to the callback function.
  * @returns {[number, boolean, string, Function, Function]} - Returns an array containing:
+ *   - `loaderRef` (React.MutableRefObject): A reference to the loader element.
  *   - `page` (number): The current page number.
  *   - `isLoading` (boolean): Whether data is currently being fetched.
  *   - `error` (string): Error message if the fetch fails.
@@ -25,28 +25,26 @@ const useInfiniteScroll = ({ cb, loaderRef, initialPage = 0 }, ...args) => {
   useEffect(() => {
     isLoadingRef.current = isLoading;
   }, [isLoading]);
-  useEffect(() => {
-    if (error) return;
 
-    const observer = new IntersectionObserver(
-      ([entries]) => {
-        if (entries.isIntersecting && !isLoadingRef.current) {
-          setPage((prev) => prev + 1);
-        }
-      },
-      { threshold: 1 }
-    );
+  const observerRef = useCallback((node) => {
+    if (observerRef.currentInstance) {
+      observerRef.currentInstance.disconnect();
+    }
 
-    const target = loaderRef?.current;
-    if (target) observer.observe(target);
+    if (node) {
+      observerRef.currentInstance = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting && !isLoadingRef.current) {
+            setPage((prev) => prev + 1);
+          }
+        },
+        { threshold: 1 }
+      );
 
-    return () => {
-      if (target) {
-        observer.unobserve(target);
-        observer.disconnect();
-      }
-    };
-  }, [error]);
+      observerRef.currentInstance.observe(node);
+    }
+  }, []);
+  observerRef.currentInstance = null;
 
   useEffect(() => {
     // console.log("initialPage", initialPage, "page", page);
@@ -60,7 +58,7 @@ const useInfiniteScroll = ({ cb, loaderRef, initialPage = 0 }, ...args) => {
 
   const retry = useCallback(() => fetchData(page), [fetchData, page]);
 
-  return [page, isLoading, error, retry, setPage];
+  return [observerRef, page, isLoading, error, retry, setPage];
 };
 
 export default useInfiniteScroll;

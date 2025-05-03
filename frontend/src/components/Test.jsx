@@ -59,12 +59,11 @@ const Test = () => {
     });
   };
 
-  const loaderRef = useRef(null);
   const [products, setProducts] = useState({
     page: 0,
     data: [],
   });
-  const totalPages = useRef(5);
+  const totalPages = useRef(1);
   const [filter, setFilter] = useState({
     sort: "a",
     sortBy: "price",
@@ -75,6 +74,7 @@ const Test = () => {
     console.log(`fetching page: ${page}`);
     await apiCall();
     console.log(`fetched page: ${page}`);
+    totalPages.current = 10;
     setProducts((prev) => ({
       page,
       data: [...prev.data, ...Array.from({ length: 10 })],
@@ -88,11 +88,11 @@ const Test = () => {
     }
   }, [state]);
 
-  const [page, isLoading, error, retry, setPage] = useInfiniteScroll({
-    cb: fetchProducts,
-    loaderRef,
-    initialPage: products.page,
-  });
+  const [observerRef, page, isLoading, error, retry, setPage] =
+    useInfiniteScroll({
+      cb: fetchProducts,
+      initialPage: products.page,
+    });
 
   return (
     <div className="bg-gray-700 text-white w-full min-h-screen flex  items-center flex-col">
@@ -162,7 +162,11 @@ const Test = () => {
           </>
         ) : (
           (isLoading || page < totalPages.current) && (
-            <LoaderCircle className="animate-spin " size={30} ref={loaderRef} />
+            <LoaderCircle
+              className="animate-spin "
+              size={30}
+              ref={observerRef}
+            />
           )
         )}
       </div>

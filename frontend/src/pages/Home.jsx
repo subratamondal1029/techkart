@@ -21,7 +21,6 @@ const Home = () => {
   const { page: initialPage, data: products } = useSelector(
     (state) => state.products
   );
-  const loaderRef = useRef(null);
   const totalPages = useRef(1);
 
   const fetchProducts = async (page) => {
@@ -32,18 +31,19 @@ const Home = () => {
       sort: "d",
     });
 
-    totalPages.current = data.totalPages;
+    totalPages.current = Number(data?.totalPages) || 1;
     const products = data.products;
     console.log(`Total product response: ${products.length}`);
 
     dispatch(storeProducts({ page, data: products }));
   };
 
-  const [page, isLoading, error, retry, setPage] = useInfiniteScroll({
-    cb: fetchProducts,
-    loaderRef,
-    initialPage,
-  });
+  const [loaderRef, page, isLoading, error, retry, setPage] = useInfiniteScroll(
+    {
+      cb: fetchProducts,
+      initialPage,
+    }
+  );
 
   return (
     <main>

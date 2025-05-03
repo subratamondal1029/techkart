@@ -13,18 +13,16 @@ const Orders = () => {
   const { page: initialPage, data: orders } = useSelector(
     (state) => state.orders
   );
-  const loaderRef = useRef(null);
   const totalPages = useRef(1);
 
   const fetchOrders = async (page) => {
     const { data } = await orderService.getMany({ page });
-    totalPages.current = data?.totalPages || 1;
+    totalPages.current = Number(data?.totalPages) || 1;
     dispatch(storeOrders({ data: data.orders, page }));
   };
 
-  const [page, isLoading, error, retry] = useInfiniteScroll({
+  const [loaderRef, page, isLoading, error, retry] = useInfiniteScroll({
     cb: fetchOrders,
-    loaderRef,
     initialPage,
   });
 
