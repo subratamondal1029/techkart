@@ -25,6 +25,7 @@ const OrderStatus = lazyWrapper(() => import("./OrderStatus"));
 const CartPop = lazyWrapper(() => import("./CartPop"));
 const LoadingError = lazyWrapper(() => import("./LoadingError"));
 const Back = lazyWrapper(() => import("./Back"));
+const Maintenance = lazyWrapper(() => import("./Maintenance"));
 
 export {
   Logo,
@@ -42,4 +43,5 @@ export {
   CartPop,
   LoadingError,
   Back,
+  Maintenance,
 };
