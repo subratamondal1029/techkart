@@ -37,7 +37,7 @@ class ProductService extends baseService {
         queries.push(`category=${category?.trim().toLowerCase()}`);
       if (company?.trim())
         queries.push(`company=${company?.trim().toLowerCase()}`);
-      if (query?.trim()) queries.push(`name=${query?.trim().toLowerCase()}`);
+      if (query?.trim()) queries.push(`query=${query?.trim().toLowerCase()}`);
       if (sort?.trim()) queries.push(`sort=${sort?.trim().toLowerCase()}`);
       if (sortBy?.trim())
         queries.push(`sortBy=${sortBy?.trim().toLowerCase()}`);
