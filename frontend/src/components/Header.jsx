@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/auth.slice";
-import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
+import {
+  Link,
+  NavLink,
+  useNavigate,
+  useLocation,
+  useSearchParams,
+} from "react-router-dom";
 import { Menu, SearchIcon, ShoppingCartIcon, User, X } from "lucide-react";
 import { Button, CartPop, Input, Logo } from "./index";
 import authService from "../services/auth.service";
@@ -33,6 +39,7 @@ const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const [searchParams] = useSearchParams();
 
   const [handleLogout] = useLoading(async () => {
     const logoutReq = authService.logout();
@@ -74,6 +81,11 @@ const Header = () => {
       setFilteredTags(allTags.filter((tag) => tag.includes(value)).slice(0, 5));
     }
   }, [searchValue, allTags]);
+
+  useEffect(() => {
+    const query = searchParams.get("query")?.trim().toLowerCase() || "";
+    setSearchValue(query);
+  }, [searchParams]);
 
   return (
     <header className="z-10 relative bg-white">
