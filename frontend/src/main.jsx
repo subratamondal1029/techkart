@@ -37,7 +37,7 @@ const router = createBrowserRouter(
       <Route path="" element={<Home />} />
       <Route path="login" element={<Auth isSignupPage={false} />} />
       <Route path="signup" element={<Auth isSignupPage={true} />} />
-      <Route path="/search/:searchValue" element={<Search />} />
+      <Route path="/search" element={<Search />} />
       <Route path="placed" element={<OrderConfirm />} />
       <Route
         path="cart"
