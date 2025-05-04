@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { LoadingError, ProductCard } from "../components";
+import { Button, LoadingError, ProductCard } from "../components";
 import ProductCardShimmer from "../components/shimmers/ProductCard.shimmer";
 import useInfiniteScroll from "../hooks/useInfiniteScroll";
 import productService from "../services/product.service";
@@ -75,6 +75,7 @@ const Search = () => {
   // get data from cache
   useEffect(() => {
     const query = createCacheQuery(params);
+    console.log(query);
     const data = searchCache?.[query];
     if (!data) {
       setProducts([]);
@@ -101,7 +102,7 @@ const Search = () => {
   }, [params?.query, products]);
 
   return (
-    <div className="w-full min-h-screen mt-10">
+    <div className="w-full min-h-screen">
       {products.length === 0 && isEmptyResponse && (
         <div className="w-full max-w-xl mx-auto mt-16 p-6 text-center bg-white rounded-xl shadow-sm">
           <h2 className="text-2xl font-semibold text-gray-800 mb-2">
@@ -120,11 +121,72 @@ const Search = () => {
         </div>
       )}
       {products.length > 0 && (
-        <div className="w-full flex flex-wrap items-start justify-evenly gap-3 gap-y-10 mb-5">
-          {products.map((product) => (
-            <ProductCard key={product?._id} product={product} />
-          ))}
-        </div>
+        <>
+          {/* add sort and filter */}
+          <div className="w-full flex items-center justify-end space-x-6 mt-4 pr-10">
+            {/* Price Filter */}
+            <div className="flex items-center space-x-3">
+              <label
+                htmlFor="price"
+                className="text-sm font-medium text-gray-700"
+              >
+                Price:
+              </label>
+              <select
+                id="price"
+                name="price"
+                className="w-36 h-10 bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-500 shadow-sm transition-colors duration-200"
+                value={params?.sortBy === "price" ? params?.sort : "Default"}
+                onChange={(e) =>
+                  setParams((prev) => ({
+                    ...prev,
+                    sortBy: "price",
+                    sort: e.target.value,
+                  }))
+                }
+              >
+                <option hidden>Default</option>
+                <option value="a">Low to High</option>
+                <option value="d">High to Low</option>
+              </select>
+            </div>
+
+            {/* Sort Filter */}
+            <div className="flex items-center space-x-3">
+              <label
+                htmlFor="sortBy"
+                className="text-sm font-medium text-gray-700"
+              >
+                Sort:
+              </label>
+              <select
+                id="sortBy"
+                name="sortBy"
+                className="w-36 h-10 bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-500 shadow-sm transition-colors duration-200"
+                value={
+                  params?.sortBy === "createdAt" ? params?.sort : "Default"
+                }
+                onChange={(e) =>
+                  setParams((prev) => ({
+                    ...prev,
+                    sortBy: "createdAt",
+                    sort: e.target.value,
+                  }))
+                }
+              >
+                <option hidden>Default</option>
+                <option value="d">Newest</option>
+                <option value="a">Oldest</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="w-full flex flex-wrap items-start justify-evenly gap-3 gap-y-10 mt-5">
+            {products.map((product) => (
+              <ProductCard key={product?._id} product={product} />
+            ))}
+          </div>
+        </>
       )}
       {productError ? (
         <LoadingError error={productError} retry={productRetry} />
