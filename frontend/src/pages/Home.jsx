@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Smartphone,
-  Laptop,
-  Computer,
-  Headset,
+  Laptop2,
+  Monitor,
+  Headphones,
   LoaderCircleIcon,
   RotateCcw,
   Info,
@@ -50,40 +50,47 @@ const Home = () => {
       <div className="w-full">
         <Image src={landingImage} alt="landing image" className="w-full" />
       </div>
-      <div className="w-full p-2 flex justify-center items-center space-x-20 mt-10">
+      <div className="w-full p-4 flex flex-wrap justify-center items-center gap-4 sm:gap-6 mt-10">
         <Link
-          to="/search/mobile"
-          className=" border p-3 bg-gray-50 rounded-full"
+          to="/search?category=mobile"
+          title="Mobile"
+          className="border border-gray-300 bg-gray-50 hover:bg-white hover:shadow-md transition rounded-xl p-4 flex items-center justify-center"
         >
-          <Smartphone size={40} className="text-black" />
+          <Smartphone size={28} className="text-gray-700" />
         </Link>
+
         <Link
-          to="/search/laptop"
-          className=" border p-3 bg-gray-50 rounded-full"
+          to="/search?category=laptop"
+          title="Laptop"
+          className="border border-gray-300 bg-gray-50 hover:bg-white hover:shadow-md transition rounded-xl p-4 flex items-center justify-center"
         >
-          <Laptop size={40} className="text-black" />
+          <Laptop2 size={28} className="text-gray-700" />
         </Link>
+
         <Link
-          to="/search/computer"
-          className=" border p-3 bg-gray-50 rounded-full"
+          to="/search?category=computer"
+          title="Computer"
+          className="border border-gray-300 bg-gray-50 hover:bg-white hover:shadow-md transition rounded-xl p-4 flex items-center justify-center"
         >
-          <Computer size={40} className="text-black" />
+          <Monitor size={28} className="text-gray-700" />
         </Link>
+
         <Link
-          to="/search/audio"
-          className=" border p-3 bg-gray-50 rounded-full"
+          to="/search?category=audio"
+          title="Audio"
+          className="border border-gray-300 bg-gray-50 hover:bg-white hover:shadow-md transition rounded-xl p-4 flex items-center justify-center"
         >
-          <Headset size={40} className="text-black" />
+          <Headphones size={28} className="text-gray-700" />
         </Link>
       </div>
-      <div className="w-full px-10 pb-5">
+      <div className="w-full px-5 pb-5">
         <h1
-          className="text-center font-bold text-3xl my-10 uppercase"
+          className="text-center font-bold text-2xl my-8 uppercase"
           id="products"
         >
           What's New
         </h1>
-        <div className="w-full flex flex-wrap items-start justify-evenly gap-3 gap-y-10">
+        <div className="w-full flex flex-wrap items-start justify-evenly gap-3 gap-y-8">
           {products.map((product) => (
             <ProductCard key={product?._id} product={product} />
           ))}
