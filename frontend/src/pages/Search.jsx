@@ -7,13 +7,17 @@ import useInfiniteScroll from "../hooks/useInfiniteScroll";
 import productService from "../services/product.service";
 import { addQuery } from "../store/search.slice";
 
+const createCacheQuery = ({ query, category, company, sort, sortBy }) => {
+  return `query=${query}&category=${category}&company=${company}&sort=${sort}&sortBy=${sortBy}`;
+};
+
 const Search = () => {
   const dispatch = useDispatch();
   const [searchParams] = useSearchParams();
   const [params, setParams] = useState({});
   const [initialPage, setInitialPage] = useState(0);
   const totalPages = useRef(1);
-  const cacheProducts = useSelector((state) => state.search.cache);
+  const searchCache = useSelector((state) => state.search.cache);
   const [products, setProducts] = useState([]);
   const [isEmptyResponse, setIsEmptyResponse] = useState(false);
 
@@ -29,17 +33,21 @@ const Search = () => {
       });
 
       totalPages.current = Number(data.totalPages) || 1;
-      data.products.length === 0
-        ? setIsEmptyResponse(true)
-        : setIsEmptyResponse(false);
 
-      dispatch(
-        addQuery({
-          page,
-          query: params.query,
-          data: data.products,
-        })
-      );
+      if (data.products.length !== 0) {
+        setIsEmptyResponse(false);
+
+        // store data in cache
+        dispatch(
+          addQuery({
+            page,
+            query: createCacheQuery(params),
+            data: data.products,
+          })
+        );
+      } else {
+        setIsEmptyResponse(true);
+      }
     },
     [params]
   );
@@ -47,7 +55,6 @@ const Search = () => {
   // Store all request params in state
   useEffect(() => {
     const query = searchParams.get("query")?.trim().toLowerCase() || "";
-    const page = Number(searchParams.get("page")) || 0;
     const category = searchParams.get("category")?.trim().toLowerCase() || "";
     const company = searchParams.get("company")?.trim().toLowerCase() || "";
     const sort = searchParams.get("sort")?.trim().toLowerCase() || "d";
@@ -56,7 +63,6 @@ const Search = () => {
 
     const newParams = {
       query,
-      page,
       category,
       company,
       sort,
@@ -66,20 +72,21 @@ const Search = () => {
     setParams((prev) => ({ ...prev, ...newParams }));
   }, [searchParams]);
 
+  // get data from cache
   useEffect(() => {
-    const query = params.query;
-    if (!cacheProducts?.[query]) {
+    const query = createCacheQuery(params);
+    const data = searchCache?.[query];
+    if (!data) {
       setProducts([]);
       setIsEmptyResponse(false);
       return;
     }
 
-    const data = cacheProducts[params.query];
     const lastPage = Number(Object.keys(data).at(-1));
     setInitialPage(lastPage);
     const products = Object.values(data).flat(1);
     setProducts(products);
-  }, [cacheProducts, params]);
+  }, [searchCache, params]);
 
   const [observerRef, page, isProductsLoading, productError, productRetry] =
     useInfiniteScroll({
