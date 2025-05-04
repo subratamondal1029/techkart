@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import resistanceBand from "../assets/resistance-band.svg";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate, useRouteError } from "react-router-dom";
+import fileService from "../services/file.service";
+import { ERROR_IMAGE_ID } from "../../constants";
 
 const errorDetails = {
   404: {
@@ -39,7 +40,7 @@ const Error = () => {
     <div className="py-12 flex items-center justify-center px-2 md:py-24 md:px-0">
       <div className="lg:flex lg:items-center lg:space-x-10">
         <img
-          src={resistanceBand}
+          src={fileService.get(ERROR_IMAGE_ID)}
           alt="question-mark"
           className="h-[300px] w-auto"
         />
