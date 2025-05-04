@@ -119,7 +119,7 @@ const Product = () => {
               </span>
               <Link
                 className="hover:text-heading transition hover:underline capitalize"
-                to={`/search/${product.category}`}
+                to={`/search?category=${product.category}`}
               >
                 {product.category}
               </Link>
@@ -130,7 +130,7 @@ const Product = () => {
                   <Link
                     key={tag}
                     className="py-2 px-4 border rounded-full cursor-pointer hover:bg-gray-50"
-                    to={`/search/${tag}`}
+                    to={`/search?query=${tag}`}
                   >
                     {tag}
                   </Link>
