@@ -123,19 +123,19 @@ const Search = () => {
       {products.length > 0 && (
         <>
           {/* add sort and filter */}
-          <div className="w-full flex items-center justify-end space-x-6 mt-4 pr-10">
+          <div className="w-full flex flex-col sm:flex-row sm:items-center sm:justify-end sm:space-x-6 space-y-4 sm:space-y-0 mt-4 px-4 sm:px-10">
             {/* Price Filter */}
             <div className="flex items-center space-x-3">
               <label
                 htmlFor="price"
-                className="text-sm font-medium text-gray-700"
+                className="text-sm font-medium text-gray-700 whitespace-nowrap"
               >
                 Price:
               </label>
               <select
                 id="price"
                 name="price"
-                className="w-36 h-10 bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-500 shadow-sm transition-colors duration-200"
+                className="w-40 h-10 bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-500 shadow-sm transition-colors duration-200"
                 value={params?.sortBy === "price" ? params?.sort : "Default"}
                 onChange={(e) =>
                   setParams((prev) => ({
@@ -155,14 +155,14 @@ const Search = () => {
             <div className="flex items-center space-x-3">
               <label
                 htmlFor="sortBy"
-                className="text-sm font-medium text-gray-700"
+                className="text-sm font-medium text-gray-700 whitespace-nowrap"
               >
                 Sort:
               </label>
               <select
                 id="sortBy"
                 name="sortBy"
-                className="w-36 h-10 bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-500 shadow-sm transition-colors duration-200"
+                className="w-40 h-10 bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-500 shadow-sm transition-colors duration-200"
                 value={
                   params?.sortBy === "createdAt" ? params?.sort : "Default"
                 }

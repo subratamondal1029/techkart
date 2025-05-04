@@ -18,12 +18,12 @@ export default function ProductCard({ product }) {
 
   return (
     <div
-      className="w-full max-w-sm aspect-[3/4] bg-white border border-gray-200 rounded-2xl shadow-lg p-5 flex flex-col justify-between cursor-pointer relative transition hover:shadow-xl"
+      className="w-[90vw] max-w-sm aspect-[3/4] bg-white border border-gray-200 rounded-2xl shadow-md p-4 sm:p-5 flex flex-col justify-between cursor-pointer relative transition hover:shadow-xl"
       onClick={handleClick}
     >
       {isProductInCart && (
         <div
-          className="absolute top-3 left-4 px-3 py-1 bg-green-500 text-white text-xs font-semibold rounded-full shadow cursor-default select-none"
+          className="absolute top-2 left-3 px-3 py-1 bg-green-500 text-white text-xs font-semibold rounded-full shadow cursor-default select-none"
           onClick={(e) => e.stopPropagation()}
         >
           In Cart
@@ -36,14 +36,14 @@ export default function ProductCard({ product }) {
         alt="product image"
       />
 
-      <div className="mt-6 flex flex-col justify-between flex-grow">
-        <h5 className="text-lg font-semibold text-gray-800 mb-2 line-clamp-2">
+      <div className="mt-4 sm:mt-6 flex flex-col justify-between flex-grow">
+        <h5 className="text-base sm:text-lg font-semibold text-gray-800 mb-2 line-clamp-2">
           {name}
         </h5>
 
         <div className="flex items-center justify-between mt-auto">
           <span
-            className="text-xl font-bold text-gray-900 cursor-default"
+            className="text-lg sm:text-xl font-bold text-gray-900 cursor-default"
             onClick={(e) => e.stopPropagation()}
           >
             ₹ {price?.toLocaleString()}
