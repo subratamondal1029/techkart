@@ -22,8 +22,10 @@ services:
     env_file:
       - ./backend/.env
     command: npm run dev
+    networks:
+      - mongo-net
+      - default
     depends_on:
-      - mongo
       - redis
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/test/health"]
@@ -31,14 +33,6 @@ services:
       retries: 3
       start_period: 30s
       timeout: 10s
-
-  mongo:
-    image: mongo
-    container_name: techkart-mongo
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo_data:/data/db
 
   redis:
     image: redis:alpine
@@ -49,5 +43,8 @@ services:
       - redis_data:/data
 
 volumes:
-  mongo_data:
   redis_data:
+
+networks:
+  mongo-net:
+    external: true
