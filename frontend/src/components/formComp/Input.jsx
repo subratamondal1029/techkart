@@ -3,7 +3,12 @@ import { useFormContext } from "react-hook-form";
 
 /**
  *
- * @param {React.InputHTMLAttributes<HTMLInputElement>} props
+ * @param {React.InputHTMLAttributes<HTMLInputElement>} [...props] - rest props of input
+ * @param {string} [props.classname] - Classname of input
+ * @param {string} [props.label] - Label of input
+ * @param {string} [props.name] - Name of input
+ * @param {Object} [props.rules] - Validation rules of react-hook-form
+ * @returns {React.ReactElement}
  */
 
 function Input({

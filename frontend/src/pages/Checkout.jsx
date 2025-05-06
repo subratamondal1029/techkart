@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, ButtonLoading, Input } from "../components";
+import { Button, Image, Input } from "../components";
 import { CheckCircle, IndianRupee, InfoIcon } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import razorpayImage from "../assets/razorpay.png";
 import { useNavigate } from "react-router-dom";
 import { createOrder } from "../components/payment";
 import { toast } from "react-toastify";
-import appWriteDb from "../appwrite/DbServise";
-import { login } from "../store/authSlice";
-import { Query } from "appwrite";
+import { addOrder } from "../store/order.slice";
+import fileService from "../services/file.service";
+import orderService from "../services/order.service";
+import { useRef } from "react";
+import { useMemo } from "react";
+import useLoading from "../hooks/useLoading";
+import showToast from "../utils/showToast";
+import { AlertTriangle } from "lucide-react";
+import { storeCart } from "../store/cart.slice";
 
 const countryCodes = [
   { code: "91", country: "India" },
@@ -31,282 +37,312 @@ const countryCodes = [
 const Checkout = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { otherData, userData } = useSelector((state) => state.auth); // TODO: get cart from cart slice
-  const { products: allProducts } = useSelector((state) => state.products);
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    getValues,
-    setValue,
-  } = useForm();
+  const { userData } = useSelector((state) => state.auth);
+  const cart = useSelector((state) => state.cart);
+  const products = cart?.products || [];
+  const methods = useForm();
   const [countryCode, setCountryCode] = useState("91");
-  const [products, setProducts] = useState([]);
-  const [totalAmount, setTotalAmount] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState({
+    message: "Complete your shipping and payment details below.",
+    error: true,
+    icon: <InfoIcon className="h-6 w-6 text-yellow-400" />,
+  });
+
   useEffect(() => {
-    if (otherData.cart.length === 0) navigate("/");
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
   }, []);
 
-  useEffect(() => {
-    const products = otherData.cart.map((cartProduct) => {
-      const productDetails = allProducts.find(
-        (product) => product.$id === cartProduct.productId
-      );
-
-      return {
-        id: productDetails.$id,
-        name: productDetails.name,
-        price: productDetails.price,
-        imageSrc: productDetails.image,
-        category: productDetails.category,
-        quantity: cartProduct.quantity,
-      };
-    });
-    setProducts(products);
-    setTotalAmount(
-      products.reduce((acc, curr) => acc + curr.price * curr.quantity, 0)
+  const totalAmount = useMemo(() => {
+    return products.reduce(
+      (acc, cur) => acc + cur.product.price * cur.quantity,
+      0
     );
-  }, [allProducts, otherData.cart]);
+  }, [products]);
 
-  // TODO: refactor with useMemo or react 19
-  const initAddress = () => {
-    let pincodeCashe;
-    let postOfficeCashe;
-    return async () => {
-      const pincode = getValues("pincode");
-      if (pincode.length === 6) {
-        const extra = getValues("landmark") || "";
+  const pincodeCache = useRef(new Map());
+  const addAddress = async () => {
+    const pincode = methods.getValues("pincode");
+    if (pincode.length === 6) {
+      const extra = methods.getValues("landmark") || "";
+      let postOfficeData = pincodeCache.current.get(pincode);
 
-        try {
-          if (!pincodeCashe || pincodeCashe !== pincode) {
-            pincodeCashe = pincode;
-            const { PostOffice } = (
-              await (
-                await fetch(`https://api.postalpincode.in/pincode/${pincode}`)
-              ).json()
-            )[0];
-            postOfficeCashe = PostOffice;
+      try {
+        if (!postOfficeData) {
+          const { postOffice } = (
+            await (
+              await fetch(`https://api.postalpincode.in/pincode/${pincode}`)
+            ).json()
+          )[0];
+
+          if (postOffice) {
+            postOfficeData = postOffice[0];
+            pincodeCache.current.set(pincode, postOfficeData);
           }
+        }
+
+        if (postOfficeData) {
           const address = [
             extra,
-            postOfficeCashe[0].State,
-            postOfficeCashe[0].District,
-            postOfficeCashe[0].Pincode,
-            postOfficeCashe[0].Country,
+            postOfficeData.State,
+            postOfficeData.District,
+            postOfficeData.Pincode,
+            postOfficeData.Country,
           ].join(", ");
-          setValue("address", address);
-        } catch (error) {
-          console.error(error.message);
+          methods.setValue("address", address, {
+            shouldValidate: true,
+          });
         }
+      } catch (error) {
+        console.error(error.message);
       }
-    };
-  };
-
-  const addAddress = initAddress();
-
-  // TODO: wrap with loader
-  const checkout = async (data) => {
-    setIsLoading(true);
-    const order = await createOrder(totalAmount);
-    if (order) {
-      const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY,
-        amount: order.amount,
-        currency: "INR",
-        name: "Tech Kart",
-        description: "Tech Kart - Place Order",
-        order_id: order.id,
-        handler: (res) => addOrder(res, data),
-        prefill: {
-          name: "Subrata Mondal",
-          email: "subratamondal@outlook.com",
-          contact: "9999999999",
-        },
-        theme: {
-          color: "#0f4fd1",
-        },
-      };
-
-      const razorPopup = new window.Razorpay(options);
-      razorPopup.open();
-    } else toast.error("Something went wrong");
-
-    setIsLoading(false);
-  };
-
-  // TODO: wrap with loader
-  async function addOrder(res, data) {
-    setIsLoading(true);
-    const orderObj = {
-      date: new Date().toLocaleDateString(),
-      userId: userData.$id,
-      name: data.name,
-      phone: `${countryCode} ${data.phone}`,
-      cart: otherData.cart.map((product) => JSON.stringify(product)),
-      address: data.address,
-    };
-    const orderId = res.razorpay_order_id.split("_")[1];
-
-    try {
-      const order = await appWriteDb.createOrder(orderObj, orderId);
-      if (order) {
-        const oldOrders = otherData.orders.map((order) => order.$id);
-        await appWriteDb.addOrder([...oldOrders, order.$id], userData.$id);
-        await appWriteDb.addToCart([], userData.$id, "update");
-
-        dispatch(
-          login({
-            otherData: {
-              cart: [],
-              orders: await appWriteDb.getOrders([
-                Query.equal("userId", userData.$id),
-              ]),
-            },
-          })
-        );
-        navigate("/placed", { state: orderId });
-      } else toast.error("Something went wrong");
-      setIsLoading(false);
-    } catch (error) {
-      console.error(error.message);
-      toast.error("Something went wrong");
-      setIsLoading(false);
     }
-  }
+  };
+
+  const [checkout, isCheckoutLoading, checkoutError] = useLoading(
+    async (data) =>
+      new Promise(async (resolve, reject) => {
+        if (!window.Razorpay) throw new Error("Something went wrong");
+
+        const { data: razorpayOrder } = await orderService.getPaymentData({
+          amount: totalAmount,
+        });
+
+        const options = {
+          key: import.meta.env.VITE_RAZORPAY_KEY,
+          amount: razorpayOrder.amount,
+          currency: "INR",
+          name: "Tech Kart",
+          description: "Tech Kart - Place Order",
+          order_id: razorpayOrder.id,
+          handler,
+          prefill: {
+            name: methods.getValues("name"),
+            email: userData?.email,
+            contact: methods.getValues("phone"),
+          },
+          theme: {
+            color: "#0f4fd1",
+          },
+          modal: {
+            ondismiss: () => {
+              console.warn("Payment popup closed.");
+              reject(new Error("Payment cancelled"));
+            },
+          },
+        };
+
+        async function handler(res) {
+          try {
+            setError((prev) => ({ ...prev, error: false }));
+            console.log("result", res, "data", data);
+            const paymentVerificationResponse =
+              await orderService.verifyPayment({
+                paymentId: res.razorpay_payment_id,
+                orderId: res.razorpay_order_id,
+              });
+
+            if (paymentVerificationResponse.data.status !== "paid") {
+              reject(new Error("Payment Failed"));
+              return;
+            }
+
+            const orderPromise = orderService.create({
+              customerAddress: data.address,
+              customerName: data.name,
+              customerPhone: `+${countryCode}${data.phone}`,
+              paymentId: res.razorpay_payment_id,
+              cartId: cart._id,
+            });
+
+            toast.promise(orderPromise, {
+              pending: "Placing Order",
+              success: "Order Placed",
+              error: (err) => err.message,
+            });
+
+            const { data: order } = await orderPromise;
+
+            dispatch(addOrder({ ...order, cart }));
+            dispatch(storeCart(null));
+            navigate(`/placed?id=${order._id}`);
+            resolve();
+          } catch (error) {
+            reject(error);
+          }
+        }
+
+        const razorPopup = new window.Razorpay(options);
+        razorPopup.open();
+      })
+  );
+
+  useEffect(() => {
+    if (!products.length) navigate("/");
+  }, [products]);
+
+  useEffect(() => {
+    if (checkoutError) {
+      setError({
+        error: true,
+        message: checkoutError || "Checkout failed",
+        icon: <AlertTriangle className="h-6 w-6 text-red-400" />,
+      });
+
+      showToast("error", checkoutError);
+    } else if (Object.keys(methods.formState.errors).length !== 0) {
+      setError({
+        error: true,
+        message: "Complete your shipping and payment details below.",
+        icon: <InfoIcon className="h-6 w-6 text-yellow-400" />,
+      });
+    }
+  }, [checkoutError, methods.formState.errors]);
 
   return (
     <>
       <div className="min-h-screen lg:grid grid-cols-3 mt-5 flex flex-col-reverse">
-        <div className="lg:col-span-2 col-span-3 bg-white space-y-8 px-12">
-          <div className="mt-8 p-4 relative flex flex-col sm:flex-row sm:items-center bg-white shadow rounded-md">
-            <div className="flex flex-row items-center border-b sm:border-b-0 w-full sm:w-auto pb-4 sm:pb-0">
-              <InfoIcon className="h-6 w-6 text-yellow-400" />
-              <div className="text-sm font-medium ml-3">Checkout</div>
-            </div>
-            <div className="text-sm tracking-wide text-gray-500 mt-4 sm:mt-0 sm:ml-4">
-              Complete your shipping and payment details below.
-            </div>
-          </div>
-          <form
-            className="rounded-md space-y-5"
-            onSubmit={handleSubmit(checkout)}
-          >
-            <Input
-              classname="w-full"
-              type="text"
-              placeholder="Full Name"
-              label="Full Name"
-              {...register("name", { required: true, minLength: 3 })}
-              error={errors.name}
-            />
-            <div className="w-full">
-              <label htmlFor="country" className="font-bold">
-                Country
-              </label>
-              <select
-                name="country"
-                id="country"
-                defaultValue="91"
-                className={`w-full p-2 rounded-md border bg-transparent ${
-                  errors.country ? "border-red-500" : ""
-                }`}
-                {...register("country", { required: true })}
-                onChange={(e) => setCountryCode(e.target.value)}
-              >
-                {countryCodes.map((country) => (
-                  <option key={country.code} value={country.code}>
-                    {country.country}
-                  </option>
-                ))}
-              </select>
-              <p className="mt-1 text-xs text-gray-500">
-                <span className="text-red-500">*</span> This field is required
-              </p>
-            </div>
-            <div className="flex items-center relative">
-              <label
-                className="w-12 bg-black text-white py-2 mt-2 px-3 rounded-l-md absolute"
-                htmlFor="country"
-              >
-                +{countryCode}
-              </label>
-              <Input
-                classname="w-full "
-                style={{ paddingLeft: "60px" }}
-                type="number"
-                placeholder="Enter Phone"
-                label="Phone"
-                {...register("phone", {
-                  required: true,
-                  maxLength: 10,
-                  minLength: 10,
-                })}
-                error={errors.phone}
-              />
-            </div>
-            <Input
-              classname="w-full"
-              type="number"
-              placeholder="Postal Code"
-              label="Postal Code"
-              {...register("pincode", {
-                required: true,
-                maxLength: 6,
-                minLength: 6,
-              })}
-              error={errors.pincode}
-              onKeyUp={addAddress}
-            />
-
-            <Input
-              label="landmark"
-              placeholder="landmark"
-              required={false}
-              {...register("landmark")}
-              onKeyUp={addAddress}
-            />
-            <Input
-              label="Address Line 1"
-              {...register("address", { required: true, minLength: 5 })}
-              error={errors.address}
-              placeholder="Address Line 1"
-            />
-            <hr />
-            <div className="w-full">
-              <div className="cursor-pointer hover:bg-gray-300 text-sm font-bold border p-4 w-40 rounded-md flex justify-end items-center gap-3 bg-gray-200">
-                <CheckCircle size={20} className="text-blue-500" />
-                <img src={razorpayImage} alt="razorpay" width={20} /> Razorpay
+        <div className="lg:col-span-2 col-span-3 bg-white space-y-8 px-4 sm:px-12">
+          {error.error && (
+            <div className="mt-8 p-4 relative flex flex-col sm:flex-row sm:items-center bg-white shadow rounded-md">
+              <div className="flex flex-row items-center border-b sm:border-b-0 w-full sm:w-auto pb-4 sm:pb-0">
+                {error.icon || <InfoIcon className="h-6 w-6 text-yellow-400" />}
+                <div className="text-sm font-medium ml-3">Checkout</div>
+              </div>
+              <div className="text-sm tracking-wide text-gray-500 mt-4 sm:mt-0 sm:ml-4">
+                {error.message ||
+                  "Complete your shipping and payment details below."}
               </div>
             </div>
-
-            <Button
-              classname="w-full flex justify-center items-center"
-              style={{ marginTop: "42px" }}
-              type="submit"
+          )}
+          <FormProvider {...methods}>
+            <form
+              className="rounded-md"
+              onSubmit={methods.handleSubmit(checkout)}
             >
-              {isLoading ? (
-                <ButtonLoading fillColor="fill-black" />
-              ) : (
-                "Place Order"
-              )}
-            </Button>
-          </form>
+              <fieldset disabled={isCheckoutLoading} className="space-y-5">
+                <Input
+                  classname="w-full"
+                  type="text"
+                  placeholder="Full Name"
+                  label="Full Name"
+                  name="name"
+                  rules={{ required: true, minLength: 3 }}
+                />
+                <div className="w-full">
+                  <label
+                    htmlFor="country"
+                    className="text-md font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 my-3 ml-2 capitalize w-full text-left"
+                  >
+                    Country: <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    name="country"
+                    id="country"
+                    value={countryCode}
+                    className="w-full p-2 rounded-md border bg-transparent disabled:cursor-not-allowed disabled:opacity-50"
+                    onChange={(e) => setCountryCode(e.target.value)}
+                  >
+                    {countryCodes.map((country) => (
+                      <option key={country.code} value={country.code}>
+                        {country.country}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="flex items-center relative">
+                  <label
+                    className="w-12 bg-black text-white py-2 px-3 rounded-l-md absolute top-10 z-10"
+                    htmlFor="country"
+                  >
+                    +{countryCode}
+                  </label>
+                  <Input
+                    classname="w-full pl-16"
+                    name="phone"
+                    type="number"
+                    placeholder="Enter Phone"
+                    label="Phone"
+                    rules={{
+                      required: true,
+                      maxLength: 10,
+                      minLength: 10,
+                    }}
+                  />
+                </div>
+                <Input
+                  type="number"
+                  name="pincode"
+                  placeholder="Postal Code"
+                  label="Postal Code"
+                  rules={{
+                    required: true,
+                    maxLength: 6,
+                    minLength: 6,
+                  }}
+                  onKeyUp={addAddress}
+                  onWheel={(e) => e.target.blur()}
+                  onKeyDown={(e) => {
+                    if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                      e.preventDefault();
+                    }
+                  }}
+                />
+
+                <Input
+                  label="landmark"
+                  placeholder="landmark"
+                  name="landmark"
+                  rules={{ required: false }}
+                  onKeyUp={addAddress}
+                />
+                <Input
+                  label="Address Line 1"
+                  rules={{ required: true, minLength: 5 }}
+                  name="address"
+                  placeholder="Address Line 1"
+                />
+                <hr />
+                <div className="w-full">
+                  <div className="cursor-pointer hover:bg-gray-300 text-sm font-bold border p-4 w-40 rounded-md flex justify-end items-center gap-3 bg-gray-200">
+                    <CheckCircle size={20} className="text-blue-500" />
+                    <img src={razorpayImage} alt="razorpay" width={20} />{" "}
+                    Razorpay
+                  </div>
+                </div>
+
+                <Button
+                  classname="w-full flex justify-center items-center mt-11"
+                  // style={{ marginTop: "42px" }}
+                  type="submit"
+                  loader={isCheckoutLoading}
+                  disabled={isCheckoutLoading}
+                >
+                  Place Order
+                </Button>
+              </fieldset>
+            </form>
+          </FormProvider>
         </div>
         <div className="col-span-1 bg-white w-screen lg:block lg:w-auto">
           <h1 className="py-6 border-b-2 text-xl text-gray-600 px-8">
             Order Summary
           </h1>
           <ul className="py-6 border-b space-y-6 px-8">
-            {products.map((product) => (
+            {products.map(({ product, quantity }) => (
               <li
                 className="grid grid-cols-6 gap-2 border-b-1"
-                key={product.id}
+                key={product._id}
               >
                 <div className="col-span-1 self-center">
-                  <img
-                    src={product.imageSrc}
+                  <Image
+                    src={fileService.get(product.image)}
                     alt={product.name}
                     className="rounded w-full"
                   />
@@ -318,7 +354,7 @@ const Checkout = () => {
                 </div>
                 <div className="col-span-2 pt-3">
                   <div className="flex items-center text-sm justify-end space-x-2">
-                    <span className="text-gray-400">{product.quantity} x </span>
+                    <span className="text-gray-400">{quantity} x </span>
                     <span className="text-black font-semibold inline-block">
                       ₹{product.price.toLocaleString("en-IN")}
                     </span>
@@ -331,7 +367,7 @@ const Checkout = () => {
             <div className="flex justify-between py-4 text-gray-600">
               <span>Subtotal</span>
               <span className="font-semibold text-black">
-                ₹{totalAmount.toLocaleString("en-IN")}
+                ₹{totalAmount?.toLocaleString("en-IN")}
               </span>
             </div>
             <div className="flex justify-between py-4 text-gray-600">
@@ -341,7 +377,7 @@ const Checkout = () => {
           </div>
           <div className="font-semibold text-xl px-8 flex justify-between py-8 text-gray-600">
             <span>Total</span>
-            <span>₹{totalAmount.toLocaleString("en-IN")}</span>
+            <span>₹{totalAmount?.toLocaleString("en-IN")}</span>
           </div>
         </div>
       </div>

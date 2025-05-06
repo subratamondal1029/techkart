@@ -10,10 +10,6 @@
   color: white;
 }
 
-input[list]::-webkit-calendar-picker-indicator {
-  display: none !important;
-}
-
 .toastBody {
   font-family: "Atlas Grotesk Web", Arial, Helvetica, sans-serif;
 }

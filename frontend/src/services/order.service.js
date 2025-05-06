@@ -20,14 +20,14 @@ class OrderService extends baseService {
     }, "verifying payment");
   }
 
-  create({ cartId, paymentId, customerName, customerPhone, customerAdress }) {
+  create({ cartId, paymentId, customerName, customerPhone, customerAddress }) {
     return this.handler(async () => {
       const body = {
         cartId,
         paymentId,
         customerName,
         customerPhone,
-        customerAdress,
+        customerAddress,
       };
       const response = await this.api.post("/orders/", body);
       return response.data;
