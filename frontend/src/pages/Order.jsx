@@ -158,7 +158,7 @@ export default function Order() {
                       Order Number: #{order._id}
                     </p>
                     <p className="text-xs font-medium text-gray-700">
-                      {formateDate(order.orderDate)}
+                      Date: {formateDate(order.orderDate)}
                     </p>
                     {order.isDelivered && !order.isCancelled && (
                       <Button
@@ -189,9 +189,11 @@ export default function Order() {
                     <h2 className="text-base font-bold text-black">Status</h2>
                     <div className="flex items-center justify-between">
                       <OrderStatus order={order} />
-                      <p className="text-gray-500">
-                        Update on: {formateDate(order.statusUpdateDate)}
-                      </p>
+                      {order.statusUpdateDate && (
+                        <p className="text-gray-500">
+                          Update on: {formateDate(order.statusUpdateDate)}
+                        </p>
+                      )}
                       {!order.isShipped && (
                         <Button
                           type="button"
