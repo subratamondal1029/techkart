@@ -6,6 +6,7 @@ import Input from "./formComp/Input";
 import Footer from "./Footer";
 import ProtectedRoute from "../pages/ProtectedRoute";
 import Button from "./Button";
+import UpdateForm from "./UpdateForm";
 import { lazy } from "react";
 import { Suspense } from "react";
 
@@ -44,4 +45,5 @@ export {
   LoadingError,
   Back,
   Maintenance,
+  UpdateForm,
 };
