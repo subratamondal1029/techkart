@@ -1,5 +1,6 @@
 import React, { useId } from "react";
 import { useFormContext } from "react-hook-form";
+import getRules from "../../utils/getRules";
 
 /**
  *
@@ -22,36 +23,6 @@ function Input({
   const Id = useId();
   const { register, formState: { errors } = {} } = useFormContext() || {};
 
-  const getRules = (rules) => {
-    if (rules.required) {
-      rules.required = `${label || "This Field"} is required`;
-    }
-    if (rules.minLength !== undefined && !isNaN(rules?.minLength)) {
-      rules.minLength = {
-        value: rules.minLength,
-        message: `${label || "This Field"} must be at least ${
-          rules.minLength
-        } characters long`,
-      };
-    }
-    if (rules.maxLength !== undefined && !isNaN(rules?.maxLength)) {
-      rules.maxLength = {
-        value: rules.maxLength,
-        message: `${label || "This Field"} must be at most ${
-          rules.maxLength
-        } characters long`,
-      };
-    }
-    if (rules.pattern !== undefined && rules.pattern?.message === undefined) {
-      rules.pattern = {
-        value: rules.pattern.value || rules.pattern,
-        message: rules.pattern.message || `${label || "This Field"} is invalid`,
-      };
-    }
-
-    return rules;
-  };
-
   return (
     <div className="w-full relative flex flex-col items-center justify-center">
       {label && (
@@ -70,7 +41,7 @@ function Input({
         }`}
         type={type}
         id={Id}
-        {...register?.(name, getRules(rules))}
+        {...register?.(name, getRules(rules, label))}
         {...props}
       ></input>
 
