@@ -233,7 +233,7 @@ export default function Order() {
                       <div className="py-6">
                         <h2 className="mb-2 text-base font-bold text-black flex items-start justify-between">
                           <p> Contact Information</p>
-                          {!order.isShipped && (
+                          {!order.isShipped && !order.isCancelled && (
                             <Pencil
                               size={17}
                               className={`cursor-pointer hover:fill-gray-600 ${
