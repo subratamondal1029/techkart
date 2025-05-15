@@ -5,7 +5,6 @@ import { CheckCircle, IndianRupee, InfoIcon } from "lucide-react";
 import { FormProvider, useForm } from "react-hook-form";
 import razorpayImage from "../assets/razorpay.png";
 import { useNavigate } from "react-router-dom";
-import { createOrder } from "../components/payment";
 import { toast } from "react-toastify";
 import { addOrder } from "../store/order.slice";
 import fileService from "../services/file.service";
@@ -15,7 +14,6 @@ import { useMemo } from "react";
 import useLoading from "../hooks/useLoading";
 import showToast from "../utils/showToast";
 import { AlertTriangle } from "lucide-react";
-import { storeCart } from "../store/cart.slice";
 
 const countryCodes = [
   { code: "91", country: "India" },
@@ -169,7 +167,6 @@ const Checkout = () => {
             const { data: order } = await orderPromise;
 
             dispatch(addOrder({ ...order, cart }));
-            dispatch(storeCart(null));
             navigate(`/placed?id=${order._id}`);
             resolve();
           } catch (error) {

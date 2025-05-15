@@ -1,14 +1,18 @@
-import { Check, ArrowRight } from "lucide-react";
 import { useEffect, useState, useCallback } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { storeCart } from "../store/cart.slice";
+import { Check, ArrowRight } from "lucide-react";
 
 const OrderConfirmation = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [searchParams] = useSearchParams();
   const orderId = searchParams.get("id");
   const [count, setCount] = useState(5);
 
   useEffect(() => {
+    dispatch(storeCart(null));
     const interval = setInterval(() => {
       if (count === 0) {
         clearInterval(interval);
