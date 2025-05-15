@@ -75,14 +75,14 @@ const Checkout = () => {
 
       try {
         if (!postOfficeData) {
-          const { postOffice } = (
+          const { PostOffice } = (
             await (
               await fetch(`https://api.postalpincode.in/pincode/${pincode}`)
             ).json()
           )[0];
 
-          if (postOffice) {
-            postOfficeData = postOffice[0];
+          if (PostOffice) {
+            postOfficeData = PostOffice[0];
             pincodeCache.current.set(pincode, postOfficeData);
           }
         }
@@ -141,7 +141,6 @@ const Checkout = () => {
         async function handler(res) {
           try {
             setError((prev) => ({ ...prev, error: false }));
-            console.log("result", res, "data", data);
             const paymentVerificationResponse =
               await orderService.verifyPayment({
                 paymentId: res.razorpay_payment_id,
