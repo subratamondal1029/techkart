@@ -34,21 +34,20 @@ const Product = () => {
   const product = useSelector((state) =>
     state.products.data.find((p) => p._id === id)
   );
-  const [productError, setProductError] = useState("");
 
-  const [fetchProduct, isProductLoading] = useLoading(async () => {
-    setProductError("");
-    try {
-      const { data: product } = await productService.getOne(id);
-      dispatch(addProduct(product));
-    } catch (error) {
-      if (error.status === 404) {
-        navigate("/404");
-        return;
+  const [fetchProduct, isProductLoading, productError] = useLoading(
+    async () => {
+      try {
+        const { data: product } = await productService.getOne(id);
+        dispatch(addProduct(product));
+      } catch (error) {
+        if (error.status === 404) {
+          navigate("/404");
+        }
+        throw new Error(error.message || "Something went wrong");
       }
-      setProductError(error.message || "Something went wrong");
     }
-  });
+  );
 
   useEffect(() => {
     if (!product) {
@@ -76,8 +75,8 @@ const Product = () => {
           error: "Error adding to cart",
         });
 
-        await cartUpdateRequest;
-        dispatch(addToCart({ quantity, product }));
+        const { data } = await cartUpdateRequest;
+        dispatch(addToCart({ _id: data._id, quantity, product }));
       }
     } else {
       navigate("/login", { state: { redirect: `/product/${id}` } });
