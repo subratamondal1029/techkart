@@ -48,12 +48,12 @@ class OrderService extends baseService {
     }, "fetching multiple orders");
   }
 
-  update({ id, customerName, customerPhone, customerAdress }) {
+  update({ id, customerName, customerPhone, customerAddress }) {
     return this.handler(async () => {
       const body = {};
       if (customerName) body.customerName = customerName;
       if (customerPhone) body.customerPhone = customerPhone;
-      if (customerAdress) body.customerAdress = customerAdress;
+      if (customerAddress) body.customerAddress = customerAddress;
 
       const response = await this.api.patch(`/orders/${id}`, body);
       return response.data;

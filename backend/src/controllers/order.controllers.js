@@ -381,11 +381,18 @@ const cancelOrder = asyncHandler(async (req, res) => {
 
   order.isCancelled = true;
 
-  await razorpay.payments.refund(order.paymentId, {
-    amount: order.totalAmount * 100,
-  });
+  try {
+    await razorpay.payments.refund(order.paymentId, {
+      amount: order.totalAmount * 100,
+    });
+    order.isRefund = true;
+  } catch (error) {
+    order.isRefund = false;
+    console.log(
+      `Refund failed for Payment ID: ${order.paymentId}, Reason: ${error?.error?.description}`
+    );
+  }
 
-  order.isRefund = true;
   order.statusUpdateDate = new Date();
   await order.save();
 
