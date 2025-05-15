@@ -51,7 +51,9 @@ function App() {
     const userData = await fetchUser();
     if (userData) {
       dispatch(login(userData));
-      fetchCart();
+      if (userData.label === "user") {
+        fetchCart();
+      }
     } else {
       dispatch(logout());
     }
