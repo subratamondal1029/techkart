@@ -14,7 +14,7 @@ body.portal-open {
 }
 
 ::selection {
-  background-color: rgb(94, 92, 92);
+  background-color: rgb(0 133 112);
   color: white;
 }
 
