@@ -36,7 +36,9 @@ const Orders = () => {
         <div className="w-full shadow-sm rounded-md px-5 py-2" key={order._id}>
           <div className="w-full">
             <div className="flex justify-between items-center pb-3 flex-wrap sm:flex-nowrap">
-              <h3 className="font-bold text-2xl">Order #{order._id}</h3>
+              <h3 className="font-bold text-lg md:text-xl">
+                Order #{order._id}
+              </h3>
               <OrderStatus order={order} />
             </div>
             <hr />
