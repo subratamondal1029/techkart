@@ -74,18 +74,19 @@ const Account = () => {
   };
 
   return (
-    <div className="w-full min-h-96 mt-5 px-5 md:px-28 py-10">
-      <div className="flex gap-20 mt-5 items-start lg:flex-row flex-col">
-        <div className="w-60 flex flex-col place-self-start">
+    <div className="w-full min-h-96 mt-5 px-2 sm:px-5 md:px-10 md:py-10">
+      <div className="flex gap-20 mt-5 items-center md:items-start md:flex-row flex-col">
+        <div className="w-full md:max-w-64 flex flex-col place-self-start bg-white rounded-xl shadow p-6 border border-gray-200">
           <div>
             <div
               onDrop={updateAvatar}
               onDragOver={(e) => {
-                e.preventDefault(), e.stopPropagation();
+                e.preventDefault();
+                e.stopPropagation();
               }}
               onDragEnter={() => setIsDragging(true)}
               onDragLeave={() => setIsDragging(false)}
-              className="w-28 flex items-center justify-center relative rounded-full overflow-hidden cursor-pointer"
+              className="w-32 h-32 flex items-center justify-center relative rounded-full overflow-hidden cursor-pointer border-4 border-blue-200 shadow-md mx-auto transition-all duration-300 hover:border-blue-400"
             >
               {optimisticData?.avatar ? (
                 <Image
@@ -94,19 +95,19 @@ const Account = () => {
                       ? optimisticData?.avatar
                       : fileService.get(optimisticData?.avatar)
                   }
-                  className="w-[500px] h-full max-h-[500px]"
+                  className="w-full h-full object-cover"
                   alt="avatar"
                 />
               ) : (
-                <User2Icon className="text-gray-100 bg-black p-2 w-full h-full" />
+                <User2Icon className="text-gray-100 bg-black p-4 w-full h-full" />
               )}
               <label
                 htmlFor="avatar"
-                className={`absolute bottom-0 right-0 w-full h-full flex justify-center items-center bg-blue-500/50 cursor-pointer transition-opacity duration-300 opacity-0 hover:opacity-100 ${
+                className={`absolute bottom-0 right-0 w-full h-full flex justify-center items-center bg-blue-500/60 cursor-pointer transition-opacity duration-300 opacity-0 hover:opacity-100 ${
                   isDragging ? "opacity-100" : "opacity-0"
                 }`}
               >
-                <Camera size={25} />
+                <Camera size={28} className="text-white drop-shadow" />
               </label>
               <input
                 type="file"
@@ -117,26 +118,32 @@ const Account = () => {
                 onChange={updateAvatar}
               />
             </div>
-            <h1 className="font-bold text-xl mt-3">{optimisticData?.name}</h1>
-            <h2 className="text-gray-500">{optimisticData?.email}</h2>
+            <h1 className="font-bold text-xl mt-5 text-center text-gray-900">
+              {optimisticData?.name}
+            </h1>
+            <h2 className="text-gray-500 text-center text-base">
+              {optimisticData?.email}
+            </h2>
           </div>
-          <ul className="mt-5 flex flex-col items-start justify-center gap-3">
+          <ul className="mt-8 flex flex-col items-stretch gap-3">
             <li
               onClick={() => navigate("/account")}
-              className={`cursor-pointer hover:text-gray-700 ${
-                !isOrder && "text-gray-700"
+              className={`py-2 px-2 rounded-lg cursor-pointer transition-all duration-200 hover:bg-blue-50 hover:text-blue-700 hover:font-semibold ${
+                !isOrder && "bg-blue-50 text-blue-700 font-semibold"
               }`}
             >
-              personal Information
+              Personal Information
             </li>
-            <li
-              onClick={() => navigate("/account/orders")}
-              className={`cursor-pointer hover:text-gray-700 ${
-                isOrder && "text-gray-700"
-              }`}
-            >
-              Orders History
-            </li>
+            {userData?.label === "user" && (
+              <li
+                onClick={() => navigate("/account/orders")}
+                className={`py-2 px-4 rounded-lg cursor-pointer transition-all duration-200 hover:bg-blue-50 hover:text-blue-700 ${
+                  isOrder && "bg-blue-50 text-blue-700 font-semibold"
+                }`}
+              >
+                Orders History
+              </li>
+            )}
           </ul>
         </div>
 
