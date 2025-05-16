@@ -6,7 +6,7 @@ import React, { useEffect, useState, useRef } from "react";
  * @returns {React.ReactElement}
  */
 
-const Image = ({ src, alt = "", className = "", ...props }) => {
+const Image = ({ src, alt = "", className = "", size, ...props }) => {
   const imgRef = useRef(null);
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
@@ -39,9 +39,19 @@ const Image = ({ src, alt = "", className = "", ...props }) => {
   }, []);
 
   return (
-    <div className={`overflow-hidden ${className}`}>
+    <div
+      className={`overflow-hidden ${className}`}
+      style={
+        size
+          ? {
+              width: `${size}px`,
+              height: `${size}px`,
+            }
+          : {}
+      }
+    >
       {error ? (
-        <div className="w-full h-full bg-gray-200">
+        <div className="w-full h-full bg-gray-200 text-[1vh] flex items-center justify-center text-center">
           {alt || "Image Load Error"}
         </div>
       ) : !loaded ? (
