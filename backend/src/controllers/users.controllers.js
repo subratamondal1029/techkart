@@ -99,9 +99,9 @@ const createUser = asyncHandler(async (req, res) => {
 });
 
 const updateUser = asyncHandler(async (req, res) => {
-  let { name, email, avatar } = req.body;
+  let { name, email, avatar, password } = req.body;
 
-  if (!name?.trim() && !email?.trim() && !avatar?.trim())
+  if (!name?.trim() && !email?.trim() && !avatar?.trim() && !password)
     throw new ApiError(400, "At least One field is required");
 
   if (avatar?.trim()) {
@@ -116,6 +116,14 @@ const updateUser = asyncHandler(async (req, res) => {
     if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email))
       throw new ApiError(400, "Invalid email");
     req.user.email = email;
+  }
+
+  if (password) {
+    if (await req.user.comparePassword(password)) {
+      throw new ApiError(422, "Password cannot be same as old password");
+    }
+
+    req.user.password = password;
   }
 
   await req.user.save();
