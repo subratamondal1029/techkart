@@ -1013,7 +1013,7 @@
       "post": {
         "summary": "upload file",
         "deprecated": false,
-        "description": "**entityType** is a required field in API requests to categorize uploaded files. Each file type supports specific roles:\n\n- **avatar** → `admin`, `user`, `shipment`, `seller`, `delivery`\n    \n- **invoice** → `admin`, `shipment`, `delivery`\n    \n- **product** → `admin`, `seller`\n    \n- **default** → `admin`",
+        "description": "**entityType** is a required field in API requests to categorize uploaded files. Each file type supports specific roles:\n\n- **avatar** → `admin`, `user`, `shipment`, `seller`, `delivery`\n- **invoice** → `admin`, `shipment`, `delivery`\n- **product** → `admin`, `seller`\n- **default** → `admin`\n\n**Allowed file types:** `image/jpeg`, `image/png`, `image/jpg`, `image/webp`, `application/pdf`\n \n**Maximum file size:** `5MB`",
         "tags": ["files"],
         "parameters": [],
         "requestBody": {
@@ -1324,7 +1324,7 @@
       "patch": {
         "summary": "update files",
         "deprecated": false,
-        "description": "",
+        "description": "**Allowed file types:** `image/jpeg`, `image/png`, `image/jpg`, `image/webp`, `application/pdf`\n \n**Maximum file size:** `5MB`",
         "tags": ["files"],
         "parameters": [
           {
