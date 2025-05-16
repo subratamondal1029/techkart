@@ -18,7 +18,7 @@ const Auth = ({ isSignupPage = false }) => {
   const methods = useForm();
 
   const handleGoogleLogin = async () => {
-    const successPath = `${state?.redirect || ""}`;
+    const successPath = `${state?.redirect?.replace("/", "") || ""}`;
     const failsPath = pathname.replace("/", "");
 
     authService.loginWithGogle(successPath, failsPath);
