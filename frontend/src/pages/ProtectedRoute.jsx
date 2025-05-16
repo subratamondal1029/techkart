@@ -16,7 +16,9 @@ const ProtectedRoute = ({ children, redirect = "", role = "user" }) => {
       navigate("/login", { state: { isUser: true, redirect } });
     } else {
       const isAuthorized =
-        userData.label === "admin" || userData.label === role;
+        userData.label === "admin" ||
+        userData.label === role ||
+        pathname === "/account";
 
       if (!isAuthorized) {
         showToast("error", "You are not authorized to access this page");
