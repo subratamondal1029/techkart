@@ -38,7 +38,7 @@ const Account = () => {
         const imageUrl = URL.createObjectURL(file);
         console.log(imageUrl);
         setOptimisticData((prev) => ({ ...prev, avatar: imageUrl }));
-        await delay(2000);
+
         let response;
         if (userData?.avatar) {
           const { data } = await fileService.update({
