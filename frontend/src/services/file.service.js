@@ -8,15 +8,19 @@ class FileService extends baseService {
         throw new Error("File is required");
       }
 
-      if (file.size > 1024 * 1024 * 5) {
+      const acceptTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/jpg",
+        "image/webp",
+        "application/pdf",
+      ];
+      const MAX_SIZE = 5 * 1024 * 1024;
+
+      if (!acceptTypes.includes(file.type)) {
+        throw new Error("Invalid file type");
+      } else if (file.size > MAX_SIZE) {
         throw new Error("File size is too large (5MB)");
-      }
-
-      const acceptedExtensions = ["jpg", "jpeg", "png", "webp"];
-      const fileExtension = file?.name?.split(".")?.pop()?.toLowerCase();
-
-      if (!acceptedExtensions.includes(fileExtension)) {
-        throw new Error("File type is not supported");
       }
 
       return true;
@@ -26,7 +30,6 @@ class FileService extends baseService {
   upload({ formData }) {
     return this.handler(async () => {
       this.validate(formData.get("file"));
-      return;
       const response = await this.api.post("/files/", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });

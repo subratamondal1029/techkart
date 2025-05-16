@@ -66,8 +66,8 @@ class AuthService extends baseService {
     return this.handler(async () => {
       const body = {};
       if (avatar) body.avatar = avatar;
-      if (name.trim()) body.name = name.trim().toLowerCase();
-      if (email.trim()) body.email = email.trim().toLowerCase();
+      if (name?.trim()) body.name = name.trim().toLowerCase();
+      if (email?.trim()) body.email = email.trim().toLowerCase();
 
       const response = await this.api.patch("/users/", body);
       return response.data;
