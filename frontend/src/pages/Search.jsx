@@ -1,7 +1,12 @@
 import React, { useCallback, useEffect, useState, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { Button, LoadingError, ProductCard } from "../components";
+import {
+  Button,
+  LoadingError,
+  ProductCard,
+  ProductNotFound,
+} from "../components";
 import ProductCardShimmer from "../components/shimmers/ProductCard.shimmer";
 import useInfiniteScroll from "../hooks/useInfiniteScroll";
 import productService from "../services/product.service";
@@ -103,23 +108,7 @@ const Search = () => {
 
   return (
     <div className="w-full min-h-screen">
-      {products.length === 0 && isEmptyResponse && (
-        <div className="w-full max-w-xl mx-auto mt-16 p-6 text-center bg-white rounded-xl shadow-sm">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-2">
-            No Products Found
-          </h2>
-          <p className="text-gray-600 text-lg">
-            We couldn’t find anything for{" "}
-            <span className="text-black font-bold">
-              "{searchParams.get("query") || "your search"}"
-            </span>
-            .
-          </p>
-          <p className="text-gray-500 mt-2">
-            Try using different keywords or checking your spelling.
-          </p>
-        </div>
-      )}
+      {products.length === 0 && isEmptyResponse && <ProductNotFound />}
       {products.length > 0 && (
         <>
           {/* add sort and filter */}
