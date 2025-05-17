@@ -25,6 +25,7 @@ import {
   OrderConfirm,
   Shipment,
   Delivery,
+  ProductEdit,
 } from "./pages";
 import Test from "./components/Test.jsx";
 import { Provider } from "react-redux";
@@ -77,6 +78,14 @@ const router = createBrowserRouter(
         element={
           <ProtectedRoute role="seller">
             <Seller />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="product/edit/:id?"
+        element={
+          <ProtectedRoute role="seller">
+            <ProductEdit />
           </ProtectedRoute>
         }
       />

@@ -2,6 +2,7 @@ import lazyWrapper from "../utils/lazyWrapper";
 
 const Home = lazyWrapper(() => import("./Home"));
 const Seller = lazyWrapper(() => import("./Seller"));
+const ProductEdit = lazyWrapper(() => import("./ProductEdit"));
 const ProtectedRoute = lazyWrapper(() => import("./ProtectedRoute"));
 const Auth = lazyWrapper(() => import("./Auth"));
 const Error = lazyWrapper(() => import("./Error"));
@@ -18,6 +19,7 @@ const Delivery = lazyWrapper(() => import("./Delivery"));
 export {
   Home,
   Seller,
+  ProductEdit,
   ProtectedRoute,
   Auth,
   Error,
