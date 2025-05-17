@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import fileService from "../services/file.service";
 
 /**
  *
@@ -19,6 +20,10 @@ const Image = ({ src, alt = "", className = "", size, ...props }) => {
     setError(true);
     setLoaded(false);
   };
+
+  useEffect(() => {
+    src = src.includes("http") ? src : fileService.get(src);
+  }, [src]);
 
   useEffect(() => {
     const imageElm = imgRef.current;
