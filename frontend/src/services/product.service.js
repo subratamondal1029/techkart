@@ -30,6 +30,7 @@ class ProductService extends baseService {
     sort = "a",
     sortBy = "price",
     query,
+    isSeller = false,
   }) {
     return this.handler(async () => {
       const queries = [];
@@ -43,7 +44,9 @@ class ProductService extends baseService {
         queries.push(`sortBy=${sortBy?.trim().toLowerCase()}`);
 
       const response = await this.api.get(
-        `/products/?page=${page}&${queries.join("&")}`
+        `/products${isSeller ? "/seller" : ""}/?page=${page}&${queries.join(
+          "&"
+        )}`
       );
 
       return response.data;
