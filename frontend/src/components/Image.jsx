@@ -22,7 +22,7 @@ const Image = ({ src, alt = "", className = "", size, ...props }) => {
   };
 
   useEffect(() => {
-    src = src.includes("http") ? src : fileService.get(src);
+    src = src?.includes("http") ? src : fileService.get(src);
   }, [src]);
 
   useEffect(() => {
