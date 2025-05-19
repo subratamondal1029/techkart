@@ -1,6 +1,7 @@
 import ApiError from "../utils/apiError.js";
 import User from "../models/user.model.js";
 import jwt from "jsonwebtoken";
+import { generateTokens } from "../utils/jwt.js";
 
 export default async (req, res, next) => {
   try {
@@ -13,7 +14,14 @@ export default async (req, res, next) => {
     if (!token) throw new ApiError(401, "Unauthorized");
     req.token = token;
     // login with accessToken
-    const payload = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    let payload;
+    try {
+      payload = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    } catch (error) {
+      if (error instanceof jwt.JsonWebTokenError) {
+        throw new ApiError(401, "Something when wrong try to reload page");
+      }
+    }
 
     if (!payload || !payload.id) throw new ApiError(401, "Invalid Token");
 
