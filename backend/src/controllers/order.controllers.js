@@ -239,7 +239,11 @@ const createOrder = asyncHandler(async (req, res) => {
 const getOrder = asyncHandler(async (req, res) => {
   const order = await getOrderData(req.params.id);
 
-  if (order.userId?.toString() !== req.user._id.toString())
+  if (
+    order.userId?.toString() !== req.user._id.toString() &&
+    req.user.label !== "admin" &&
+    req.user.label !== "delivery"
+  )
     throw new ApiError(403, "Unauthorized");
 
   res.json(new ApiResponse(200, "Order Details Fetched", order));
@@ -252,8 +256,15 @@ const getOrders = asyncHandler(async (req, res) => {
   const totalOrders = await Order.countDocuments({ userId: req.user._id });
   const totalPages = Math.ceil(totalOrders / pageSize);
 
+  let filter;
+  if (req.user.label === "admin" || req.user.label === "shipment") {
+    filter = {};
+  } else {
+    filter = { userId: req.user._id };
+  }
+
   const orders = await Order.aggregate([
-    { $match: { userId: req.user._id } },
+    { $match: filter },
     {
       $lookup: {
         from: "carts",
