@@ -452,7 +452,12 @@ const Seller = () => {
               defaultValue={editProduct?.category}
               list="category-list"
             />
-            <DataList categories={CATEGORIES} id="category-list" limit={5} />
+            <DataList
+              list={CATEGORIES}
+              id="category-list"
+              limit={5}
+              inputName="category"
+            />
           </div>
           <TagInput
             name="tags"
