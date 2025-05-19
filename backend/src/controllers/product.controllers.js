@@ -91,7 +91,8 @@ const getProducts = asyncHandler(async (req, res) => {
     filter.company = { $regex: company?.trim?.(), $options: "i" };
 
   if (req.path.includes("seller")) {
-    if (req.user.label !== "seller") throw new ApiError(403, "Unauthorized");
+    if (req.user.label !== "seller" && req.user.label !== "admin")
+      throw new ApiError(403, "Unauthorized");
 
     filter.sellerId = req.user._id;
   }
