@@ -46,16 +46,16 @@ const Orders = () => {
           {order?.cart?.products?.map(({ product, quantity }) => (
             <div
               className="w-full flex flex-col justify-start sm:justify-between sm:flex-row items-center"
-              key={product._id}
+              key={product?._id}
             >
               <div className="w-full space-y-5  mt-2 sm:mt-5">
                 <Image
                   src={fileService.get(product?.image)}
-                  alt={product.name}
+                  alt={product?.name}
                   className="w-40 h-auto rounded-lg"
                 />
                 <p className="text-gray-500 font-semibold max-w-72 truncate">
-                  {product.name}
+                  {product?.name}
                 </p>
               </div>
               <div className="w-full text-right sm:pt-10">
