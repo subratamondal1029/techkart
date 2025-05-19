@@ -30,6 +30,7 @@ const Back = lazyWrapper(() => import("./Back"));
 const Maintenance = lazyWrapper(() => import("./Maintenance"));
 const ImageUpload = lazyWrapper(() => import("./ImageUpload"));
 const DataList = lazyWrapper(() => import("./DataList"));
+const TagInput = lazyWrapper(() => import("./formComp/TagInput"));
 
 export {
   Logo,
@@ -52,4 +53,5 @@ export {
   UpdateForm,
   ImageUpload,
   DataList,
+  TagInput,
 };
