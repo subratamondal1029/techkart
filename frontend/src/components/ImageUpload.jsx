@@ -22,7 +22,7 @@ const ImageUpload = ({
   const formContext = useFormContext();
   const [image, setImage] = useState(src);
 
-  const upload = (e) => {
+  const upload = async (e) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
@@ -44,7 +44,11 @@ const ImageUpload = ({
       return;
     }
 
-    onUpdate(file);
+    try {
+      await onUpdate(file);
+    } catch (error) {
+      setImage(src);
+    }
   };
 
   const borderClass = formContext?.formState.errors?.[name]
