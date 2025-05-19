@@ -28,6 +28,8 @@ const CartPop = lazyWrapper(() => import("./CartPop"));
 const LoadingError = lazyWrapper(() => import("./LoadingError"));
 const Back = lazyWrapper(() => import("./Back"));
 const Maintenance = lazyWrapper(() => import("./Maintenance"));
+const ImageUpload = lazyWrapper(() => import("./ImageUpload"));
+const DataList = lazyWrapper(() => import("./DataList"));
 
 export {
   Logo,
@@ -48,4 +50,6 @@ export {
   Back,
   Maintenance,
   UpdateForm,
+  ImageUpload,
+  DataList,
 };

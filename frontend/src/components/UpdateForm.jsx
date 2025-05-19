@@ -56,7 +56,7 @@ const Form = ({ setIsOpen, onSubmit, classname = "", children, ...props }) => {
 
   return createPortal(
     <div
-      className="w-screen h-screen fixed top-0 left-0 bg-gray-800/50 z-20 flex justify-center items-center"
+      className="w-screen h-screen fixed inset-0 bg-gray-800/50 z-20 flex justify-center items-start overflow-y-auto py-5"
       onClick={closeFormWithoutSubmit}
     >
       <FormProvider {...methods}>
