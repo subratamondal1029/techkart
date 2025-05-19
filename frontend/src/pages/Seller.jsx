@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useOptimistic } from "react";
+import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
 import { Pencil, Trash2, Plus, Search } from "lucide-react";
 import {
@@ -28,7 +29,8 @@ const Seller = () => {
   const [editProduct, setEditProduct] = useState(null);
   const [products, setProducts] = useState({});
   const [optimisticProducts, setOptimisticProducts] = useOptimistic(products);
-  const [totalPages, setTotalPages] = useState(2);
+  const [totalPages, setTotalPages] = useState(1);
+  const [deleteId, setDeleteId] = useState(null);
   const [params, setParams] = useState({
     page: 1,
     query: "",
@@ -195,6 +197,27 @@ const Seller = () => {
     });
   };
 
+  const deleteHandler = (id) => {
+    startTransition(async () => {
+      try {
+        const deleteProductState = (prev) => {
+          const products = prev[parameterQuery].filter((p) => p._id !== id);
+          return {
+            ...prev,
+            [parameterQuery]: products,
+          };
+        };
+        setOptimisticProducts(deleteProductState);
+
+        await productService.delete(id);
+        setProducts(deleteProductState);
+      } catch (error) {
+        console.log(error);
+        showToast("error", error.message || "Something went wrong");
+      }
+    });
+  };
+
   return (
     <div className="bg-blue-50 min-h-screen p-4 sm:p-6">
       <div className="max-w-7xl mx-auto">
@@ -337,7 +360,10 @@ const Seller = () => {
                     >
                       <Pencil size={16} className="text-blue-700" />
                     </button>
-                    <button className="hover:bg-red-200 p-1 rounded">
+                    <button
+                      className="hover:bg-red-200 p-1 rounded"
+                      onClick={() => setDeleteId(item._id)}
+                    >
                       <Trash2 size={16} className="text-red-600" />
                     </button>
                   </div>
@@ -442,7 +468,58 @@ const Seller = () => {
           />
         </UpdateForm>
       )}
+      {deleteId && (
+        <ConfirmDelete
+          id={deleteId}
+          setIsOpen={setDeleteId}
+          handleDelete={deleteHandler}
+        />
+      )}
     </div>
+  );
+};
+
+const ConfirmDelete = ({ id, setIsOpen, handleDelete }) => {
+  useEffect(() => {
+    document.body.classList.add("portal-open");
+    return () => {
+      document.body.classList.remove("portal-open");
+    };
+  }, []);
+
+  return createPortal(
+    <div
+      className="fixed top-0 left-0 z-20 w-screen h-screen bg-black/50 flex justify-center items-center"
+      onClick={() => setIsOpen(null)}
+    >
+      <div
+        className="bg-white p-5 rounded-md"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <h3 className="text-lg font-semibold">
+          Are you sure you want to delete this product?
+        </h3>
+        <div className="flex justify-end gap-2 mt-5">
+          <Button
+            classname="bg-gray-400 hover:bg-gray-500 text-black px-3 py-1 rounded"
+            onClick={() => setIsOpen(null)}
+          >
+            Cancel
+          </Button>
+          <Button
+            classname="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-white flex items-center gap-1 justify-center"
+            onClick={() => {
+              handleDelete(id);
+              setIsOpen(null);
+            }}
+          >
+            <Trash2 size={16} />
+            Delete
+          </Button>
+        </div>
+      </div>
+    </div>,
+    document.getElementById("portal-root")
   );
 };
 
