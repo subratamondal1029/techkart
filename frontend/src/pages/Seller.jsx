@@ -1,15 +1,33 @@
-import React, { useState, useRef, useMemo } from "react";
+import { useState, useEffect, useMemo, useOptimistic } from "react";
 import { Link } from "react-router-dom";
-import { Pencil, Trash2, Plus } from "lucide-react";
-import { Button, Image, Input, LoadingError } from "../components";
-import SellerTable from "../components/shimmers/SellerTable.shimmer";
+import { Pencil, Trash2, Plus, Search } from "lucide-react";
+import {
+  Button,
+  Image,
+  ImageUpload,
+  Input,
+  LoadingError,
+  ProductNotFound,
+  TextArea,
+  UpdateForm,
+  DataList,
+  TagInput,
+} from "../components";
 import productService from "../services/product.service";
-import { useEffect } from "react";
-import { Search } from "lucide-react";
 import useLoading from "../hooks/useLoading";
+import SellerTable from "../components/shimmers/SellerTable.shimmer";
+import { CATEGORIES } from "../../constants";
+import { CloudUpload } from "lucide-react";
+import { startTransition } from "react";
+import showToast from "../utils/showToast";
+import delay from "../utils/delay";
+import fileService from "../services/file.service";
 
 const Seller = () => {
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editProduct, setEditProduct] = useState(null);
   const [products, setProducts] = useState({});
+  const [optimisticProducts, setOptimisticProducts] = useOptimistic(products);
   const [totalPages, setTotalPages] = useState(2);
   const [params, setParams] = useState({
     page: 1,
@@ -79,6 +97,104 @@ const Seller = () => {
     fetchProducts();
   }, [params]);
 
+  const editFormOpener = (id) => {
+    const product = products?.[parameterQuery]?.find((p) => p._id === id);
+    setEditProduct(product);
+    setIsFormOpen(true);
+  };
+
+  const submitHandler = async (data, methods) => {
+    startTransition(async () => {
+      try {
+        data.price = Number(data.price);
+
+        let product = {
+          ...data,
+          _id: editProduct?._id || crypto.randomUUID(),
+          image: data.file
+            ? URL.createObjectURL(data?.file)
+            : editProduct?.image,
+        };
+
+        const updateProductState = (prev) => {
+          const existing = prev[parameterQuery] || [];
+
+          const updatedList = existing.map((p) =>
+            p._id === product._id ? product : p
+          );
+          return {
+            ...prev,
+            [parameterQuery]: updatedList,
+          };
+        };
+        const addNewProductState = (prev) => {
+          return {
+            ...prev,
+            [parameterQuery]: [product, ...prev[parameterQuery]],
+          };
+        };
+
+        if (editProduct) {
+          const uniqueData = Object.fromEntries(
+            Object.entries(data).filter(
+              ([key, value]) => editProduct?.[key] !== value
+            )
+          );
+
+          if (Object.keys(uniqueData).length === 0) {
+            showToast("warning", "No changes detected");
+            return;
+          }
+
+          setOptimisticProducts(updateProductState);
+          let image = editProduct?.image;
+          if (uniqueData.file) {
+            const formData = new FormData();
+            formData.set("file", uniqueData.file);
+            const { data } = await fileService.update({
+              id: image,
+              formData,
+            });
+            image = data.file;
+
+            delete uniqueData.file;
+          }
+
+          if (Object.keys(uniqueData).length > 0) {
+            const { data } = await productService.update({
+              id: product._id,
+              ...product,
+            });
+
+            product = data;
+          }
+
+          setProducts(updateProductState);
+        } else {
+          setOptimisticProducts(addNewProductState);
+
+          const formData = new FormData();
+          formData.set("file", data.file);
+          formData.set("entityType", "product");
+          const { data: imageResponse } = await fileService.upload({
+            formData,
+          });
+
+          const { data: newProduct } = await productService.create({
+            ...product,
+            image: imageResponse.file,
+          });
+
+          product = newProduct;
+          setProducts(addNewProductState);
+        }
+      } catch (error) {
+        console.error(error);
+        showToast("error", error.message || "Something went wrong");
+      }
+    });
+  };
+
   return (
     <div className="bg-blue-50 min-h-screen p-4 sm:p-6">
       <div className="max-w-7xl mx-auto">
@@ -125,7 +241,13 @@ const Seller = () => {
               />
             </Button>
           </form>
-          <Button classname="px-4 py-1 rounded flex items-center justify-center gap-2">
+          <Button
+            classname="px-4 py-1 rounded flex items-center justify-center gap-2"
+            onClick={() => {
+              setEditProduct(null);
+              setIsFormOpen(true);
+            }}
+          >
             <Plus size={16} /> Add
           </Button>
         </div>
@@ -133,20 +255,8 @@ const Seller = () => {
           <SellerTable />
         ) : productError ? (
           <LoadingError error={productError} retry={fetchProducts} />
-        ) : products?.[parameterQuery]?.length === 0 ? (
-          <div className="flex flex-col items-center justify-center min-h-60 py-10">
-            <Image
-              src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png"
-              alt="No products"
-              className="w-24 h-24 mb-4 opacity-70"
-            />
-            <h2 className="text-lg font-semibold text-gray-700 mb-2">
-              No Products Found
-            </h2>
-            <p className="text-gray-500 mb-4 text-center">
-              We couldn't find any products matching your search or filter.
-            </p>
-          </div>
+        ) : optimisticProducts?.[parameterQuery]?.length === 0 ? (
+          <ProductNotFound />
         ) : (
           <>
             <div className="border-t border-gray-300 py-2 min-h-96">
@@ -175,7 +285,7 @@ const Seller = () => {
               </div>
 
               {/* Responsive Table Rows */}
-              {products?.[parameterQuery]?.map((item) => (
+              {optimisticProducts?.[parameterQuery]?.map((item) => (
                 <div
                   key={item._id}
                   className="grid grid-cols-2 md:grid-cols-8 gap-4 px-2 py-2 items-center border-t border-gray-200 hover:bg-blue-100 rounded text-xs sm:text-sm"
@@ -185,7 +295,11 @@ const Seller = () => {
                     to={`/product/${item._id}`}
                     className="w-12 h-12 col-span-1"
                   >
-                    <Image className="rounded" src={item.image} />
+                    <Image
+                      className="rounded"
+                      key={item.image}
+                      src={item.image}
+                    />
                   </Link>
                   {/* Id */}
                   <div
@@ -217,12 +331,12 @@ const Seller = () => {
                   <div className="hidden md:block">{item.stock || "∞"}</div>
                   {/* Actions */}
                   <div className="flex gap-2 justify-evenly col-span-1">
-                    <Link
-                      to={`/product/edit/${item._id}`}
+                    <button
+                      onClick={() => editFormOpener(item._id)}
                       className="hover:bg-blue-200 p-1 rounded"
                     >
                       <Pencil size={16} className="text-blue-700" />
-                    </Link>
+                    </button>
                     <button className="hover:bg-red-200 p-1 rounded">
                       <Trash2 size={16} className="text-red-600" />
                     </button>
@@ -274,6 +388,60 @@ const Seller = () => {
           </>
         )}
       </div>
+
+      {/* Update and Add product form */}
+      {isFormOpen && (
+        <UpdateForm setIsOpen={setIsFormOpen} onSubmit={submitHandler}>
+          <ImageUpload
+            classname="relative max-h-96 h-screen mt-5 rounded-md"
+            src={editProduct?.image}
+            placeholder={<CloudUpload size={50} />}
+            rules={{ required: editProduct ? false : "Image is required" }}
+            name="file"
+          />
+          <Input
+            name="name"
+            label="Product Name"
+            placeholder="Product Name"
+            defaultValue={editProduct?.name}
+          />
+          <Input
+            name="company"
+            label="Company"
+            placeholder="Company"
+            defaultValue={editProduct?.company}
+          />
+          <Input
+            name="price"
+            label="Price"
+            type="number"
+            placeholder="Price"
+            defaultValue={editProduct?.price}
+          />
+          <div>
+            <Input
+              name="category"
+              label="Category"
+              placeholder="Category"
+              defaultValue={editProduct?.category}
+              list="category-list"
+            />
+            <DataList categories={CATEGORIES} id="category-list" limit={5} />
+          </div>
+          <TagInput
+            name="tags"
+            label="Tags"
+            defaultValue={editProduct?.tags}
+            rules={{ required: false, minLength: 2 }}
+          />
+          <TextArea
+            name="description"
+            label="Description"
+            defaultValue={editProduct?.description}
+            placeholder="Description"
+          />
+        </UpdateForm>
+      )}
     </div>
   );
 };
