@@ -52,16 +52,7 @@ class ProductService extends baseService {
       return response.data;
     }, "getting products");
   }
-  update({
-    id,
-    name,
-    description,
-    price,
-    tags = [],
-    category,
-    company,
-    image,
-  }) {
+  update({ id, name, description, price, tags = [], category, company }) {
     return this.handler(async () => {
       const data = {};
       if (name) data.name = name;
@@ -70,7 +61,6 @@ class ProductService extends baseService {
       if (tags) data.tags = tags;
       if (category) data.category = category;
       if (company) data.company = company;
-      if (image) data.image = image;
 
       const response = await this.api.patch(`/products/${id}`, data);
       return response.data;

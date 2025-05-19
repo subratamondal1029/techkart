@@ -16,6 +16,11 @@ const deleteFile = async (filePath) => {
 
 const selectFolder = async (req, res, next) => {
   const existingFile = await File.findById(req.params?.id);
+
+  if (!existingFile && req.method === "PATCH") {
+    return res.status(404).json(new ApiError(404, "File not found"));
+  }
+
   const entityType =
     req.body.entityType || (existingFile && existingFile?.entityType);
 
