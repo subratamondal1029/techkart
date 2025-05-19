@@ -9,7 +9,7 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import { Menu, SearchIcon, ShoppingCartIcon, User, X } from "lucide-react";
-import { Button, CartPop, Input, Logo } from "./index";
+import { Button, CartPop, DataList, Input, Logo } from "./index";
 import authService from "../services/auth.service";
 import { toast } from "react-toastify";
 import useLoading from "../hooks/useLoading";
@@ -35,7 +35,6 @@ const Header = () => {
     "motherboards",
     "storage devices",
   ]);
-  const [filteredTags, setFilteredTags] = useState([]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -69,18 +68,7 @@ const Header = () => {
       .flat(1)
       .map((t) => t.toLowerCase().trim());
     setAllTags((prev) => Array.from(new Set([...prev, ...allTags])));
-
-    setFilteredTags(allTags.slice(0, 5));
   }, [products]);
-
-  useEffect(() => {
-    const value = searchValue.trim();
-    if (value === "") {
-      setFilteredTags(allTags.slice(0, 5));
-    } else {
-      setFilteredTags(allTags.filter((tag) => tag.includes(value)).slice(0, 5));
-    }
-  }, [searchValue, allTags]);
 
   useEffect(() => {
     const query = searchParams.get("query")?.trim().toLowerCase() || "";
@@ -104,11 +92,12 @@ const Header = () => {
             onChange={(e) => setSearchValue(e.target.value)}
             onKeyUp={(e) => e.key === "Enter" && handleSearch()}
           />
-          <datalist id="search">
-            {filteredTags.map((tag) => (
-              <option value={tag} key={tag} />
-            ))}
-          </datalist>
+          <DataList
+            list={allTags}
+            valueState={searchValue}
+            id="search"
+            limit={5}
+          />
 
           <Button
             classname="h-full min-h-10 rounded-l-none"

@@ -9,14 +9,12 @@ const DataList = ({
   inputName,
 }) => {
   const formContext = useFormContext();
-  let value;
+  let value = "";
   if (formContext && inputName) {
     value = formContext.watch(inputName);
   } else if (valueState) {
     value = valueState;
   }
-
-  const category = value || "";
 
   const [filteredList, setFilteredList] = useState(list.slice(0, limit));
 
