@@ -139,58 +139,62 @@ const Product = () => {
           </ul>
         </div>
 
-        <hr className="w-full " />
-        <div className="flex gap-3 items-center xl:w-3/4 mt-3 md:w-2/4 w-full sm:w-3/4 ">
-          <Button
-            classname="w-full max-w-44 bg-gray-100 text-black hover:bg-gray-200 justify-between text-2xl py-2 rounded-xl px-4 shadow-sm transition-colors duration-200 focus:ring-0"
-            disabled={isInCart}
-          >
-            <Minus
-              size={26}
-              className={`transition-colors duration-200 cursor-pointer ${
-                isInCart
-                  ? "text-gray-400 cursor-not-allowed"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
-              onClick={() => {
-                if (!isInCart)
-                  setQuantity((prev) => (prev !== 1 ? prev - 1 : 1));
-              }}
-            />
-            <p className="select-none text-black text-xl font-medium">
-              {quantity}
-            </p>
-            <Plus
-              size={26}
-              className={`transition-colors duration-200 cursor-pointer ${
-                isInCart
-                  ? "text-gray-400 cursor-not-allowed"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
-              onClick={() => {
-                if (!isInCart) setQuantity((prev) => prev + 1);
-              }}
-            />
-          </Button>
+        {userData?.label === "user" && (
+          <>
+            <hr className="w-full " />
+            <div className="flex gap-3 items-center xl:w-3/4 mt-3 md:w-2/4 w-full sm:w-3/4 ">
+              <Button
+                classname="w-full max-w-44 bg-gray-100 text-black hover:bg-gray-200 justify-between text-2xl py-2 rounded-xl px-4 shadow-sm transition-colors duration-200 focus:ring-0"
+                disabled={isInCart}
+              >
+                <Minus
+                  size={26}
+                  className={`transition-colors duration-200 cursor-pointer ${
+                    isInCart
+                      ? "text-gray-400 cursor-not-allowed"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
+                  onClick={() => {
+                    if (!isInCart)
+                      setQuantity((prev) => (prev !== 1 ? prev - 1 : 1));
+                  }}
+                />
+                <p className="select-none text-black text-xl font-medium">
+                  {quantity}
+                </p>
+                <Plus
+                  size={26}
+                  className={`transition-colors duration-200 cursor-pointer ${
+                    isInCart
+                      ? "text-gray-400 cursor-not-allowed"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
+                  onClick={() => {
+                    if (!isInCart) setQuantity((prev) => prev + 1);
+                  }}
+                />
+              </Button>
 
-          <Button
-            classname="w-full max-w-36 min-h-10 flex items-center justify-between py-3 px-3 select-none xl:px-5"
-            onClick={handleAddToCart}
-          >
-            {isAddingToCart ? (
-              <ButtonLoading fillColor="fill-black" classname="w-full" />
-            ) : isInCart ? (
-              <>
-                <Check size={25} className="ml-2" /> Go to cart
-              </>
-            ) : (
-              <>
-                <ShoppingCart size={20} />
-                Add to cart
-              </>
-            )}
-          </Button>
-        </div>
+              <Button
+                classname="w-full max-w-36 min-h-10 flex items-center justify-between py-3 px-3 select-none xl:px-5"
+                onClick={handleAddToCart}
+              >
+                {isAddingToCart ? (
+                  <ButtonLoading fillColor="fill-black" classname="w-full" />
+                ) : isInCart ? (
+                  <>
+                    <Check size={25} className="ml-2" /> Go to cart
+                  </>
+                ) : (
+                  <>
+                    <ShoppingCart size={20} />
+                    Add to cart
+                  </>
+                )}
+              </Button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   ) : (

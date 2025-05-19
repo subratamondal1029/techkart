@@ -17,7 +17,7 @@ import { storeCart } from "../store/cart.slice";
 import { storeOrders } from "../store/order.slice";
 
 const Header = () => {
-  const { isLoggedIn } = useSelector((state) => state.auth);
+  const { isLoggedIn, userData } = useSelector((state) => state.auth);
   const cart = useSelector((state) => state.cart);
   const products = useSelector((state) => state.products.data);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -134,19 +134,22 @@ const Header = () => {
           <span
             className={`relative cursor-pointer ${
               pathname === "/cart" ? "text-blue-600" : ""
+            } ${
+              userData?.label === "user" ? "" : "pointer-events-none opacity-50"
             }`}
-            onClick={() => setIsCartOpen((prev) => !prev)}
+            onClick={() =>
+              userData?.label === "user" && setIsCartOpen((prev) => !prev)
+            }
           >
             {cart?.products?.length > 0 ? (
               <div className="absolute -top-2 -right-2 w-4 h-4 p-2 rounded-full bg-black text-white flex justify-center items-center">
                 {cart?.products?.length}
               </div>
             ) : null}
-            {isCartOpen ? (
-              <ShoppingCartIcon size={20} color="rgb(37 99 235)" />
-            ) : (
-              <ShoppingCartIcon size={20} />
-            )}
+            <ShoppingCartIcon
+              size={20}
+              color={isCartOpen ? "rgb(37 99 235)" : "black"}
+            />
           </span>
 
           <Button
@@ -161,8 +164,9 @@ const Header = () => {
           <Menu size={20} onClick={() => setIsMenuOpen((prev) => !prev)} />
         </div>
       </div>
+
+      {/* Mobile Menu */}
       {isMenuOpen && (
-        // TODO: use same nav for all devices
         <div className="z-20 absolute top-2 w-full min-h-10">
           <div className="relative w-11/12 flex flex-col justify-center items-start bg-gray-100 mx-auto shadow-lg rounded-md p-3">
             <Link to="/" className="w-full">
@@ -236,6 +240,7 @@ const Header = () => {
         </div>
       )}
 
+      {/* Cart popup for big screen */}
       {isCartOpen && <CartPop setIsCartOpen={setIsCartOpen} />}
     </header>
   );

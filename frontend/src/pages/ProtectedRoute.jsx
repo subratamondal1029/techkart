@@ -23,7 +23,7 @@ const ProtectedRoute = ({ children, redirect = "", role = "user" }) => {
       if (!isAuthorized) {
         showToast("error", "You are not authorized to access this page");
         navigate("/login", {
-          state: { isUser: false, redirect, isStayReq: true },
+          state: { isUser: role === "user", redirect, isStayReq: true },
         });
       } else {
         setIsSendChild(true);
