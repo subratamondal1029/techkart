@@ -3,7 +3,6 @@ import Product from "../models/product.model.js";
 import File from "../models/file.model.js";
 import ApiError from "../utils/apiError.js";
 import ApiResponse from "../utils/apiResponse.js";
-import axios from "axios";
 import { deleteFile } from "../utils/fileHandler.js";
 
 const createProduct = asyncHandler(async (req, res) => {

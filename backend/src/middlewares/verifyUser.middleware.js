@@ -18,7 +18,9 @@ export default async (req, res, next) => {
     try {
       payload = jwt.verify(token, process.env.JWT_SECRET_KEY);
     } catch (error) {
-      if (error instanceof jwt.JsonWebTokenError) {
+      if (error instanceof jwt.TokenExpiredError) {
+        throw new ApiError(401, "Token Expired");
+      } else if (error instanceof jwt.JsonWebTokenError) {
         throw new ApiError(401, "Something when wrong try to reload page");
       }
     }

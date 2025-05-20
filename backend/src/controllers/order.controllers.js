@@ -256,11 +256,17 @@ const getOrders = asyncHandler(async (req, res) => {
   const totalOrders = await Order.countDocuments({ userId: req.user._id });
   const totalPages = Math.ceil(totalOrders / pageSize);
 
-  let filter;
-  if (req.user.label === "admin" || req.user.label === "shipment") {
-    filter = {};
-  } else {
-    filter = { userId: req.user._id };
+  let filter = { userId: req.user._id };
+  let sort = { createdAt: -1 };
+
+  if (req.path.includes("shipment")) {
+    if (req.user.label !== "shipment" && req.user.label !== "admin")
+      throw new ApiError(403, "Unauthorized");
+    sort = { isShipped: 1 };
+    filter = {
+      isDelivered: false,
+      isCancelled: false,
+    };
   }
 
   const orders = await Order.aggregate([
@@ -328,7 +334,8 @@ const getOrders = asyncHandler(async (req, res) => {
     },
   ])
     .limit(pageSize)
-    .skip((page - 1) * pageSize);
+    .skip((page - 1) * pageSize)
+    .sort(sort);
 
   res.json(
     new ApiResponse(200, "Orders Fetched", {

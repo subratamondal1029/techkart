@@ -10,6 +10,7 @@ import {
   updateContact,
   updateOrderStatus,
 } from "../controllers/order.controllers.js";
+import ApiResponse from "../utils/apiResponse.js";
 
 const router = Router();
 
@@ -18,6 +19,7 @@ router.use(verifyUser);
 router.post("/payment/order", generateRazorpayOrder);
 router.post("/payment/status", paymentStatus);
 router.route("/").get(getOrders).post(createOrder);
+router.get("/shipment", getOrders);
 router.route("/:id").get(getOrder).patch(updateContact).delete(cancelOrder);
 router.patch("/status/:id", updateOrderStatus);
 
