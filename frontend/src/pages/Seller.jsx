@@ -16,7 +16,7 @@ import {
 } from "../components";
 import productService from "../services/product.service";
 import useLoading from "../hooks/useLoading";
-import SellerTable from "../components/shimmers/SellerTable.shimmer";
+import SellerTable from "../components/shimmers/SellerTable.shimmer"; //TODO: change the name to shimmer
 import { CATEGORIES } from "../../constants";
 import { CloudUpload } from "lucide-react";
 import { startTransition } from "react";
