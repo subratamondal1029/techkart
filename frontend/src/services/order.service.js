@@ -41,9 +41,14 @@ class OrderService extends baseService {
     }, "fetching order details");
   }
 
-  getMany({ page }) {
+  getMany({ page = 1, isShipment = false }) {
     return this.handler(async () => {
-      const response = await this.api.get(`/orders/?page=${page}`);
+      let response;
+      if (isShipment) {
+        response = await this.api.get(`/orders/shipment/?page=${page}`);
+      } else {
+        response = await this.api.get(`/orders/?page=${page}`);
+      }
       return response.data;
     }, "fetching multiple orders");
   }
@@ -78,7 +83,7 @@ class OrderService extends baseService {
         body.orderRoute = orderRoute;
       }
 
-      const response = await this.api.patch(`/orders/${id}`, body);
+      const response = await this.api.patch(`/orders/status/${id}`, body);
       return response.data;
     }, "changing order status");
   }

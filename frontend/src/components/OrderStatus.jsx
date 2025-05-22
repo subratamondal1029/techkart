@@ -40,7 +40,7 @@ const OrderStatus = ({ order, classname = "" }) => {
 
   return (
     <span
-      className={`mt-3 text-xs font-medium ${textColor} ${bgColor} p-2 rounded-full select-none ${classname}`}
+      className={`mt-3 w-20 text-center text-xs font-medium ${textColor} ${bgColor} p-2 rounded-full select-none ${classname}`}
     >
       {status}
     </span>

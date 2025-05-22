@@ -1,216 +1,155 @@
 import { Download } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import {
-  // AccessDenied,
-  Button,
-  ButtonLoading,
-  OrderStatus,
-} from "../components";
-import appWriteDb from "../appwrite/DbServise";
-import { toast } from "react-toastify";
-import appWriteStorage from "../appwrite/storageService";
-import { generatePdf } from "../../invoiceGen";
+import { Button, OrderStatus } from "../components";
+import formateDate from "../utils/formateDate";
+import { Truck } from "lucide-react";
+import TruckAnimation from "../assets/truck-delivery.gif";
+import useLoading from "../hooks/useLoading";
+import orderService from "../services/order.service";
+import { useDispatch } from "react-redux";
+import { updateOrder } from "../store/order.slice";
+import showToast from "../utils/showToast";
+import fileService from "../services/file.service";
 
 const Shipment = () => {
-  const { userData } = useSelector((state) => state.auth);
-  const [displayOrders, setDisplayOrders] = useState([]);
-  const { products: allproduct } = useSelector((state) => state.products);
-  const [isLoading, setIsLoading] = useState(false);
+  const [orders, setOrders] = useState([]);
+  const [dispatchId, setDispatchId] = useState(null);
 
-  // if (!userData?.labels.includes("shipment")) {
-  //   return <AccessDenied message="Shipment master" />; // TODO: redirect to login page after logout
-  // }
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        // TODO: fetch orders from server with already populated cart
-        const getedOrders = await appWriteDb.getOrders();
-        if (getedOrders) {
-          let orders = [];
-          getedOrders.forEach((order) => {
-            const createdOrder = {
-              orderId: order.$id,
-              customerName: order.name,
-              date: order.date,
-              address: order.address,
-              contact: order.phone,
-              cart: order.cart.map((product) => JSON.parse(product)),
-              isShipped: order.isShipped,
-              isDeliverd: order.isDeliverd,
-            };
-
-            order.isShipped
-              ? orders.push(createdOrder)
-              : orders.unshift(createdOrder);
-          });
-
-          setDisplayOrders(orders);
-        } else console.warn("Something went wrong");
-      } catch (error) {
-        console.warn(error.message);
-        toast.error("Somthing went wrong");
-      }
-    }
-
-    fetchData();
-  }, []);
-
-  const handleUpdate = async (orderId) => {
-    // TODO: wrap with loader
-    setIsLoading(orderId);
-    const order = displayOrders.find((order) => order.orderId === orderId);
-    const products = order.cart.map((cartProduct) => {
-      const product = allproduct.find(
-        (product) => product.$id === cartProduct.productId
-      );
-      return {
-        quantity: cartProduct.quantity,
-        name: product.name,
-        price: product.price,
-      };
-    });
-
-    // TODO: invoice will atomatically created and uploaded
-    try {
-      const invoicePdf = await generatePdf("shipped", {
-        orderId,
-        date: order.date,
-        customerName: order.customerName,
-        address: order.address,
-        contact: order.contact,
-        products,
+  const [handleShipment, isDispatching, dispatchError] = useLoading(
+    async (id) => {
+      setDispatchId(id);
+      const { data } = await orderService.changeStatus({
+        id,
+        isShipped: true,
       });
 
-      if (invoicePdf) {
-        const ordersStatusChange = await appWriteDb.updateOrder(orderId, {
-          isShipped: true,
-        });
-
-        if (ordersStatusChange) {
-          const uploadInvoice = await appWriteStorage.uploadInvoice(
-            invoicePdf,
-            orderId
-          );
-          if (uploadInvoice) {
-            setDisplayOrders((prev) =>
-              prev.map((order) =>
-                order.orderId === orderId
-                  ? { ...order, isShipped: true }
-                  : order
-              )
-            );
-          }
-        } else {
-          toast.error("Something went wrong");
-        }
-      }
-    } catch (error) {
-      toast.error("Something went wrong");
-      console.warn(error);
+      setOrders((prev) =>
+        prev.map((o) => (o._id === id ? { ...data, cart: o.cart } : o))
+      );
     }
-    setIsLoading(null);
+  );
+
+  useEffect(() => {
+    if (dispatchError) {
+      showToast("error", dispatchError || "Something went wrong");
+    }
+  }, [dispatchError]);
+
+  const downloadInvoice = async (id) => {
+    const order = orders.find((order) => order._id === id);
+    window.open(fileService.get(order.invoice), "_blank");
   };
 
-  const downloadInvoice = async (orderId) => {
-    try {
-      // TODO: change change the url
-      const downloadLink = await appWriteStorage.getDownloadLink(orderId);
-      if (downloadLink) {
-        window.open(downloadLink, "_blank");
-      }
-    } catch (error) {
-      console.error(error.message);
-    }
-  };
+  // TODO: implement pagination
+  useEffect(() => {
+    (async () => {
+      const { data } = await orderService.getMany({ isShipment: true });
+      setOrders(data.orders);
+    })();
+  }, []);
 
   return (
-    <div className="container mx-auto p-4 min-h-[45vh]">
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-black text-white border border-gray-700">
-          <thead className="bg-gray-800 hidden text-left md:table-header-group">
+    <div className="mx-auto p-2 sm:p-4 min-h-[45vh]">
+      <div className="overflow-x-auto lg:rounded-tl-lg lg:rounded-tr-lg">
+        <table className="min-w-full text-white border border-none text-xs sm:text-sm">
+          <thead className="bg-gray-800 hidden text-left lg:table-header-group">
             <tr>
-              <th className="py-2 px-4 border-b border-gray-700">Order ID</th>
-              <th className="py-2 px-4 border-b border-gray-700">
+              <th className="py-2 pl-2 border-b border-gray-700">Order ID</th>
+              <th className="py-2 pl-2 border-b border-gray-700">
                 Customer Name
               </th>
-              <th className="py-2 px-4 border-b border-gray-700">Date</th>
-              <th className="py-2 px-4 border-b border-gray-700">Address</th>
-              <th className="py-2 px-4 border-b border-gray-700">
+              <th className="py-2 pl-2 border-b border-gray-700">Date</th>
+              <th className="py-2 pl-2 border-b border-gray-700">Address</th>
+              <th className="py-2 pl-2 border-b border-gray-700">
                 Total Products
               </th>
-              <th className="py-2 px-4 border-b border-gray-700">Status</th>
-              <th className="py-2 px-4 border-b border-gray-700">Action</th>
+              <th className="py-2 pl-2 border-b border-gray-700">Status</th>
+              <th className="py-2 px-2 lg:pl-2 border-b border-gray-700">
+                Action
+              </th>
             </tr>
           </thead>
-          <tbody className="flex flex-col gap-3 md:table-row-group">
-            {displayOrders.map((shipment) => (
+          <tbody className="flex flex-col gap-3 lg:table-row-group">
+            {orders?.map((shipment) => (
               <tr
-                key={shipment.orderId}
-                className={`even:bg-gray-100 odd:bg-gray-50 hover:bg-gray-200 text-black`}
+                key={shipment._id}
+                className="even:bg-gray-100 odd:bg-gray-50 hover:bg-gray-200 text-black rounded-lg lg:rounded-none flex flex-col lg:table-row mb-2 lg:mb-0 shadow lg:shadow-none"
               >
-                <td className="py-2 px-4 border-b border-gray-700 flex justify-between items-center cursor-default md:table-cell">
-                  <span className="block font-semibold md:hidden">
+                <td className="min-w-32 py-2 px-2 lg:pl-2 border-b border-gray-700 flex flex-col lg:flex-row lg:justify-between lg:items-center cursor-default lg:table-cell">
+                  <span className="block font-semibold lg:hidden mb-1">
                     Order ID:
                   </span>
-                  {shipment.orderId}
+                  <span
+                    className="max-w-28 truncate w-full inline-block cursor-help"
+                    title={shipment._id}
+                  >
+                    {shipment._id}
+                  </span>
                 </td>
-                <td className="py-2 px-4 border-b border-gray-700 flex justify-between items-center cursor-default md:table-cell">
-                  <span className="block font-semibold md:hidden">
+                <td className="min-w-32 py-2  px-2 lg:pl-2 border-b border-gray-700 flex flex-col lg:flex-row lg:justify-between lg:items-center cursor-default lg:table-cell">
+                  <span className="block font-semibold lg:hidden mb-1">
                     Customer Name:
                   </span>
                   {shipment.customerName}
                 </td>
-                <td className="py-2 px-4 border-b border-gray-700 flex justify-between items-center cursor-default md:table-cell">
-                  <span className="block font-semibold md:hidden">
-                    Customer Name:
+                <td className="min-w-32 py-2  px-2 lg:pl-2 border-b border-gray-700 flex flex-col lg:flex-row lg:justify-between lg:items-center cursor-default lg:table-cell">
+                  <span className="block font-semibold lg:hidden mb-1">
+                    Date:
                   </span>
-                  {shipment.date}
+                  {formateDate(shipment.orderDate)}
                 </td>
                 <td
-                  className="py-2 px-4 border-b border-gray-700 flex justify-between items-center cursor-help md:table-cell"
+                  className="min-w-32 py-2  px-2 lg:pl-2 border-b border-gray-700 flex flex-col lg:flex-row lg:justify-between lg:items-center cursor-help lg:table-cell"
                   title={shipment.address}
                 >
-                  <span className="block font-semibold md:hidden">
+                  <span className="block font-semibold lg:hidden mb-1">
                     Address:
                   </span>
-                  <p className="md:max-w-24 max-w-44 truncate ">
+                  <p className="truncate overflow-hidden whitespace-nowrap text-ellipsis w-full lg:max-w-24 max-w-44">
                     {shipment.address}
                   </p>
                 </td>
-                <td className="py-2 px-4 border-b border-gray-700 flex justify-between items-center cursor-default md:table-cell">
-                  <span className="block font-semibold md:hidden">
-                    Total Product:
+                <td className="min-w-32 py-2  px-2 lg:pl-2 border-b border-gray-700 flex flex-col lg:flex-row lg:justify-between lg:items-center cursor-default lg:table-cell">
+                  <span className="block font-semibold lg:hidden mb-1">
+                    Total Products:
                   </span>
-                  {shipment.cart.length}
+                  {shipment.cart.products.length}
                 </td>
-                <td className="py-2 px-4 border-b border-gray-700 flex justify-between items-center md:table-cell">
-                  <span className="block font-semibold md:hidden">Status:</span>
+                <td className="min-w-32 py-2  px-2 lg:pl-2 border-b border-gray-700 flex flex-col lg:flex-row lg:justify-between lg:items-center lg:table-cell">
+                  <span className="block font-semibold lg:hidden mb-1">
+                    Status:
+                  </span>
                   <OrderStatus order={shipment} classname="mt-0" />
                 </td>
-                <td className="py-2 px-4 border-b border-gray-700 flex justify-between items-center md:table-cell">
-                  <span className="block font-semibold md:hidden">Action:</span>
+                <td className="min-w-32 py-2 px-2 lg:pl-2 lg:border-b border-gray-800 flex flex-col lg:flex-row lg:justify-between lg:items-center lg:table-cell">
+                  <span className="block font-semibold lg:hidden mb-1">
+                    Action:
+                  </span>
                   <Button
                     onClick={() =>
-                      shipment.isShipped
-                        ? downloadInvoice(shipment.orderId)
-                        : handleUpdate(shipment.orderId)
+                      shipment?.isShipped
+                        ? downloadInvoice(shipment._id)
+                        : handleShipment(shipment._id)
                     }
-                    classname="h-9 flex items-center min-w-20"
-                    disabled={isLoading === shipment.orderId}
+                    classname="h-9 flex items-center gap-2 min-w-28 mt-2 lg:mt-0 "
+                    disabled={isDispatching}
                   >
-                    {isLoading === shipment.orderId ? (
-                      <ButtonLoading
-                        classname="w-full"
-                        fillColor="fill-black"
+                    {isDispatching && dispatchId === shipment._id ? (
+                      <img
+                        src={TruckAnimation}
+                        alt="truck animation"
+                        className="w-7 drop-shadow-md"
                       />
-                    ) : shipment.isShipped ? (
+                    ) : !shipment?.isShipped ? (
                       <>
-                        <Download size={20} className="mr-2" /> Invoice
+                        <Truck />
+                        <span>Dispatch</span>
                       </>
                     ) : (
-                      "Dispatch"
+                      <>
+                        <Download />
+                        <span>Download</span>
+                      </>
                     )}
                   </Button>
                 </td>

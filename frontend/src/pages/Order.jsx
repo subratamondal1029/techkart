@@ -23,7 +23,7 @@ import useLoading from "../hooks/useLoading";
 import fileService from "../services/file.service";
 import orderService from "../services/order.service";
 import { addOrder, updateOrder } from "../store/order.slice";
-import delay from "../utils/delay";
+import formateDate from "../utils/formateDate";
 import showToast from "../utils/showToast";
 
 export default function Order() {
@@ -35,15 +35,6 @@ export default function Order() {
   const dispatch = useDispatch();
   const [order, setOrder] = useOptimistic(existingOrder);
   const [isUpdateFormOpen, setIsUpdateFormOpen] = useState(false);
-
-  const formateDate = (date) => {
-    date = new Date(date);
-    return `${date.getDate().toString().padStart(2, "0")}-${(
-      date.getMonth() + 1
-    )
-      .toString()
-      .padStart(2, "0")}-${date.getFullYear()}`;
-  };
 
   const calCartTotal = (cart) => {
     return cart?.products?.reduce(
