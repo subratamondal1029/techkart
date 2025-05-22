@@ -448,9 +448,17 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
 
   order.statusUpdateDate = new Date();
 
-  const baseUrl = `${req.protocol}://${req.get("host")}`;
-  const frontendRoute = route?.replace(":id", "");
-  const invoice = await genInvoice({ ...order, baseUrl, frontendRoute });
+  let frontendRoute;
+  if (route?.includes(":id")) {
+    frontendRoute = route.replace(":id", `:${order._id}`);
+  } else if (route?.includes("?id=")) {
+    frontendRoute = route.replace("?id=", `?id=${order._id}`);
+  } else {
+    if (isDelivered) throw new ApiError(400, "Invalid route formate");
+  }
+
+  console.log("order page:", frontendRoute); //TEST: logging the frontend order page url
+  const invoice = await genInvoice({ ...order, frontendRoute });
 
   if (!invoice) throw new ApiError(500, "Failed to generate invoice");
 

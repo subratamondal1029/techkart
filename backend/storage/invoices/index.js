@@ -1,4 +1,4 @@
-import wkhtmltopdf from "wkhtmltopdf";
+import axios from "axios";
 import fs from "fs";
 import path from "path";
 import ApiError from "../../src/utils/apiError.js";
@@ -8,8 +8,12 @@ import {
   uploadFile,
 } from "../../src/utils/fileHandler.js";
 
+import pdfMake from "pdfmake/build/pdfmake.js";
+import pdfFonts from "pdfmake/build/vfs_fonts.js";
+// Assign VFS (font file system) correctly
+pdfMake.vfs = pdfFonts.vfs;
+
 const orderSample = {
-  baseUrl: "http://localhost:8000",
   frontendRoute:
     "order/67eccbd95be609023c4e03bd" || "order?id=67eccbd95be609023c4e03bd",
   _id: "67eccbd95be609023c4e03bd",
@@ -55,377 +59,221 @@ const calculateDiscount = (order) => {
   return { totalAmount, discountPercentage };
 };
 
-const getProductTable = (order) => {
-  const { discountPercentage, totalAmount: totalProductAmount } =
-    calculateDiscount(order);
+async function getImageBase64(url) {
+  let mimeType = "image/png";
+  let base64;
+  if (url.includes("http")) {
+    const response = await axios.get(url, { responseType: "arraybuffer" });
+    base64 = Buffer.from(response.data).toString("base64");
+    mimeType = response.headers["content-type"];
+  } else {
+    base64 = fs.readFileSync(url).toString("base64");
+  }
+  return `data:${mimeType};base64,${base64}`;
+}
 
-  return `<table class="productDetails">
-      <thead>
-        <tr>
-          <th>Product</th>
-          <th>Quantity</th>
-          <th>Price</th>
-        </tr>
-      </thead>
-      <tbody>
-      ${order.cart.products
-        .map(
-          (product) => `
-         <tr>
-          <td class="product">
-        ${product.product.name}
-          </td>
-          <td>${product.quantity}</td>
-          <td>₹${product.product.price}</td>
-        </tr>
-        `
-        )
-        .join("")}
-      </tbody>
-      <tfoot>
-        <tr>
-          <td>Total</td>
-          <td colspan="2" class="total">
-            <div><span class="approxAmount">₹${totalProductAmount}</span> (${discountPercentage}%)</div>
-            <span class="finalAmount">₹${order.totalAmount}</span>
-          </td>
-        </tr>
-      </tfoot>
-    </table>`;
-};
+const logo = await getImageBase64("./public/logo.png");
 
-const getShipmentHtml = (order) => {
-  return `
-  <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Shipment</title>
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
+const getShipmentDefinition = async (order) => ({
+  pageSize: "A6",
+  pageMargins: [10, 10, 10, 10],
+  defaultStyle: { font: "Roboto" },
+  watermark: {
+    text: "TechKart",
+    color: "#A7A7A7",
+    opacity: 0.2,
+    bold: true,
+    italics: false,
+    fontSize: 40,
+  },
+  content: [
+    {
+      image: "qrcode",
+      width: 120,
+      alignment: "center",
+      margin: [0, 0, 0, 10],
+    },
+    {
+      stack: [
+        {
+          text: "Subrata Mondal",
+          style: "address",
+          bold: true,
+          fontSize: 12,
+        },
+        {
+          text: "paschim alichak pakar pull, West Bengal, East Midnapore, 721430, India",
+          style: "address",
+        },
+        { text: "+91 9832674420", style: "address" },
+      ],
+      margin: [0, 10, 0, 20],
+    },
+    {
+      stack: [
+        { text: "Shipment Details", bold: true, fontSize: 12, style: "info" },
+        { text: order._id, style: "info" },
+        {
+          text: `Order Date: ${formateDate(order.orderDate)}`,
+          style: "info",
+        },
+        { text: "Payment Method: online", style: "info" }, //TODO: add payment mode in database
+      ],
+      margin: [0, 0, 0, 10],
+    },
+    {
+      image: "logo",
+      width: 40,
+      alignment: "right",
+      margin: [0, 50, 0, 0],
+    },
+  ],
+  styles: {
+    info: { fontSize: 10, lineHeight: 1.3 },
+    address: {
+      fontSize: 10,
+      lineHeight: 1.5,
+    },
+  },
+  images: {
+    qrcode: await getImageBase64(
+      `https://api.qrserver.com/v1/create-qr-code/?&data=${order._id}`
+    ),
+    logo,
+  },
+});
 
-      body {
-        font-family: sans-serif, serif, monospace;
-      }
+const getDeliveryDefinition = async (order) => {
+  const { discountPercentage, totalAmount } = calculateDiscount(order);
 
-      #qrcode {
-        width: 100%;
-        max-width: 210px;
-      }
-
-      .shipmentDetails {
-      width: 100%;
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-      }
-
-      .details {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-      }
-
-      .details p{
-        font-size: 17px;
-      }
-      
-      .details p strong {
-      font-size: 13px;}
-
-      .comLogo {
-        width: 100px;
-      }
-
-      .customerDetails,
-      .productDetails {
-        margin-top: 25px;
-      }
-
-      .customerDetails {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-      }
-
-      .customerDetails p {
-        margin-top: 5px;
-      }
-
-      .productDetails {
-        width: 100%;
-        border-collapse: collapse;
-      }
-
-      .productDetails th,
-      .productDetails td {
-        border: 1px solid #ddd;
-        padding: 10px;
-        text-align: left;
-      }
-
-      .productDetails .product {
-        display: -webkit-box;
-        -webkit-line-clamp: 2; /* Limit to 2 lines */
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        width: 100%; /* Adjust width if needed */
-        height: 4em; /* Approx. height for 2 lines */
-        line-height: 1.5em; /* Adjust for better spacing */
-        word-wrap: break-word;
-      }
-
-      .productDetails tr:nth-child(even) {
-        background-color: #f9f9f9;
-      }
-
-      .productDetails tfoot,
-      .productDetails thead {
-        background-color: #1f1f1f;
-        color: #f1f1f1;
-        font-weight: bold;
-      }
-
-      .productDetails tfoot tr :first-child {
-        border-right: none;
-      }
-      .productDetails tfoot tr :last-child {
-        border-left: none;
-      }
-
-      tfoot .total .approxAmount {
-        text-decoration: line-through;
-        color: #adadad;
-      }
-      tfoot .total {
-        text-align: right;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="shipmentDetails">
-      <img
-        src="https://api.qrserver.com/v1/create-qr-code/?&data=${order._id}"
-        alt="qrcode"
-        id="qrcode"
-      />
-      <div class="details">
-        <h1>Shipment</h1>
-        <p>Order ID: <strong>${order._id}</strong></p>
-        <p>Order Date: ${formateDate(order.orderDate)}</p>
-        <p>Shipment Date: ${formateDate(
-          order.statusUpdateDate || new Date().toISOString()
-        )}</p>
-        <p>Payment Method: online</p>
-      </div>
-      </div>
-      <div class="customerDetails">
-      <div>
-      <h2>${order.customerName}</h2>
-      <p>${order.address}</p>
-      <p>${order.customerPhone}</p>
-      </div>
-      <img class="comLogo" src="${
-        order.baseUrl
-      }/api/v1/files/67eeb1fcfaf070cbfb48da8c" alt="techkart" /> 
-    </div>
-    ${getProductTable(order)}
-  </body>
-</html>
-`;
-};
-
-const getDeliveryHtml = (order) => {
-  return `
-  <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Invoice</title>
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      body {
-        font-family: sans-serif, serif, monospace;
-        padding: 20px;
-      }
-
-      header {
-        padding-block: 20px;
-        margin-bottom: 15px;
-        border-bottom: 3px solid rgb(24 38 51);
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-      }
-
-      header a {
-        text-decoration: none;
-        color: black;
-      }
-
-      .comLogo {
-        width: 50px;
-      }
-
-      .orderDetails {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-      }
-
-      .shipmentDetails {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-      }
-
-      .customerDetails,
-      .productDetails,
-      .shipmentDetails {
-        margin-top: 25px;
-      }
-
-      .customerDetails p {
-        margin-top: 5px;
-      }
-
-      #qrcode {
-        width: 100%;
-        max-width: 190px;
-      }
-
-      .productDetails {
-        width: 100%;
-        border-collapse: collapse;
-      }
-
-      .productDetails th,
-      .productDetails td {
-        border: 1px solid #ddd;
-        padding: 10px;
-        text-align: left;
-      }
-
-      .productDetails .product {
-        display: -webkit-box;
-        -webkit-line-clamp: 2; /* Limit to 2 lines */
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        width: 100%; /* Adjust width if needed */
-        height: 4em; /* Approx. height for 2 lines */
-        line-height: 1.5em; /* Adjust for better spacing */
-        word-wrap: break-word;
-      }
-
-      .productDetails tr:nth-child(even) {
-        background-color: #f9f9f9;
-      }
-
-      .productDetails tfoot,
-      .productDetails thead {
-        background-color: #1f1f1f;
-        color: #f1f1f1;
-        font-weight: bold;
-      }
-
-      .productDetails tfoot tr :first-child {
-        border-right: none;
-      }
-      .productDetails tfoot tr :last-child {
-        border-left: none;
-      }
-
-      tfoot .total .approxAmount {
-        text-decoration: line-through;
-        color: #adadad;
-      }
-      tfoot .total {
-        text-align: right;
-      }
-    </style>
-  </head>
-  <body>
-    <header>
-      <a href="${process.env.FRONTEND_BASE_URL || "http://localhost:5173"}">
-        <img class="comLogo" src="${
-          order.baseUrl
-        }/api/v1/files/67eeb1fcfaf070cbfb48da8c" alt="techkart" />
-      </a>
-      <p>
-        Invoice
-        <strong>
-          <a href="${
-            process.env.FRONTEND_BASE_URL || "http://localhost:5173"
-          }/${order.frontendRoute}"
-            >#${order._id}</a
-          ></strong
-        >
-      </p>
-    </header>
-
-    <div class="orderDetails">
-      <div>
-        <div class="customerDetails">
-          <h2>${order.customerName}</h2>
-          <p>${order.address}</p>
-          <p>${order.customerPhone}</p>
-        </div>
-
-        <div class="shipmentDetails">
-          <p>Order ID: ${order._id}</p>
-          <p>Order Date: ${formateDate(order.orderDate)}</p>
-          <p>Delivered Date: ${formateDate(
-            order.statusUpdateDate || new Date().toISOString()
-          )}</p>
-          <p>Payment Method: online</p>
-        </div>
-      </div>
-
-      <img
-        src="https://api.qrserver.com/v1/create-qr-code/?&data=${
+  const docDefinition = {
+    pageSize: "A4",
+    watermark: {
+      text: "TechKart",
+      color: "#A7A7A7",
+      opacity: 0.2,
+      bold: true,
+      italics: false,
+      fontSize: 40,
+    },
+    pageMargins: [40, 60, 40, 60],
+    content: [
+      {
+        columns: [
+          {
+            image: "logo",
+            width: 50,
+          },
+          {
+            text: [
+              "Invoice ",
+              {
+                text: `#${order._id}`,
+                bold: true,
+                link: `${
+                  process.env.FRONTEND_BASE_URL || "http://localhost:5173"
+                }/${order.frontendRoute}`,
+                color: "blue",
+              },
+            ],
+            alignment: "right",
+          },
+        ],
+        margin: [0, 0, 0, 20],
+      },
+      {
+        columns: [
+          [
+            { text: order.customerName, style: "header" },
+            { text: order.address },
+            { text: order.customerPhone },
+            { text: `Order Date: ${formateDate(order.orderDate)}` },
+            {
+              text: `Delivered Date: ${formateDate(
+                order.statusUpdateDate || new Date().toISOString()
+              )}`,
+            },
+            { text: "Payment Method: online" }, //TODO: add payment mode in database
+          ],
+          {
+            image: "qrcode",
+            width: 120,
+          },
+        ],
+        columnGap: 20,
+        margin: [0, 0, 0, 20],
+      },
+      {
+        table: {
+          headerRows: 1,
+          widths: ["*", "auto", "auto"],
+          body: [
+            [
+              { text: "Product", style: "tableHeader" },
+              { text: "Quantity", style: "tableHeader" },
+              { text: "Price", style: "tableHeader" },
+            ],
+            ...order.cart.products.map((p) => [
+              String(p.product.name),
+              String(p.quantity),
+              `₹${p.product.price}`,
+            ]),
+            // ["RGB Gaming Mechanical Keyboard", "2", "₹12999"],
+            [
+              { text: "Total", colSpan: 1 },
+              { text: "", border: [false, false, false, false] },
+              {
+                stack: [
+                  {
+                    text: `₹${totalAmount} (${discountPercentage}%)`,
+                    decoration: "lineThrough",
+                    color: "gray",
+                  },
+                  { text: `₹${order.totalAmount}`, bold: true },
+                ],
+                alignment: "right",
+              },
+            ],
+          ],
+        },
+        layout: "lightHorizontalLines",
+      },
+    ],
+    styles: {
+      header: {
+        fontSize: 14,
+        bold: true,
+        margin: [0, 0, 0, 5],
+      },
+      tableHeader: {
+        bold: true,
+        fillColor: "#1f1f1f",
+        color: "#f1f1f1",
+      },
+    },
+    images: {
+      // fill with base64 later
+      qrcode: await getImageBase64(
+        `https://api.qrserver.com/v1/create-qr-code/?&data=${
           process.env.FRONTEND_BASE_URL || "http://localhost:5173"
-        }/${order.frontendRoute}"
-        alt="qrcode"
-        id="qrcode"
-      />
-    </div>
-      ${getProductTable(order)}
-  </body>
-</html>
-`;
+        }/${order.frontendRoute}`
+      ),
+      logo: logo,
+    },
+  };
+
+  return docDefinition;
 };
 
-const createPdf = (html, pageSize, outputFile) => {
+const createPdf = (docDefinition, outputFile) => {
   return new Promise(async (res, rej) => {
     try {
-      wkhtmltopdf(html, { pageSize })
-        .on("error", async (err) => {
-          deleteLocalFile(outputFile.path);
-          rej(err);
-          console.log("wkhtmltopdf error:", err);
-        })
-        .on("finish", () => {
-          res(outputFile.path);
-        })
-        .pipe(outputFile);
+      pdfMake.createPdf(docDefinition).getBuffer((buffer) => {
+        fs.writeFileSync(outputFile, buffer);
+        res(outputFile);
+      });
     } catch (error) {
-      deleteLocalFile(outputFile.path);
+      deleteLocalFile(outputFile);
       rej(error);
     }
   });
@@ -433,7 +281,6 @@ const createPdf = (html, pageSize, outputFile) => {
 
 /**
  * @typedef {Object} Order
- * @property {string} baseUrl - The base frontend URL, e.g., "http://localhost:8000"
  * @property {string} frontendRoute - The route to view order, e.g., "order/67eccbd95be609023c4e03bd" or "order?id=67eccbd95be609023c4e03bd"
  * @property {string} _id - Unique order ID
  * @property {string} userId - ID of the user who placed the order
@@ -459,7 +306,6 @@ const createPdf = (html, pageSize, outputFile) => {
  *
  * @example
  * const order = {
- *   baseUrl: "http://localhost:8000",
  *   frontendRoute: "order/67eccbd95be609023c4e03bd", // or "order?id=67eccbd95be609023c4e03bd"
  *   _id: "67eccbd95be609023c4e03bd",
  *   userId: "67e77e445c4f4364fe2825d0",
@@ -485,7 +331,7 @@ const createPdf = (html, pageSize, outputFile) => {
  * @returns {Promise<ObjectId>} Promise resolving to the File ID of the uploaded generated invoice
  */
 
-const genInvoice = async (order = orderSample) => {
+const genInvoice = async (order) => {
   try {
     let type;
     if (order.isShipped && !order.isDelivered) {
@@ -496,24 +342,26 @@ const genInvoice = async (order = orderSample) => {
       throw new ApiError(403, "Order is not shipped or delivered");
     }
 
-    const pageSize = type === "delivery" ? "A4" : "A6";
-    const outputFile = fs.createWriteStream(
-      path.resolve(`storage/invoices/${order._id}_${type}.pdf`)
+    const outputFile = path.resolve(
+      `storage/invoices/${order._id}_${type}.pdf`
     );
-    const html =
-      type === "delivery" ? getDeliveryHtml(order) : getShipmentHtml(order);
 
-    await createPdf(html, pageSize, outputFile);
-    console.log(`PDF is successfully generated at ${outputFile.path}`);
+    const docDefinition =
+      type === "delivery"
+        ? await getDeliveryDefinition(order)
+        : await getShipmentDefinition(order);
+
+    await createPdf(docDefinition, outputFile);
+    console.log(`PDF is successfully generated at ${outputFile}`); //TEST: only for testing
 
     const file = await uploadFile(
-      outputFile.path,
+      outputFile,
       "invoices",
       "invoice",
       order.userId
     );
 
-    deleteLocalFile(outputFile.path);
+    deleteLocalFile(outputFile);
 
     if (file && type === "delivery") {
       deleteFile(order.invoice);
