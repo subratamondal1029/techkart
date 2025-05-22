@@ -1,36 +1,21 @@
-import React, { useRef, useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useRef, useState, useEffect } from "react";
 import { Button, ButtonLoading } from "../components";
 import { Html5Qrcode } from "html5-qrcode";
 import { ScanQrCodeIcon } from "lucide-react";
-import appWriteDb from "../appwrite/DbServise";
-import { toast } from "react-toastify";
-import { generatePdf } from "../../invoiceGen";
-import appWriteStorage from "../appwrite/storageService";
-import { invoiceId } from "../config";
+import delay from "../utils/delay";
+import showToast from "../utils/showToast";
+import useLoading from "../hooks/useLoading";
+import orderService from "../services/order.service";
+import DeliveryShimmer from "../components/shimmers/Delivery.shimmer";
 
 const Delivery = () => {
   // TODO: update the ui
-  const { userData } = useSelector((state) => state.auth);
-  const { products: allProducts } = useSelector((state) => state.products);
   const html5QrcodeScanner = useRef(null);
-  const [scanning, setScanning] = useState(false);
+  const [isScanning, setIsScanning] = useState(false);
   const [order, setOrder] = useState(null);
-  const [scanedData, setScanedData] = useState({
-    isScaned: false,
-    isDeliverd: false,
-    orderId: "",
-  });
-  const [isSending, setIsSending] = useState(false);
-
-  // Uncomment if access control is needed
-  // if (!userData?.labels.includes("delivery")) {
-  //   return <AccessDenied message="Delivery Boy" />; //TODO: redirect to login page after logout
-  // }
+  const [scannedData, setScannedData] = useState("");
 
   const startScanning = () => {
-    console.log("start scanning");
-
     const config = {
       fps: 10,
       qrbox: { width: 250, height: 250 },
@@ -40,13 +25,15 @@ const Delivery = () => {
     html5QrcodeScanner.current = new Html5Qrcode("reader");
     html5QrcodeScanner.current
       .start({ facingMode: "environment" }, config, qrCodeSuccessCallback, () =>
-        console.warn(errorMessage)
+        console.warn("QR Code not found")
       )
       .then(() => {
-        setScanning(true);
+        setIsScanning(true);
       })
       .catch((err) => {
-        console.error(`Unable to start scanning, error: ${err}`);
+        if (err.includes("NotFoundError")) {
+          showToast("warn", "Camera not found");
+        } else showToast("error", "Something went wrong");
       });
   };
 
@@ -56,129 +43,133 @@ const Delivery = () => {
         .stop()
         .then(() => {
           html5QrcodeScanner.current.clear();
-          setScanning(false);
+          setIsScanning(false);
         })
         .catch((err) => console.error(err));
     }
   };
 
-  const qrCodeSuccessCallback = (decodedText) => {
-    stopScanning();
-    appWriteDb.getOrder(decodedText).then((order) => {
-      if (order) {
-        setOrder({
-          orderId: order.$id,
-          customerName: order.name,
-          date: order.date,
-          address: order.address,
-          contact: order.phone,
-          products: order.cart
-            .map((product) => JSON.parse(product))
-            .map((product) => {
-              const foundProduct = allProducts.find(
-                (p) => p.$id === product.productId
-              );
-              return {
-                quantity: product.quantity,
-                name: foundProduct.name,
-                price: foundProduct.price,
-              };
-            }),
-        });
-        setScanedData({
-          isScaned: true,
-          orderId: decodedText,
-          isDeliverd: order.isDeliverd,
-        });
-      } else setScanedData({ isScaned: false, orderId: "", isDeliverd: false });
-    });
-  };
-
-  // TODO: wrap with loader
-  const changeStatus = async (orderId) => {
-    // TODO: just update the order status invoice will automatically created
-    setIsSending(true);
-    try {
-      const updateOrder = await appWriteDb.updateOrder(orderId, {
-        isDeliverd: true,
-      });
-      if (updateOrder) {
-        const createInvoice = await generatePdf("delivered", { ...order });
-        const deleteFile = await appWriteStorage.deleteFile(orderId, invoiceId);
-        if (deleteFile) {
-          const uploadInvoice = await appWriteStorage.uploadInvoice(
-            createInvoice,
-            `${orderId}_invoice`
-          );
-          if (uploadInvoice) {
-            setScanedData((prev) => ({ ...prev, isDeliverd: true }));
-            setTimeout(
-              () =>
-                setScanedData({
-                  isScaned: false,
-                  orderId: "",
-                  isDeliverd: false,
-                }),
-              2000
-            );
-          }
-        } else throw new Error("Something went wrong");
-      } else throw new Error("Something went wrong");
-    } catch (error) {
-      toast.error("Something went wrong");
-      console.error(error.message);
+  const [qrCodeSuccessCallback, isFetching, fetchError] = useLoading(
+    async (decodedText) => {
+      stopScanning();
+      setScannedData(decodedText);
+      const { data } = await orderService.getOne(decodedText);
+      setOrder(data);
     }
+  );
 
-    setIsSending(false);
-  };
+  const [changeStatus, isUpdating, updateError] = useLoading(async (id) => {
+    const { data } = await orderService.changeStatus({
+      id,
+      isDelivered: true,
+      orderRoute: "/orders/:id",
+    });
+
+    setOrder((prev) => ({ ...data, cart: prev.cart }));
+  });
+
+  useEffect(() => {
+    console.log(`${isScanning ? "started" : "stopped"} Scanning`);
+  }, [isScanning]);
+
+  useEffect(() => {
+    if (updateError) {
+      showToast("error", updateError);
+    }
+  }, [updateError]);
+
+  useEffect(() => {
+    if (fetchError) {
+      showToast("error", fetchError);
+    }
+  }, [fetchError]);
 
   return (
-    <div className="w-full max-w-96 mx-auto mt-7 p-2 overflow-y-hidden rounded-lg shadow-lg min-h-[50vh] flex justify-between items-center flex-col">
-      <div id="reader" className="w-full h-auto"></div>
-      <ScanQrCodeIcon
-        className={`w-3/4 min-h-52 mt-7 rounded absolute ${
-          scanning ? "hidden" : "block"
-        }`}
-        size={50}
-      />
-      {scanning ? (
-        <Button classname="w-full mt-2" onClick={stopScanning}>
-          Stop Scanning
-        </Button>
-      ) : (
-        <Button classname="w-full" onClick={startScanning}>
-          Start Scanning
-        </Button>
-      )}
+    <div className="w-full overflow-y-hidden min-h-[50vh] flex justify-center mt-5 rounded-lg">
+      {scannedData ? (
+        isFetching ? (
+          <DeliveryShimmer />
+        ) : (
+          <div className="opacity-100 rounded-lg bg-gray-50 w-full max-w-96 border flex flex-col justify-start p-5 items-start">
+            <div className="space-y-2 p-4 bg-white rounded-xl shadow-md w-full max-w-md">
+              <p className="text-lg font-semibold text-green-600">
+                {scannedData}
+              </p>
 
-      <div
-        className={`${
-          scanedData.isScaned ? "opacity-100" : "opacity-0"
-        } absolute bg-gray-50 w-full max-w-96 border flex flex-col justify-start  p-5 items-start transition-opacity mx-auto`}
-      >
-        <h1>Order Confirmed: #{scanedData?.orderId}</h1>
-        <h1>Customer Name: {order?.customerName}</h1>
-        <p>
-          Order Status: {scanedData?.isDeliverd ? "Delivered" : "Not Delivered"}
-        </p>
-        <div className="flex justify-between items-center w-full mt-4">
+              <p>
+                <span className="font-medium">Customer Name:</span>{" "}
+                {order?.customerName}
+              </p>
+
+              <div className="flex flex-col  sm:items-start gap-1">
+                <span className="font-medium">Address:</span>
+                <span className="text-gray-700">{order?.address}</span>
+              </div>
+
+              <p>
+                <span className="font-medium">Total Products:</span>{" "}
+                {order?.cart?.products.length}
+              </p>
+
+              <p>
+                <span className="font-medium">Total Price:</span> ₹
+                {order?.totalAmount}
+              </p>
+              <p>
+                <span className="font-medium">Payment Method:</span>{" "}
+                {order?.paymentMethod || "N/A"}{" "}
+                {/* FIXME: store payment method in database*/}
+              </p>
+
+              <p>
+                <span className="font-medium">Status:</span>{" "}
+                <span
+                  className={
+                    order?.isDelivered ? "text-green-600" : "text-red-500"
+                  }
+                >
+                  {order?.isDelivered ? "Delivered" : "Not Delivered"}
+                </span>
+              </p>
+            </div>
+            <div className="flex justify-between items-center w-full mt-4">
+              <Button
+                classname="w-full mr-1 bg-red-600 hover:bg-red-700"
+                onClick={() => setScannedData("")}
+                disabled={isUpdating}
+              >
+                {order?.isDelivered ? "Close" : "Cancel"}
+              </Button>
+              <Button
+                classname="w-full h-9 flex items-center justify-center bg-green-600 hover:bg-green-700"
+                onClick={() => changeStatus(scannedData)}
+                disabled={isUpdating || order?.isDelivered}
+                loader={isUpdating}
+              >
+                Confirm
+              </Button>
+            </div>
+          </div>
+        )
+      ) : (
+        <div className="flex flex-col h-full w-full justify-between items-center max-w-96 mx-auto m-5 p-2 pb-3 min-h-[50vh] shadow-lg rounded-md ">
+          <div id="reader" className="w-full"></div>
+          <ScanQrCodeIcon
+            className={`w-3/4 min-h-52 mt-7 rounded ${
+              isScanning ? "hidden" : "block"
+            }`}
+            size={50}
+          />
+
           <Button
-            classname="w-full mr-1"
-            onClick={() =>
-              setScanedData({ isScaned: false, orderId: "", isDeliverd: false })
-            }
+            classname="w-full mt-2"
+            onClick={isScanning ? stopScanning : startScanning}
+            disabled={scannedData}
           >
-            Cancel
-          </Button>
-          <Button
-            classname={`w-full disabled:bg-black/80 disabled:cursor-not-allowed h-9 flex items-center justify-center`}
-            onClick={() => changeStatus(scanedData.orderId)}
-            disabled={isSending || scanedData.isDeliverd}
-          >
-            {isSending ? <ButtonLoading fillColor="fill-black" /> : "Confirm"}
+            {isScanning ? "Stop Scanning" : "Start Scanning"}
           </Button>
         </div>
-      </div>
+      )}
     </div>
   );
 };

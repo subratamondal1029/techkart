@@ -80,7 +80,7 @@ class OrderService extends baseService {
       } else if (isDelivered) {
         body.isDelivered = isDelivered;
         if (!orderRoute) throw new Error("Order route is required");
-        body.orderRoute = orderRoute;
+        body.route = orderRoute;
       }
 
       const response = await this.api.patch(`/orders/status/${id}`, body);
