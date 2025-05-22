@@ -31,6 +31,7 @@ const Maintenance = lazyWrapper(() => import("./Maintenance"));
 const ImageUpload = lazyWrapper(() => import("./ImageUpload"));
 const DataList = lazyWrapper(() => import("./DataList"));
 const TagInput = lazyWrapper(() => import("./formComp/TagInput"));
+const Pagination = lazyWrapper(() => import("./Pagination"));
 
 export {
   Logo,
@@ -54,4 +55,5 @@ export {
   ImageUpload,
   DataList,
   TagInput,
+  Pagination,
 };
