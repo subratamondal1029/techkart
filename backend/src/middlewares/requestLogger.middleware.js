@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 
 const requestLogger = (req, res, next) => {
-  const ignoreRoutes = ["/api/docs"];
+  const ignoreRoutes = ["/api/docs", "/api/v1/test"];
   if (
     req.method === "OPTIONS" ||
     ignoreRoutes.some((url) => req.originalUrl.includes(url))
