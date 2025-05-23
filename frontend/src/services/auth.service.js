@@ -1,28 +1,12 @@
 import baseService from "./service.base";
-import cryptoJS from "crypto-js";
 import { addAuth, removeAuth } from "./axios";
-
-const encryptPassword = (password) => {
-  const data = JSON.stringify({
-    id: crypto.randomUUID(),
-    password,
-    expire: Date.now() + 10 * 1000,
-  });
-
-  const encrypted = cryptoJS.AES.encrypt(
-    data,
-    import.meta.env.VITE_ENCRYPT_KEY
-  ).toString();
-
-  return encrypted;
-};
 
 class AuthService extends baseService {
   createUser({ email, password, name, label = "user" }) {
     return this.handler(async () => {
       const response = await this.api.post("/users/", {
         email,
-        password: encryptPassword(password),
+        password,
         name,
         label,
       });
@@ -36,7 +20,7 @@ class AuthService extends baseService {
     return this.handler(async () => {
       const response = await this.api.post("/users/auth/login", {
         email,
-        password: encryptPassword(password),
+        password,
       });
 
       addAuth(response.data.data.accessToken);

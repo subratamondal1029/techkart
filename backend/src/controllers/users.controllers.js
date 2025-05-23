@@ -6,8 +6,6 @@ import File from "../models/file.model.js";
 import jwt from "jsonwebtoken";
 import { generateTokens } from "../utils/jwt.js";
 import passport from "../config/passport.js";
-import CryptoJS from "crypto-js";
-import redisClient from "../db/redis.db.js";
 
 const cookieOptions = {
   httpOnly: true,
@@ -16,49 +14,6 @@ const cookieOptions = {
 
 const calculateExpiresInMilliseconds = (day) => {
   return day?.split("d")?.[0] * 24 * 60 * 60 * 1000;
-};
-
-const decryptPassword = async (encryptedPass) => {
-  try {
-    const bytes = CryptoJS.AES.decrypt(
-      encryptedPass,
-      process.env.ENCRYPT_SECRET
-    );
-    const decrypted = bytes.toString(CryptoJS.enc.Utf8);
-    const { password, id, expire } = JSON.parse(decrypted);
-
-    if (!password || !id || !expire) {
-      throw new ApiError(400, "Invalid password");
-    }
-
-    const isUsed = await redisClient.exists(id);
-    if (isUsed) throw new ApiError(409, "Token has been used");
-
-    if (expire < Date.now()) throw new ApiError(410, "Token has expired");
-
-    if (!/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,20}$/.test(password)) {
-      throw new ApiError(
-        400,
-        "Password must be at least 8 characters long and contain at least one number, one lowercase letter, and one uppercase letter"
-      );
-    }
-
-    const getExpireTime = (expire) => {
-      const current = Date.now() / 1000;
-      expire = expire / 1000;
-
-      const diff = Math.ceil(expire - current);
-      return diff > 0 ? diff : 1;
-    };
-
-    await redisClient.set(id, "used", {
-      EX: getExpireTime(expire),
-    });
-
-    return password;
-  } catch (error) {
-    throw error;
-  }
 };
 
 const createUser = asyncHandler(async (req, res) => {
@@ -74,8 +29,6 @@ const createUser = asyncHandler(async (req, res) => {
   if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
     throw new ApiError(400, "Invalid email");
   }
-
-  password = await decryptPassword(password);
 
   const existingUser = await User.findOne({ email });
 
@@ -139,7 +92,6 @@ const login = asyncHandler(async (req, res) => {
   }
 
   const user = await User.findOne({ email });
-  password = await decryptPassword(password);
 
   if (!user) {
     throw new ApiError(401, "Invalid email Cannot find user");
