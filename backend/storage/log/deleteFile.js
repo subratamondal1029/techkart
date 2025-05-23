@@ -135,4 +135,3 @@ const queueDeleteFile = async () => {
 };
 
 export { queueDeleteFile, getFailureLog };
-queueDeleteFile();
