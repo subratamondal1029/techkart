@@ -5,22 +5,24 @@ import { v2 as cloudinary } from "cloudinary";
 import File from "../../src/models/file.model.js";
 import ApiError from "../../src/utils/apiError.js";
 
-const getFailureLog = async () => {
-  try {
-    const filePath = path.resolve("storage/log/failures.json");
+const getFailureLog = () =>
+  new Promise((res, rej) => {
+    try {
+      const filePath = path.resolve("storage/log/failures.json");
 
-    if (fs.existsSync(filePath)) {
-      const log = fs.readFile(filePath, (err, data) => {
-        if (err) {
-          throw new Error(`Error reading file: ${err}`);
-        }
-        return JSON.parse(data);
-      });
+      if (fs.existsSync(filePath)) {
+        const log = fs.readFile(filePath, (err, data) => {
+          if (err) {
+            throw new Error(`Error reading file: ${err}`);
+          }
+          return res(JSON.parse(data));
+        });
+      }
+    } catch (error) {
+      throw error;
+      rej(error);
     }
-  } catch (error) {
-    throw error;
-  }
-};
+  });
 
 const cloudinaryFileExist = async (publicId) => {
   try {
@@ -133,3 +135,4 @@ const queueDeleteFile = async () => {
 };
 
 export { queueDeleteFile, getFailureLog };
+queueDeleteFile();
