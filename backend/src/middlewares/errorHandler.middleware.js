@@ -30,6 +30,15 @@ export default function errorHandler(err, req, res, next) {
     );
   }
 
-  console.log(errorObj); // Log error object for debugging
+  if (errorObj.status === 500) {
+    errorObj.message = "Internal Server Error";
+    if (process.env.NODE_ENV === "production") {
+      console.log(errorObj); // Log error object for debugging
+    }
+  }
+
+  if (process.env.NODE_ENV === "development") {
+    console.log(errorObj); // Log error object for debugging
+  }
   res.status(errorObj.status).json(errorObj); // Send error response
 }
