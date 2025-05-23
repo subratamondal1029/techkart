@@ -1,37 +1,9 @@
 import cron from "node-cron";
 import { queueDeleteFile } from "./deleteFile.js";
 import clearLog from "./clearLog.js";
-import nodemailer from "nodemailer";
+import sendMail from "../../src/utils/sendMail.js";
 import path from "path";
 import fs from "fs";
-
-const sendMail = async (body) => {
-  try {
-    console.log(body);
-
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: process.env.SMTP_PORT,
-      secure: process.env.SMTP_PORT == 465,
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    });
-
-    const response = await transporter.sendMail({
-      from: process.env.SMTP_USER,
-      to: process.env.SMTP_RECEIVER_EMAILS,
-      subject: "Daily Cleanup Report",
-      html: body,
-    });
-
-    console.log("Report sent: %s", response.messageId);
-    console.log(`Report Sent to ${response.accepted.join(", ")}`);
-  } catch (error) {
-    console.log(`Error while sending daily cleanup report: ${error}`);
-  }
-};
 
 cron.schedule("0 0 * * *", async () => {
   console.log("Running cleanup at midnight");
@@ -47,7 +19,11 @@ cron.schedule("0 0 * * *", async () => {
   <p><b>Remaining</b>: <b>${remainCount}</b> Logs</p>
   `;
 
-  sendMail(mailBody);
+  sendMail({
+    body: mailBody,
+    subject: "Daily Cleanup Report",
+    receivers: process.env.DAILY_CLEANUP_RECEIVERS,
+  });
 });
 
 // TODO: Work on this and store in a database
