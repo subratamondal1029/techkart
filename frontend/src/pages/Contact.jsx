@@ -47,7 +47,7 @@ const Contact = () => {
 
   return (
     <section className="bg-white">
-      <div className="container px-6 py-12 mx-auto">
+      <div className="px-2 sm:px-6 py-12 mx-auto">
         <div className="lg:flex lg:items-center lg:-mx-6">
           <div className="lg:w-1/2 lg:mx-6">
             <h1 className="text-2xl font-semibold text-gray-800 capitalize  lg:text-3xl">
@@ -80,7 +80,7 @@ const Contact = () => {
               </p>
             </div>
 
-            <div className="mt-6 w-80 md:mt-8">
+            <div className="mt-6 w-full max-w-80 md:mt-8">
               <h3 className="text-gray-600 ">Follow us</h3>
 
               <div className="flex mt-4 -mx-1.5 ">
@@ -115,15 +115,15 @@ const Contact = () => {
             </div>
           </div>
 
-          <div className="mt-8 lg:w-1/2 lg:mx-6">
-            <div className="w-full px-8 py-10 mx-auto overflow-hidden bg-white rounded-lg shadow-2xl  lg:max-w-xl shadow-gray-300/50">
+          <div className="mt-8 w-full lg:w-1/2 lg:mx-6">
+            <div className="w-full px-2 sm:px-8 py-10 mx-auto overflow-hidden bg-white rounded-lg shadow-2xl  lg:max-w-xl shadow-gray-300/50">
               <h1 className="text-lg font-medium text-gray-700">
                 What do you want to ask
               </h1>
 
               <FormProvider {...methods}>
                 <form
-                  className="mt-6"
+                  className="mt-6 w-full"
                   onSubmit={methods.handleSubmit(submitHandler)}
                 >
                   <fieldset disabled={isLoading}>
