@@ -97,6 +97,13 @@ const login = asyncHandler(async (req, res) => {
     throw new ApiError(401, "Invalid email Cannot find user");
   }
 
+  if (user.provider !== "local") {
+    throw new ApiError(
+      401,
+      "User is not Available, try to login with external provider."
+    );
+  }
+
   const isMatched = await user.comparePassword(password);
 
   if (!isMatched) {
