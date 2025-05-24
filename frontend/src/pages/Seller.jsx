@@ -17,7 +17,7 @@ import {
 } from "../components";
 import productService from "../services/product.service";
 import useLoading from "../hooks/useLoading";
-import SellerTable from "../components/shimmers/SellerTable.shimmer"; //TODO: change the name to shimmer
+import SellerTableShimmer from "../components/shimmers/SellerTable.shimmer";
 import { CATEGORIES } from "../../constants";
 import { CloudUpload } from "lucide-react";
 import { startTransition } from "react";
@@ -30,6 +30,7 @@ const Seller = () => {
   const [editProduct, setEditProduct] = useState(null);
   const [products, setProducts] = useState({});
   const [optimisticProducts, setOptimisticProducts] = useOptimistic(products);
+  const [totalProducts, setTotalProducts] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [deleteId, setDeleteId] = useState(null);
   const [params, setParams] = useState({
@@ -60,6 +61,7 @@ const Seller = () => {
         ...prev,
         [parameterQuery]: data.products,
       }));
+      if (params.page === 1) setTotalProducts(data.totalProducts);
       setTotalPages(data.totalPages);
     }
   );
@@ -195,7 +197,7 @@ const Seller = () => {
           <div className="border rounded-lg p-4 text-center bg-white shadow-md transition-transform transform hover:scale-105 hover:shadow-lg">
             Total Products
             <br />
-            <span className="italic">200</span>
+            <span className="italic">{totalProducts}</span>
           </div>
           <div className="border rounded-lg p-4 text-center bg-white shadow-md transition-transform transform hover:scale-105 hover:shadow-lg">
             Income
@@ -244,7 +246,7 @@ const Seller = () => {
           </Button>
         </div>
         {isProductLoading ? (
-          <SellerTable />
+          <SellerTableShimmer />
         ) : productError ? (
           <LoadingError error={productError} retry={fetchProducts} />
         ) : (

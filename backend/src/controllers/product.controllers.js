@@ -115,13 +115,17 @@ const getProducts = asyncHandler(async (req, res) => {
     .skip(15 * (page - 1))
     .sort({ [sortBy]: sortFilter });
 
-  res.json(
-    new ApiResponse(200, "Product fetched Successfully", {
-      products,
-      currentPage: page,
-      totalPages: Math.ceil(totalProducts / 15),
-    })
-  );
+  let response = {
+    products,
+    currentPage: page,
+    totalPages: Math.ceil(totalProducts / 15),
+  };
+
+  if (page === 1 && req.path.includes("seller")) {
+    response.totalProducts = totalProducts;
+  }
+
+  res.json(new ApiResponse(200, "Product fetched Successfully", response));
 });
 
 const deleteProduct = asyncHandler(async (req, res) => {
