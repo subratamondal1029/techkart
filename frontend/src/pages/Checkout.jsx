@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { Button, Image, Input } from "../components";
 import { CheckCircle, IndianRupee, InfoIcon } from "lucide-react";
 import { FormProvider, useForm } from "react-hook-form";
-import razorpayImage from "../assets/razorpay.png";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { addOrder } from "../store/order.slice";
@@ -14,6 +13,7 @@ import { useMemo } from "react";
 import useLoading from "../hooks/useLoading";
 import showToast from "../utils/showToast";
 import { AlertTriangle } from "lucide-react";
+import { RAZORPAY_IMAGE_ID } from "../../constants";
 
 const countryCodes = [
   { code: "91", country: "India" },
@@ -308,7 +308,11 @@ const Checkout = () => {
                 <div className="w-full">
                   <div className="cursor-pointer hover:bg-gray-300 text-sm font-bold border p-4 w-40 rounded-md flex justify-end items-center gap-3 bg-gray-200">
                     <CheckCircle size={20} className="text-blue-500" />
-                    <img src={razorpayImage} alt="razorpay" width={20} />{" "}
+                    <Image
+                      src={RAZORPAY_IMAGE_ID}
+                      alt="razorpay"
+                      className="w-5"
+                    />{" "}
                     Razorpay
                   </div>
                 </div>

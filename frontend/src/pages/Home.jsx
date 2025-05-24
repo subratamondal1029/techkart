@@ -12,9 +12,9 @@ import {
 } from "lucide-react";
 import { Button, Image, ProductCard } from "../components";
 import useInfiniteScroll from "../hooks/useInfiniteScroll";
-import landingImage from "../assets/landingImage.png";
 import productService from "../services/product.service";
 import { storeProducts } from "../store/product.slice";
+import { LANDING_IMAGE_ID } from "../../constants";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -48,7 +48,7 @@ const Home = () => {
   return (
     <main>
       <div className="w-full">
-        <Image src={landingImage} alt="landing image" className="w-full" />
+        <Image src={LANDING_IMAGE_ID} alt="landing image" className="w-full" />
       </div>
       <div className="w-full p-4 flex flex-wrap justify-center items-center gap-4 sm:gap-6 mt-10">
         <Link

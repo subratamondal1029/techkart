@@ -1,6 +1,6 @@
 export const LOGO_ID = "67eeb1fcfaf070cbfb48da8c";
-// export const LANDING_IMAGE_ID = "681720d16f814e4b889a247a"; // FIXME: solve cropping issue
-export const RAZORPAY_IMAGE_ID = "6817211e6f814e4b889a247f";
+export const LANDING_IMAGE_ID = "68316694d9a1ba43cb03d731";
+export const RAZORPAY_IMAGE_ID = "68316a61d9a1ba43cb03d74c";
 export const ERROR_IMAGE_ID = "6817218c6f814e4b889a2483";
 export const CATEGORIES = [
   "Smartphones",

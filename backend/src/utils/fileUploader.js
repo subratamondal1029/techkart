@@ -29,6 +29,8 @@ const cloudinaryUpload = async (filePath, folder, entityType) => {
 
       if (entityType === "avatar") {
         options.transformation[0] = { width: 96, height: 96, crop: "fill" };
+      } else if (entityType === "default") {
+        options.transformation[0] = {};
       }
     }
 
