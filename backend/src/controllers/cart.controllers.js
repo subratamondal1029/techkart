@@ -87,9 +87,9 @@ const getCart = asyncHandler(async (req, res) => {
     },
   ]);
 
-  if (!cart) throw new ApiError(404, "Cart not found");
+  let response = cart || null;
 
-  res.json(new ApiResponse(200, "Cart fetched successfully", cart));
+  res.json(new ApiResponse(200, "Cart fetched successfully", response));
 });
 
 export { addProductToCart, getCart };

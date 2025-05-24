@@ -40,7 +40,9 @@ function App() {
   const fetchCart = async () => {
     try {
       const { data } = await cartService.get();
-      dispatch(storeCart(data));
+      if (data !== null) {
+        dispatch(storeCart(data));
+      }
     } catch (error) {
       console.error(error);
     }
