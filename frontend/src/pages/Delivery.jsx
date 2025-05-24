@@ -62,7 +62,6 @@ const Delivery = () => {
     const { data } = await orderService.changeStatus({
       id,
       isDelivered: true,
-      orderRoute: "/orders/:id",
     });
 
     setOrder((prev) => ({ ...data, cart: prev.cart }));

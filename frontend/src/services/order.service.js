@@ -1,6 +1,10 @@
 import baseService from "./service.base";
 
 class OrderService extends baseService {
+  constructor() {
+    super();
+    this.route = "orders/:id";
+  }
   getPaymentData({ amount }) {
     return this.handler(async () => {
       const response = await this.api.post("/orders/payment/order/", {
@@ -28,6 +32,7 @@ class OrderService extends baseService {
         customerName,
         customerPhone,
         customerAddress,
+        route: this.route,
       };
       const response = await this.api.post("/orders/", body);
       return response.data;
@@ -67,20 +72,22 @@ class OrderService extends baseService {
 
   cancel(id) {
     return this.handler(async () => {
-      const response = await this.api.delete(`/orders/${id}`);
+      const response = await this.api.delete(
+        `/orders/${id}?route=${this.route}`
+      );
       return response.data;
     }, "cancelling order");
   }
 
-  changeStatus({ id, isDelivered, isShipped, orderRoute }) {
+  changeStatus({ id, isDelivered, isShipped }) {
     return this.handler(async () => {
       const body = {};
+      body.route = this.route;
+
       if (isShipped) {
         body.isShipped = isShipped;
       } else if (isDelivered) {
         body.isDelivered = isDelivered;
-        if (!orderRoute) throw new Error("Order route is required");
-        body.route = orderRoute;
       }
 
       const response = await this.api.patch(`/orders/status/${id}`, body);

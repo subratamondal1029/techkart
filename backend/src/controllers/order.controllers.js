@@ -6,6 +6,7 @@ import ApiResponse from "../utils/apiResponse.js";
 import razorpay from "../config/razorpay.js";
 import mongoose from "mongoose";
 import genInvoice from "../../storage/invoices/index.js";
+import { sendOrderStatusUpdateMail } from "../utils/sendMail.js";
 
 function formatPhoneNumber(phone) {
   if (!phone) throw new ApiError(400, "Phone number is required");
@@ -115,6 +116,19 @@ const getOrderData = async (id) => {
   }
 };
 
+const formateFrontendRoute = (path, orderId) => {
+  let frontendRoute;
+  if (path?.includes(":id")) {
+    frontendRoute = path.replace(":id", `${orderId}`);
+  } else if (path?.includes("?id=")) {
+    frontendRoute = path.replace("?id=", `?id=${orderId}`);
+  } else {
+    throw new ApiError(400, "Invalid route formate");
+  }
+
+  return frontendRoute;
+};
+
 const generateRazorpayOrder = asyncHandler(async (req, res) => {
   const { amount } = req.body;
 
@@ -182,8 +196,14 @@ const paymentStatus = asyncHandler(async (req, res) => {
 });
 
 const createOrder = asyncHandler(async (req, res) => {
-  let { paymentId, cartId, customerName, customerPhone, customerAddress } =
-    req.body;
+  let {
+    paymentId,
+    cartId,
+    customerName,
+    customerPhone,
+    customerAddress,
+    route,
+  } = req.body;
 
   const requiredFields = {
     paymentId,
@@ -191,6 +211,7 @@ const createOrder = asyncHandler(async (req, res) => {
     customerName,
     customerPhone,
     customerAddress,
+    route,
   };
 
   // Validate required fields
@@ -230,6 +251,15 @@ const createOrder = asyncHandler(async (req, res) => {
   });
 
   if (!order) throw new ApiError(500, "Failed to create order");
+
+  const orderRoute = formateFrontendRoute(route, order._id);
+  sendOrderStatusUpdateMail({
+    orderId: order._id,
+    orderRoute,
+    userId: req.user._id,
+    baseUrl: `${req.protocol}://${req.get("host")}`,
+    status: "confirmed",
+  });
 
   res
     .status(201)
@@ -376,6 +406,9 @@ const updateContact = asyncHandler(async (req, res) => {
 
 const cancelOrder = asyncHandler(async (req, res) => {
   const orderId = req.params.id;
+  const route = req.query.route;
+
+  if (!route) throw new ApiError(400, "Route is required");
 
   const order = await Order.findById(orderId);
 
@@ -399,17 +432,34 @@ const cancelOrder = asyncHandler(async (req, res) => {
 
   order.isCancelled = true;
 
-  try {
-    await razorpay.payments.refund(order.paymentId, {
-      amount: order.totalAmount * 100,
-    });
-    order.isRefund = true;
-  } catch (error) {
-    order.isRefund = false;
-    console.log(
-      `Refund failed for Payment ID: ${order.paymentId}, Reason: ${error?.error?.description}`
-    );
-  }
+  const refundAmount = async (orderId) => {
+    const orderRoute = formateFrontendRoute(route, orderId);
+    const order = await Order.findById(orderId);
+
+    try {
+      await razorpay.payments.refund(order.paymentId, {
+        amount: order.totalAmount * 100,
+      });
+      order.isRefund = true;
+
+      sendOrderStatusUpdateMail({
+        orderId,
+        orderRoute,
+        userId: order.userId,
+        baseUrl: `${req.protocol}://${req.get("host")}`,
+        status: "refunded",
+      });
+    } catch (error) {
+      order.isRefund = false;
+      console.log(
+        `Refund failed for Payment ID: ${order.paymentId}, Reason: ${error?.error?.description}`
+      );
+    }
+
+    await order.save();
+  };
+
+  refundAmount(orderId);
 
   order.statusUpdateDate = new Date();
   await order.save();
@@ -422,7 +472,7 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
 
   if (!isShipped && !isDelivered)
     throw new ApiError(400, "isShipped or isDelivered is required");
-  if (isDelivered && !route) throw new ApiError(400, "Route is required");
+  if (!route) throw new ApiError(400, "Route is required");
 
   const order = await getOrderData(req.params.id);
 
@@ -448,14 +498,7 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
 
   order.statusUpdateDate = new Date();
 
-  let frontendRoute;
-  if (route?.includes(":id")) {
-    frontendRoute = route.replace(":id", `:${order._id}`);
-  } else if (route?.includes("?id=")) {
-    frontendRoute = route.replace("?id=", `?id=${order._id}`);
-  } else {
-    if (isDelivered) throw new ApiError(400, "Invalid route formate");
-  }
+  const frontendRoute = formateFrontendRoute(route, order._id);
 
   console.log("order page:", frontendRoute); //TEST: logging the frontend order page url
   const invoice = await genInvoice({ ...order, frontendRoute });
@@ -474,6 +517,18 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
     },
     { new: true }
   );
+
+  let status;
+  if (isShipped) status = "shipped";
+  if (isDelivered) status = "delivered";
+
+  sendOrderStatusUpdateMail({
+    orderId: updatedOrder._id,
+    orderRoute: frontendRoute,
+    userId: order.userId,
+    baseUrl: `${req.protocol}://${req.get("host")}`,
+    status,
+  });
 
   res.json(
     new ApiResponse(
