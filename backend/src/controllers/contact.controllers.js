@@ -1,14 +1,42 @@
+import axios from "axios";
 import Contact from "../models/contact.model.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import ApiResponse from "../utils/apiResponse.js";
 import ApiError from "../utils/apiError.js";
 import sendMail from "../utils/sendMail.js";
 
+const verifyCaptcha = async (captcha) => {
+  try {
+    const secretKey = process.env.RECAPTCHA_SECRET;
+
+    const response = await axios.post(
+      `https://www.google.com/recaptcha/api/siteverify`,
+      null,
+      {
+        params: {
+          secret: secretKey,
+          response: captcha,
+        },
+      }
+    );
+
+    if (response.data.success) {
+      return true;
+    }
+  } catch (error) {
+    throw new ApiError(400, "Captcha verification failed");
+  }
+};
+
 const createContact = asyncHandler(async (req, res) => {
-  const { name, email, message } = req.body;
+  const { name, email, message, captcha } = req.body;
 
   if (!name?.trim() || !email?.trim() || !message?.trim())
     throw new ApiError(400, "All fields are required");
+
+  if (!captcha) throw new ApiError(400, "Captcha is required");
+
+  await verifyCaptcha(captcha);
 
   const contact = await Contact.create({ name, email, message });
 

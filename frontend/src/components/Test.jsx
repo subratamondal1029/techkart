@@ -1,20 +1,29 @@
 import { Button, Pagination, TagInput, UpdateForm } from ".";
 import { useState } from "react";
-import delay from "../utils/delay";
-import { FormProvider, useForm } from "react-hook-form";
+import showToast from "../utils/showToast";
 
 const Test = () => {
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(10);
+  const [captchaVAlue, setCaptchaValue] = useState("");
+
+  const onCaptchaChange = (value) => {
+    setCaptchaValue(value);
+  };
+
+  const handleSubmit = (e) => {
+    if (!captchaVAlue) {
+      showToast("error", "Please solve the captcha");
+    }
+    e.preventDefault();
+  };
 
   return (
     <div className="min-h-screen w-full bg-gray-800 text-white">
       <p className="text-3xl text-center pt-4 mb-10">Test</p>
-      <div className="flex items-center flex-col w-full">
-        <Pagination page={page} setPage={setPage} totalPages={totalPages}>
-          page: {page}
-        </Pagination>
-      </div>
+      <form onSubmit={handleSubmit}>
+        {/* your inputs */}
+
+        <Button type="submit">Submit</Button>
+      </form>
     </div>
   );
 };

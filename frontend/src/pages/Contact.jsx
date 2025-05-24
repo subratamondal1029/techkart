@@ -13,15 +13,31 @@ import useLoading from "../hooks/useLoading";
 import contactService from "../services/contact.service";
 import showToast from "../utils/showToast";
 import { useEffect } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
+import { useState } from "react";
+import { useRef } from "react";
 
 const Contact = () => {
   const methods = useForm();
+  const [captchaValue, setCaptchaValue] = useState("");
+  const captchaRef = useRef(null);
 
   const [submitHandler, isLoading, error] = useLoading(async (data) => {
+    if (!captchaValue) {
+      showToast("error", "Please solve the captcha");
+      return;
+    }
+    data.captcha = captchaValue;
     await contactService.send(data);
     showToast("success", "Message sent successfully");
     methods.reset();
+    setCaptchaValue("");
+    captchaRef.current.reset();
   });
+
+  const onCaptchaChange = (value) => {
+    setCaptchaValue(value);
+  };
 
   useEffect(() => {
     if (error) {
@@ -139,6 +155,13 @@ const Contact = () => {
                       placeholder="Enter your message"
                       rules={{ required: true, minLength: 10 }}
                       classname="focus:border-blue-400 placeholder:text-gray-400 h-40"
+                    />
+
+                    <ReCAPTCHA
+                      sitekey={import.meta.env.VITE_RECAPTCHA_KEY}
+                      className="w-full mt-5"
+                      ref={captchaRef}
+                      onChange={onCaptchaChange}
                     />
 
                     <Button
