@@ -8,12 +8,17 @@ import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useLoading } from "../hooks";
 import { useEffect } from "react";
+import showToast from "../utils/showToast";
 
 const Auth = ({ isSignupPage = false }) => {
   const navigate = useNavigate();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const { state, pathname, search } = useLocation();
   const [isPassword, setIspassword] = useState(true);
+  const [forgetPasswordData, setForgetPasswordData] = useState({
+    timer: 0,
+    clickedOnce: false,
+  });
 
   const methods = useForm();
 
@@ -72,6 +77,50 @@ const Auth = ({ isSignupPage = false }) => {
     setIsSignUp(isSignUp);
     setIsUser(isUser);
   }, [pathname, search]);
+
+  const sendRequest = async () => {
+    const isEmailValid = await methods.trigger("email");
+    if (isEmailValid) {
+      methods.clearErrors("email");
+    } else {
+      showToast("error", "Please enter a valid email");
+      return;
+    }
+
+    setForgetPasswordData((prev) => ({
+      ...prev,
+      clickedOnce: true,
+      timer: 60,
+    }));
+
+    try {
+      await authService.forgetPassword({
+        email: methods.getValues("email"),
+      });
+      showToast("success", "Email sent successfully");
+    } catch (error) {
+      showToast("error", error.message || "Something went wrong");
+      setForgetPasswordData((prev) => ({
+        ...prev,
+        clickedOnce: false,
+        timer: 0,
+      }));
+    }
+  };
+
+  // timer for resend forget password
+  useEffect(() => {
+    if (forgetPasswordData.timer === 0) return;
+
+    const intervalId = setInterval(() => {
+      setForgetPasswordData((prev) => ({
+        ...prev,
+        timer: prev.timer - 1,
+      }));
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [forgetPasswordData.timer]);
 
   return (
     <section>
@@ -163,6 +212,22 @@ const Auth = ({ isSignupPage = false }) => {
                     )}
                   </div>
                 </div>
+                {!isSignUp && (
+                  <button
+                    onClick={sendRequest}
+                    disabled={forgetPasswordData.timer > 0}
+                    className="w-full text-blue-600 disabled:text-gray-600 flex justify-end cursor-default"
+                    type="button"
+                  >
+                    <p className="cursor-pointer hover:underline">
+                      {forgetPasswordData.timer > 0
+                        ? `Resend (${forgetPasswordData.timer})`
+                        : forgetPasswordData.clickedOnce
+                        ? "Resend"
+                        : "Forget Password"}
+                    </p>
+                  </button>
+                )}
                 {isSignUp && (
                   <Input
                     label="Confirm Password"

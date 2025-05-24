@@ -8,8 +8,10 @@ import {
   googleLoginRedirect,
   googleLoginCallback,
   updateUser,
+  forgetPassword,
 } from "../controllers/users.controllers.js";
 import verifyUser from "../middlewares/verifyUser.middleware.js";
+import rateLimiter from "../middlewares/rateLimiter.middleware.js";
 import passport from "passport";
 
 const router = Router();
@@ -30,5 +32,8 @@ router.get(
   }),
   googleLoginCallback
 );
+
+router.post("/auth/forget-password", rateLimiter(1), forgetPassword);
+// TODO: add verify token route
 
 export default router;

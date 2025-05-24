@@ -73,7 +73,15 @@ class AuthService extends baseService {
     }, "refreshing token");
   }
 
-  // TODO: add forget password service
+  forgetPassword({ email }) {
+    return this.handler(async () => {
+      const response = await this.api.post("/users/auth/forget-password", {
+        email,
+        route: "forget-password/:token",
+      });
+      return response.data;
+    }, "forgetting password");
+  }
 
   loginWithGogle(SuccessRedirect, falureRedirect) {
     window.location.href = `${

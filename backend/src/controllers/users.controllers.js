@@ -6,6 +6,8 @@ import File from "../models/file.model.js";
 import jwt from "jsonwebtoken";
 import { generateTokens } from "../utils/jwt.js";
 import passport from "../config/passport.js";
+import crypto from "crypto";
+import sendMail from "../utils/sendMail.js";
 
 const cookieOptions = {
   httpOnly: true,
@@ -244,6 +246,72 @@ const getUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "User found", user));
 });
 
+const forgetPassword = asyncHandler(async (req, res) => {
+  const { email, route } = req.body;
+
+  if (!email) throw new ApiError(400, "Email is required");
+  if (!route) throw new ApiError(400, "Route is required");
+
+  const user = await User.findOne({ email });
+
+  if (!user) throw new ApiError(404, "User not found");
+
+  const generateToken = (length = 6) => {
+    const chars =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const bytes = crypto.randomBytes(length);
+
+    let token = "";
+    for (let i = 0; i < length; i++) {
+      token += chars[bytes[i] % chars.length];
+    }
+
+    return token;
+  };
+  // TODO: add token to redis database
+  const token = generateToken();
+
+  let resetRoute;
+  if (route.includes(":token")) {
+    resetRoute = route.replace(":token", token);
+  } else if (route.includes("?token=")) {
+    resetRoute = route.replace("?token=", `?token=${token}`);
+  }
+
+  const resetPasswordTemplate = `<body style="font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; color: #333;">
+  <div style="max-width: 600px; margin: auto; background: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.1);">
+    <div style="text-align: center; margin-bottom: 20px;">
+      <img src="${req.protocol}://${req.get(
+    "host"
+  )}/api/v1/files/67eeb1fcfaf070cbfb48da8c" alt="Company Logo" style="max-height: 60px;" />
+    </div>
+    <h2 style="margin-top: 0;">Reset Your Password</h2>
+    <p>Hello,</p>
+    <p>We received a request to reset your password. Click the button below to reset it:</p>
+    <p>
+      <a href="${process.env.FRONTEND_BASE_URL}/${resetRoute}" target="_blank"
+         style="display: inline-block; margin-top: 20px; padding: 12px 20px; background: #007bff; color: #ffffff; text-decoration: none; border-radius: 4px;">
+        Reset Password
+      </a>
+    </p>
+    <p>If you didn't request a password reset, you can contact us at ${
+      process.env.CONTACT_EMAIL
+    }.</p>
+    <div style="margin-top: 30px; font-size: 12px; color: #777; text-align: center;">
+      &copy; 2025 Your Company. All rights reserved.
+    </div>
+  </div>
+</body>`;
+
+  await sendMail({
+    body: resetPasswordTemplate,
+    subject: "Reset Your Password",
+    receivers: email,
+  });
+
+  res.json(new ApiResponse(200, "Password reset link sent"));
+});
+
 export {
   createUser,
   updateUser,
@@ -253,4 +321,5 @@ export {
   googleLoginCallback,
   getUser,
   logout,
+  forgetPassword,
 };
