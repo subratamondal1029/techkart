@@ -73,7 +73,7 @@ class AuthService extends baseService {
     }, "refreshing token");
   }
 
-  // TODO: add update password service
+  // TODO: add forget password service
 
   loginWithGogle(SuccessRedirect, falureRedirect) {
     window.location.href = `${
