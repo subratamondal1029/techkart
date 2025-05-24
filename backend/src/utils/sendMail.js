@@ -276,7 +276,7 @@ const getRefundMailInfo = async (orderId, baseUrl, orderRoute) => {
  * @async
  * @function sendMail
  * @param {Object} params - The parameters for sending the email.
- * @param {string|string[]} params.receivers - The recipient email address(es).
+ * @param {string} params.receivers - The recipient email address(es) separated by commas.
  * @param {string} params.subject - The subject of the email.
  * @param {string} params.body - The HTML body content of the email.
  */

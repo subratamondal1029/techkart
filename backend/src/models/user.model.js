@@ -21,7 +21,7 @@ const userSchema = new Schema(
     },
     label: {
       type: String,
-      enum: ["user", "shipment", "seller", "delivery", "admin"],
+      enum: ["user", "shipment", "seller", "delivery", "admin", "support"],
       default: "user",
     },
     provider: {

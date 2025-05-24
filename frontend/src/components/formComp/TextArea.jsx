@@ -23,11 +23,7 @@ export default function TextArea({
 }) {
   const Id = useId();
   const { register, formState: { errors } = {} } = useFormContext() || {};
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    setError(errors?.[name]?.message);
-  }, [errors]);
+  const error = errors?.[name]?.message;
 
   return (
     <div className="w-full relative flex flex-col items-center justify-center">

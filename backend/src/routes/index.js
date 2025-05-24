@@ -4,6 +4,7 @@ import productRouter from "./product.routes.js";
 import cartRouter from "./cart.routes.js";
 import orderRouter from "./order.routes.js";
 import fileRouter from "./file.routes.js";
+import contactRouter from "./contact.routes.js";
 
 export {
   testRouter,
@@ -12,4 +13,5 @@ export {
   cartRouter,
   orderRouter,
   fileRouter,
+  contactRouter,
 };

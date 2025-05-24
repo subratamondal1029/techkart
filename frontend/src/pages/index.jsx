@@ -15,6 +15,7 @@ const Checkout = lazyWrapper(() => import("./Checkout"));
 const OrderConfirm = lazyWrapper(() => import("./OrderConfirm"));
 const Shipment = lazyWrapper(() => import("./Shipment"));
 const Delivery = lazyWrapper(() => import("./Delivery"));
+const Contact = lazyWrapper(() => import("./Contact"));
 
 export {
   Home,
@@ -32,4 +33,5 @@ export {
   OrderConfirm,
   Shipment,
   Delivery,
+  Contact,
 };

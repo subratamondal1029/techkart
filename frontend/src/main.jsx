@@ -26,6 +26,7 @@ import {
   Shipment,
   Delivery,
   ProductEdit,
+  Contact,
 } from "./pages";
 import Test from "./components/Test.jsx";
 import { Provider } from "react-redux";
@@ -40,6 +41,7 @@ const router = createBrowserRouter(
       <Route path="signup" element={<Auth isSignupPage={true} />} />
       <Route path="/search" element={<Search />} />
       <Route path="placed" element={<OrderConfirm />} />
+      <Route path="contact" element={<Contact />} />
       <Route
         path="cart"
         element={
