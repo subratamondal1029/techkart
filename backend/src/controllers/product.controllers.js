@@ -66,7 +66,7 @@ const getProducts = asyncHandler(async (req, res) => {
     category,
     company,
     sort = "d",
-    sortBy = "$createdAt",
+    sortBy = "createdAt",
     query,
   } = req.query;
 
