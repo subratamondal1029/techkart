@@ -37,7 +37,7 @@ router.get(
 
 router.post("/auth/forget-password", rateLimiter(1), forgetPassword);
 router.post("/auth/verify-token/:token", rateLimiter(10), verifyToken);
-router.post(
+router.patch(
   "/auth/update-password",
   rateLimiter(5),
   verifyUser(false),
