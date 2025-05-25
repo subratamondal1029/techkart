@@ -14,7 +14,7 @@ const Auth = ({ isSignupPage = false }) => {
   const navigate = useNavigate();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const { state, pathname, search } = useLocation();
-  const [isPassword, setIspassword] = useState(true);
+  const [isPassword, setIsPassword] = useState(true);
   const [forgetPasswordData, setForgetPasswordData] = useState({
     timer: 0,
     clickedOnce: false,
@@ -26,7 +26,7 @@ const Auth = ({ isSignupPage = false }) => {
     const successPath = `${state?.redirect?.replace("/", "") || ""}`;
     const failsPath = pathname.replace("/", "");
 
-    authService.loginWithGogle(successPath, failsPath);
+    authService.loginWithGoggle(successPath, failsPath);
   };
 
   const [handleSubmit, isLoading, error] = useLoading(
@@ -210,9 +210,9 @@ const Auth = ({ isSignupPage = false }) => {
                   />
                   <div className="absolute bottom-2 right-2 cursor-pointer">
                     {isPassword ? (
-                      <EyeIcon onClick={() => setIspassword(!isPassword)} />
+                      <EyeIcon onClick={() => setIsPassword(!isPassword)} />
                     ) : (
-                      <EyeOffIcon onClick={() => setIspassword(!isPassword)} />
+                      <EyeOffIcon onClick={() => setIsPassword(!isPassword)} />
                     )}
                   </div>
                 </div>

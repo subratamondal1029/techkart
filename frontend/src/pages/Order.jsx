@@ -203,7 +203,7 @@ export default function Order() {
                       <h2 className="text-base font-bold text-black">
                         Shipping Information
                       </h2>
-                      <p className="fontmedium mt-3 text-xs text-gray-700">
+                      <p className="font-medium mt-3 text-xs text-gray-700">
                         Order Number: #{order._id}
                       </p>
                       <p className="text-xs font-medium text-gray-700">

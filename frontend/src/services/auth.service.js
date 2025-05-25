@@ -106,11 +106,11 @@ class AuthService extends baseService {
     }, "updating password");
   }
 
-  loginWithGogle(SuccessRedirect, falureRedirect) {
+  loginWithGoggle(SuccessRedirect, failureRedirect) {
     window.location.href = `${
       import.meta.env.VITE_BACKEND_BASE_URL
-    }/users/auth/google?success=${SuccessRedirect}&fails=${falureRedirect}`;
-  } // NOTE: just call the function it wil not give any cient of data it will redirect to the google login page and after login it will redirect to provided url
+    }/users/auth/google?success=${SuccessRedirect}&fails=${failureRedirect}`;
+  } // NOTE: just call the function it wil not give any client of data it will redirect to the google login page and after login it will redirect to provided url
 }
 
 export default new AuthService();
