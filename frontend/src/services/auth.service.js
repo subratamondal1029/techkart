@@ -54,7 +54,10 @@ class AuthService extends baseService {
       if (email?.trim()) body.email = email.trim().toLowerCase();
 
       if (password) {
-        await this.updatePassword({ password });
+        const response = await this.updatePassword({ password });
+        if (Object.keys(body).length === 0) {
+          return response;
+        }
       }
 
       const response = await this.api.patch("/users/", body);
@@ -88,7 +91,7 @@ class AuthService extends baseService {
 
   updatePassword({ token, password }) {
     return this.handler(async () => {
-      const response = await this.api.post("/users/auth/update-password", {
+      const response = await this.api.patch("/users/auth/update-password", {
         token,
         password,
       });
