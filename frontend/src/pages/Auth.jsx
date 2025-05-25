@@ -97,6 +97,10 @@ const Auth = ({ isSignupPage = false }) => {
       await authService.forgetPassword({
         email: methods.getValues("email"),
       });
+      setForgetPasswordData((prev) => ({
+        ...prev,
+        timer: 60,
+      }));
       showToast("success", "Email sent successfully");
     } catch (error) {
       showToast("error", error.message || "Something went wrong");
