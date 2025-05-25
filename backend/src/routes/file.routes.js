@@ -26,7 +26,7 @@ const router = Router();
 
 router.post(
   "/",
-  verifyUser,
+  verifyUser(),
   upload.single("file"),
   selectFolder,
   reqAbort,
@@ -36,12 +36,12 @@ router
   .route("/:id")
   .get(getFile)
   .patch(
-    verifyUser,
+    verifyUser(),
     upload.single("file"),
     selectFolder,
     reqAbort,
     updateFileDoc
   )
-  .delete(verifyUser, deleteFileDoc);
+  .delete(verifyUser(), deleteFileDoc);
 
 export default router;

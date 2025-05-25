@@ -10,12 +10,12 @@ import {
 
 const router = Router();
 
-router.route("/").post(verifyUser, createProduct).get(getProducts);
-router.get("/seller", verifyUser, getProducts);
+router.route("/").post(verifyUser(), createProduct).get(getProducts);
+router.get("/seller", verifyUser(), getProducts);
 router
   .route("/:id")
   .get(getProduct)
-  .delete(verifyUser, deleteProduct)
-  .patch(verifyUser, updateProduct);
+  .delete(verifyUser(), deleteProduct)
+  .patch(verifyUser(), updateProduct);
 
 export default router;

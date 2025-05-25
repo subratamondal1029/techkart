@@ -4,7 +4,7 @@ import { getCart, addProductToCart } from "../controllers/cart.controllers.js";
 
 const router = Router();
 
-router.use(verifyUser);
+router.use(verifyUser());
 
 router.route("/").get(getCart).put(addProductToCart);
 

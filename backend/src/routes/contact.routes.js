@@ -9,7 +9,7 @@ import verifyUser from "../middlewares/verifyUser.middleware.js";
 const router = Router();
 
 router.post("/", createContact);
-router.get("/", verifyUser, getContacts);
-router.patch("/resolve/:id", verifyUser, resolveContact);
+router.get("/", verifyUser(), getContacts);
+router.patch("/resolve/:id", verifyUser(), resolveContact);
 
 export default router;

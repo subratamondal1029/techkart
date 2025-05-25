@@ -14,7 +14,7 @@ import ApiResponse from "../utils/apiResponse.js";
 
 const router = Router();
 
-router.use(verifyUser);
+router.use(verifyUser());
 
 router.post("/payment/order", generateRazorpayOrder);
 router.post("/payment/status", paymentStatus);
