@@ -34,8 +34,9 @@ const verifyUser = (isRequired = true) => {
       req.user = user;
       next();
     } catch (error) {
-      console.log(error);
       if (isRequired) {
+        if (process.env.NODE_ENV === "development") console.log(error);
+
         return res
           .status(error.status || 500)
           .json(new ApiError(error.status, error.message));

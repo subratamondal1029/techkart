@@ -9,6 +9,8 @@ import {
   googleLoginCallback,
   updateUser,
   forgetPassword,
+  verifyToken,
+  updatePassword,
 } from "../controllers/users.controllers.js";
 import verifyUser from "../middlewares/verifyUser.middleware.js";
 import rateLimiter from "../middlewares/rateLimiter.middleware.js";
@@ -33,8 +35,13 @@ router.get(
   googleLoginCallback
 );
 
-// router.post("/auth/forget-password", rateLimiter(1), forgetPassword);
-router.post("/auth/forget-password", forgetPassword);
-// TODO: add verify token route
+router.post("/auth/forget-password", rateLimiter(1), forgetPassword);
+router.post("/auth/verify-token/:token", rateLimiter(10), verifyToken);
+router.post(
+  "/auth/update-password",
+  rateLimiter(5),
+  verifyUser(false),
+  updatePassword
+);
 
 export default router;
