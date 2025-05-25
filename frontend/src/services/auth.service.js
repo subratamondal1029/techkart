@@ -52,7 +52,10 @@ class AuthService extends baseService {
       if (avatar) body.avatar = avatar;
       if (name?.trim()) body.name = name.trim().toLowerCase();
       if (email?.trim()) body.email = email.trim().toLowerCase();
-      if (password) body.password = password;
+
+      if (password) {
+        await this.updatePassword({ password });
+      }
 
       const response = await this.api.patch("/users/", body);
       return response.data;
@@ -81,6 +84,16 @@ class AuthService extends baseService {
       });
       return response.data;
     }, "forgetting password");
+  }
+
+  updatePassword({ token, password }) {
+    return this.handler(async () => {
+      const response = await this.api.post("/users/auth/update-password", {
+        token,
+        password,
+      });
+      return response.data;
+    }, "updating password");
   }
 
   loginWithGogle(SuccessRedirect, falureRedirect) {
