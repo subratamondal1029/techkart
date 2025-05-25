@@ -89,6 +89,13 @@ class AuthService extends baseService {
     }, "forgetting password");
   }
 
+  verifyToken(token) {
+    return this.handler(async () => {
+      const response = await this.api.post(`/users/auth/verify-token/${token}`);
+      return response.data;
+    }, "verifying token");
+  }
+
   updatePassword({ token, password }) {
     return this.handler(async () => {
       const response = await this.api.patch("/users/auth/update-password", {
