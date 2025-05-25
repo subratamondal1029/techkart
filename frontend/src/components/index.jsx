@@ -32,6 +32,9 @@ const ImageUpload = lazyWrapper(() => import("./ImageUpload"));
 const DataList = lazyWrapper(() => import("./DataList"));
 const TagInput = lazyWrapper(() => import("./formComp/TagInput"));
 const Pagination = lazyWrapper(() => import("./Pagination"));
+const PasswordAndConfirm = lazyWrapper(() =>
+  import("./formComp/PasswordAndConfirm")
+);
 
 export {
   Logo,
@@ -56,4 +59,5 @@ export {
   DataList,
   TagInput,
   Pagination,
+  PasswordAndConfirm,
 };

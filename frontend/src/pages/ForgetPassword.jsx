@@ -1,7 +1,7 @@
 import React from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { Button, Input } from "../components";
-import PasswordAndConfirm from "../components/formComp/PasswordAndConfirm";
+import { PasswordAndConfirm } from "../components";
 import { Link } from "react-router-dom";
 
 const ForgetPassword = () => {

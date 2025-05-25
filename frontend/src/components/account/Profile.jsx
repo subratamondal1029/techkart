@@ -1,6 +1,10 @@
 import { useState } from "react";
-
-import { Button, Input, UpdateForm } from "../";
+import {
+  Button,
+  Input,
+  UpdateForm,
+  PasswordAndConfirm as PasswordInput,
+} from "../";
 import AccountInfoCard from "./AccountInfoCard";
 
 import {
@@ -18,50 +22,6 @@ import authService from "../../services/auth.service";
 import { useDispatch } from "react-redux";
 import { updateUserData } from "../../store/auth.slice";
 import showToast from "../../utils/showToast";
-
-const PasswordInput = () => {
-  const { watch } = useFormContext();
-  const [isPassword, setIsPassword] = useState(true);
-  const password = watch("password");
-
-  return (
-    <>
-      <div className="w-full relative flex items-center">
-        <Input
-          label="Password"
-          name="password"
-          type={isPassword ? "password" : "text"}
-          placeholder="Enter new Password"
-          rules={{
-            pattern: {
-              value:
-                /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/,
-              message:
-                "Password must be 8-20 characters, include 1 uppercase, 1 lowercase, 1 number, and 1 special character.",
-            },
-          }}
-        />
-        <div className="absolute bottom-2 right-2 cursor-pointer">
-          {isPassword ? (
-            <EyeIcon onClick={() => setIsPassword(!isPassword)} />
-          ) : (
-            <EyeOffIcon onClick={() => setIsPassword(!isPassword)} />
-          )}
-        </div>
-      </div>
-      <Input
-        label="Confirm Password"
-        name="confirmPassword"
-        type="password"
-        placeholder="Re-enter new Password"
-        rules={{
-          validate: (value) =>
-            !password || value === password || "Passwords do not match",
-        }}
-      />
-    </>
-  );
-};
 
 const Profile = ({ userData, setOptimisticUserData }) => {
   const dispatch = useDispatch();
