@@ -27,6 +27,7 @@ import {
   Delivery,
   ProductEdit,
   Contact,
+  ForgetPassword,
 } from "./pages";
 import Test from "./components/Test.jsx";
 import { Provider } from "react-redux";
@@ -39,7 +40,8 @@ const router = createBrowserRouter(
       <Route path="" element={<Home />} />
       <Route path="login" element={<Auth isSignupPage={false} />} />
       <Route path="signup" element={<Auth isSignupPage={true} />} />
-      <Route path="/search" element={<Search />} />
+      <Route path="forget-password/:token" element={<ForgetPassword />} />
+      <Route path="search" element={<Search />} />
       <Route path="placed" element={<OrderConfirm />} />
       <Route path="contact" element={<Contact />} />
       <Route
@@ -83,8 +85,9 @@ const router = createBrowserRouter(
           </ProtectedRoute>
         }
       />
+      {/* NOTE: future use */}
       <Route
-        path="product/edit/:id?"
+        path="product-edit/:id?"
         element={
           <ProtectedRoute role="seller">
             <ProductEdit />

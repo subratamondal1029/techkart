@@ -16,6 +16,7 @@ const OrderConfirm = lazyWrapper(() => import("./OrderConfirm"));
 const Shipment = lazyWrapper(() => import("./Shipment"));
 const Delivery = lazyWrapper(() => import("./Delivery"));
 const Contact = lazyWrapper(() => import("./Contact"));
+const ForgetPassword = lazyWrapper(() => import("./ForgetPassword"));
 
 export {
   Home,
@@ -34,4 +35,5 @@ export {
   Shipment,
   Delivery,
   Contact,
+  ForgetPassword,
 };
