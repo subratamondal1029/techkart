@@ -7,15 +7,19 @@ import {
   getProducts,
   updateProduct,
 } from "../controllers/product.controllers.js";
+import rateLimiter from "../middlewares/rateLimiter.middleware.js";
 
 const router = Router();
 
-router.route("/").post(verifyUser(), createProduct).get(getProducts);
+router
+  .route("/")
+  .post(rateLimiter(5), verifyUser(), createProduct)
+  .get(getProducts);
 router.get("/seller", verifyUser(), getProducts);
 router
   .route("/:id")
   .get(getProduct)
-  .delete(verifyUser(), deleteProduct)
-  .patch(verifyUser(), updateProduct);
+  .delete(rateLimiter(5), verifyUser(), deleteProduct)
+  .patch(rateLimiter(5), verifyUser(), updateProduct);
 
 export default router;

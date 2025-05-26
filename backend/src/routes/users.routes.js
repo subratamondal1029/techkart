@@ -18,6 +18,8 @@ import passport from "passport";
 
 const router = Router();
 
+router.use(rateLimiter(5));
+
 router
   .route("/")
   .post(verifyUser(false), createUser)
@@ -36,12 +38,7 @@ router.get(
 );
 
 router.post("/auth/forget-password", rateLimiter(1), forgetPassword);
-router.post("/auth/verify-token/:token", rateLimiter(10), verifyToken);
-router.patch(
-  "/auth/update-password",
-  rateLimiter(5),
-  verifyUser(false),
-  updatePassword
-);
+router.post("/auth/verify-token/:token", verifyToken);
+router.patch("/auth/update-password", verifyUser(false), updatePassword);
 
 export default router;

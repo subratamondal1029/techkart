@@ -10,6 +10,7 @@ import {
 import verifyUser from "../middlewares/verifyUser.middleware.js";
 import selectFolder from "../middlewares/selectFolder.middleware.js";
 import addToDelete from "../../storage/log/addToDelete.js";
+import rateLimiter from "../middlewares/rateLimiter.middleware.js";
 
 const reqAbort = (req, res, next) => {
   req.on("aborted", () => {
@@ -26,6 +27,7 @@ const router = Router();
 
 router.post(
   "/",
+  rateLimiter(5),
   verifyUser(),
   upload.single("file"),
   selectFolder,
@@ -36,12 +38,13 @@ router
   .route("/:id")
   .get(getFile)
   .patch(
+    rateLimiter(5),
     verifyUser(),
     upload.single("file"),
     selectFolder,
     reqAbort,
     updateFileDoc
   )
-  .delete(verifyUser(), deleteFileDoc);
+  .delete(rateLimiter(5), verifyUser(), deleteFileDoc);
 
 export default router;

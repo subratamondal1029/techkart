@@ -5,11 +5,12 @@ import {
   resolveContact,
 } from "../controllers/contact.controllers.js";
 import verifyUser from "../middlewares/verifyUser.middleware.js";
+import rateLimiter from "../middlewares/rateLimiter.middleware.js";
 
 const router = Router();
 
-router.post("/", createContact);
+router.post("/", rateLimiter(1), createContact);
 router.get("/", verifyUser(), getContacts);
-router.patch("/resolve/:id", verifyUser(), resolveContact);
+router.patch("/resolve/:id", rateLimiter(10), verifyUser(), resolveContact);
 
 export default router;
