@@ -20,7 +20,7 @@ const router = Router();
 
 router
   .route("/")
-  .post(createUser)
+  .post(verifyUser(false), createUser)
   .get(verifyUser(), getUser)
   .patch(verifyUser(), updateUser);
 router.post("/auth/login", login);

@@ -22,8 +22,21 @@ const calculateExpiresInMilliseconds = (day) => {
 const createUser = asyncHandler(async (req, res) => {
   let { name, email, password, label } = req.body;
 
-  if (!name?.trim() || !email?.trim() || !password || !label?.trim()) {
-    throw new ApiError(400, "All fields are required");
+  const requiredFields = ["name", "email", "password"];
+  requiredFields.forEach((field) => {
+    if (!req.body[field]) {
+      throw new ApiError(400, `${field} is required`);
+    }
+  });
+
+  if (label?.trim()) {
+    label = label.trim();
+
+    if (label === "admin" && req.user?.label !== "admin") {
+      throw new ApiError(403, "Unauthorized", ["contact to another admin"]);
+    } else if (label !== "user" && req.user?.label !== "admin") {
+      throw new ApiError(403, "Unauthorized");
+    }
   }
 
   name = name.trim();
