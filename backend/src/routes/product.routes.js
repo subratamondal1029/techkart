@@ -14,11 +14,11 @@ const router = Router();
 router
   .route("/")
   .post(rateLimiter(5), verifyUser(), createProduct)
-  .get(getProducts);
-router.get("/seller", verifyUser(), getProducts);
+  .get(rateLimiter(60), getProducts);
+router.get("/seller", rateLimiter(60), verifyUser(), getProducts);
 router
   .route("/:id")
-  .get(getProduct)
+  .get(rateLimiter(60), getProduct)
   .delete(rateLimiter(5), verifyUser(), deleteProduct)
   .patch(rateLimiter(5), verifyUser(), updateProduct);
 

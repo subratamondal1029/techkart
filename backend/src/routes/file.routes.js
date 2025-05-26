@@ -36,7 +36,7 @@ router.post(
 );
 router
   .route("/:id")
-  .get(getFile)
+  .get(rateLimiter(60), getFile)
   .patch(
     rateLimiter(5),
     verifyUser(),

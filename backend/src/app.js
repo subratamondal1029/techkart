@@ -58,7 +58,7 @@ if (process.env.NODE_ENV === "development") {
 app.get("/favicon.ico", (req, res) =>
   res.redirect("/api/v1/files/67eeb1fcfaf070cbfb48da8c")
 );
-app.use(rateLimiter(60));
+
 app.use("/api/v1/test", testRouter);
 app.use("/api/v1/users", usersRouter);
 app.use("/api/v1/products", productRouter);

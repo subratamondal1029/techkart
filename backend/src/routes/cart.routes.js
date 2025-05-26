@@ -7,6 +7,9 @@ const router = Router();
 
 router.use(verifyUser());
 
-router.route("/").get(getCart).put(rateLimiter(10), addProductToCart);
+router
+  .route("/")
+  .get(rateLimiter(60), getCart)
+  .put(rateLimiter(10), addProductToCart);
 
 export default router;

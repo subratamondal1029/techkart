@@ -18,19 +18,18 @@ import passport from "passport";
 
 const router = Router();
 
-router.use(rateLimiter(5));
-
 router
   .route("/")
-  .post(verifyUser(false), createUser)
-  .get(verifyUser(), getUser)
-  .patch(verifyUser(), updateUser);
-router.post("/auth/login", login);
-router.post("/auth/refresh-tokens", refreshAccessToken);
-router.delete("/auth/logout", verifyUser(), logout);
-router.get("/auth/google", googleLoginRedirect);
+  .post(rateLimiter(5), verifyUser(false), createUser)
+  .get(rateLimiter(20), verifyUser(), getUser)
+  .patch(rateLimiter(5), verifyUser(), updateUser);
+router.post("/auth/login", rateLimiter(5), login);
+router.post("/auth/refresh-tokens", rateLimiter(5), refreshAccessToken);
+router.delete("/auth/logout", rateLimiter(5), verifyUser(), logout);
+router.get("/auth/google", rateLimiter(5), googleLoginRedirect);
 router.get(
   "/auth/google/callback",
+  rateLimiter(5),
   passport.authenticate("google", {
     session: false,
   }),
@@ -38,7 +37,12 @@ router.get(
 );
 
 router.post("/auth/forget-password", rateLimiter(1), forgetPassword);
-router.post("/auth/verify-token/:token", verifyToken);
-router.patch("/auth/update-password", verifyUser(false), updatePassword);
+router.post("/auth/verify-token/:token", rateLimiter(5), verifyToken);
+router.patch(
+  "/auth/update-password",
+  rateLimiter(5),
+  verifyUser(false),
+  updatePassword
+);
 
 export default router;
