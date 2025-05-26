@@ -1,4 +1,4 @@
-<h1 align="center" style="font-weight: bold;">Techkart <span style="font-size: 12px;">(backend)</span> 💻</h1>
+<h1 align="center" style="font-weight: bold;">Techkart <span style="font-size: 12px;">(backend)</span> 🛠️</h1>
 
 <p align="center">
  <a href="#features">Features</a> • 
@@ -25,7 +25,6 @@ The backend is designed with performance and security in mind — including feat
 - Secure access using JWT with refresh token support
 - Role-based access control (admin, seller, shipment master, delivery boy)
 - Forgot password flow with unique secure token via Redis
-- Email verification system (planned)
 
 ### 🛍️ Product & Order Management
 
@@ -115,7 +114,6 @@ This project uses a variety of modern tools and libraries to build a scalable an
 Before you start, make sure you have the following installed:
 
 - [NodeJS](https://nodejs.org/)
-- [MongoDB](https://www.mongodb.com/)
 - [Docker](https://www.docker.com/)
 - Make sure port **8000** is available, or update the port in [`docker-compose.yml`](../docker-compose.yml)
 
@@ -144,7 +142,7 @@ NODE_ENV=development
 ### 🏁 Starting the Project
 
 ```bash
-cd project-name
+cd techkart
 docker compose build
 docker compose up
 ```

@@ -1,96 +1,130 @@
-# Tech kart
-## E-Commerce Website
+<h1 align="center" style="font-weight: bold;">Techkart <span style="font-size: 12px;">(frontend)</span> 💻</h1>
 
-### About Me
-I am Subrata Mondal, a front-end web developer with knowledge of HTML, CSS, and JavaScript, specializing in frameworks like React and Tailwind. I created an e-commerce website using these skills, with React and Tailwind for the frontend and Appwrite for the backend.
+<p align="center">
+ <a href="#features">Features</a> • 
+ <a href="#plans">Upcoming</a> • 
+ <a href="#tech">Technologies</a> • 
+ <a href="#started">Getting Started</a> • 
+ <a href="#colab">Collaborators</a> •
+ <a href="#contribute">Contribute</a>
+</p>
 
-## Description
-This single-page application (SPA) includes multiple pages:
-- **Home Page**: Displays products for users to browse.
-- **Product Detail Page**: Shows detailed information about a product.
-- **Login/Signup**: Users can sign in, sign up, or use Google login.
-- **Cart**: Users can add products to the cart, view a cart preview, and adjust quantities or remove items.
-- **Checkout Page**: Users fill in their contact information, and the address is auto-filled based on the postal code using the Indian Postal API. Razorpay is integrated for payment processing.
-- **Order Confirmation and Details**: After checkout, users are redirected to an order details page to see the order status and cancel orders if needed.
-- **Account Page**: Users can view their order history and personal information.
-- **Product Search**: Users can search for products by typing keywords or by category.
+<p align="center">
+    <b>TechKart (frontend) is the client-side web application built using the MERN stack. It provides user authentication (email/password and Google OAuth), product and order management, to shipment tracking and payment processing.</b>
+</p>
 
-Additional features include:
-- **Shipment Master Dashboard**: 
-  - Manage orders and update their status to "shipped".
-  - Generate and download invoices with QR codes.
-  - Store shipment invoices in Appwrite storage.
-- **Delivery Boy Dashboard**:
-  - Confirm deliveries by scanning QR codes.
-  - Generate and store delivery invoices in Appwrite storage.
-  - Allow users to download delivery invoices from the order details page once the order is delivered.
-- **Seller Page**: Allows sellers to add products to the list, including images.
+<h2 id="features"> 🚀 Features</h2>
 
-## Test Users
-- **User**: `subrata@techkart.com` | Password: `subratalog`
-- **Shipment Master**: `shipment@techkart.com` | Password: `shipmentlog`
-- **Delivery Boy**: `delivery@techkart.com` | Password: `deliverylog`
+### 🔐 Authentication & Authorization
 
-## Features
+- User login and registration with **email/password** and **Google OAuth**
+- Role-based UI access and navigation (admin, seller, delivery boy, shipment master)
+- Secure token handling and session management
 
-### User Features
-- **User Registration and Login**: Users can sign up, sign in, and use Google login.
-- **Home Page**: Displays a list of products for users to browse.
-- **Product Detail Page**: Shows detailed information about each product.
-- **Shopping Cart**: Users can add products to their cart, view a cart preview, and adjust quantities or remove items.
-- **Checkout**: Users can fill in their contact information, and the address is auto-filled based on the postal code using the Indian Postal API. Razorpay is integrated for payment processing.
-- **Order Confirmation and Details**: After checkout, users are redirected to an order details page to see the order status and cancel orders if needed.
-- **Account Page**: Users can view their order history and personal information.
-- **Product Search**: Users can search for products by typing keywords or by category.
+### 🛍️ Product & Order Management
 
-### Additional Features
-- **Shipment Master Dashboard**: 
-  - Manage orders and update their status to "shipped".
-  - Generate and download invoices with QR codes.
-  - Store shipment invoices in Appwrite storage.
-- **Delivery Boy Dashboard**:
-  - Confirm deliveries by scanning QR codes.
-  - Generate and store delivery invoices in Appwrite storage.
-  - Allow users to download delivery invoices from the order details page once the order is delivered.
-- **Seller Page**: Allows sellers to add products to the list, including images.
+- Smooth **CRUD operations** on products with **optimistic UI updates** for faster feedback
+- Infinite scrolling to efficiently fetch and display large lists of products and orders
+- Real-time order tracking and status updates for all user roles
+- QR code scanning support for shipment and delivery verification
 
-## Technologies Used
+### 💸 Payments
 
-### Frontend
-- **React**: ^18.3.1
-- **Tailwind CSS**: ^3.4.7
-- **Redux Toolkit**: @reduxjs/toolkit ^2.2.7
-- **Appwrite**: ^15.0.0
-- **HTML5 QR Code**: ^2.3.8
-- **jsPDF**: ^2.5.1
-- **jsPDF AutoTable**: ^3.8.2
-- **Lucide React**: ^0.424.0
-- **QRCode**: ^1.5.4
-- **React Hook Form**: ^7.52.1
-- **React Redux**: ^9.1.2
-- **React Router DOM**: ^6.26.0
-- **React Toastify**: ^10.0.5
+- Integration with Razorpay for seamless payment processing
 
-### Backend
-- **Appwrite**: Used for database, storage, authentication, and cloud functions for Razorpay payment integration with JavaScript.
+### 🖥️ User Experience & Tools
 
-## Usage
-This is a web application. Simply land on the webpage and start using it. For additional features, users need to log in.
+- Responsive and modern UI built with **React** and **Tailwind CSS**
+- State management using **Redux Toolkit** for scalable and maintainable app state
+- Form handling and validation with **react-hook-form**
+- Notifications with **react-toastify** for instant user feedback
+- Progress indicators with **nprogress** for smooth loading experiences
+- Protection of forms using **Google reCAPTCHA**
 
-## Testing
-For testing and debugging, the following tools are used:
-- **Postman**: For testing API endpoints.
-- **Appwrite Function Logs**: For monitoring and debugging Appwrite cloud functions with Razorpay integration.
-- **Browser Dev Tools**: For testing and debugging in the browser.
-- **Redux DevTools Extension**: For debugging Redux state management.
-- **ChatGPT and Google**: For additional troubleshooting and debugging assistance.
+<h2 id="plans"> 🧪 Features in Development </h2>
 
-## License
-This project is a personal project by Subrata Mondal and is not formally licensed.
+- [ ] Admin Panel
+- [ ] Delivery Dashboard
+- [ ] Product page video support
 
-## Contact Information
-For any questions or issues, you can reach out to Subrata Mondal through the following channels:
-- **Phone**: +91 9832674420
-- **Email**: [subratamondal1020@outlook.com](mailto:subratamondal1020@outlook.com)
-- **Portfolio Website**: [subratamondal](https://subratamondal.vercel.app)
-- **GitHub Issues**: Users can raise issues on the GitHub repository.
+<h2 id="tech">💻 Technologies</h2>
+
+This project uses a variety of modern tools and libraries to build a robust and efficient frontend application:
+
+## 💻 Technologies
+
+1. React
+2. Redux Toolkit
+3. Axios
+4. React Router DOM
+5. React Hook Form
+6. React Google reCAPTCHA
+7. React Toastify
+8. html5-qrcode
+9. NProgress
+10. Tailwind CSS
+11. Vite
+12. Lucide React (icons)
+
+<h2 id="started">🚀 Getting started</h2>
+
+### 📋 Prerequisites for 🚀 Running the Project Locally
+
+Before you start, make sure you have the following installed:
+
+- [NodeJS](https://nodejs.org/)
+- [Docker](https://www.docker.com/)
+- Make sure port **5173** is available, or update the port in [`docker-compose.yml`](../docker-compose.yml)
+
+---
+
+### 🔄 Cloning the Repository
+
+```bash
+git clone git@github.com:subratamondal1029/techkart.git
+```
+
+---
+
+### ⚙️ Configuring Environment Variables
+
+Use the [`.env.example`](./.env.example) file as a template to create your own `.env` file:
+
+```yaml
+VITE_RAZORPAY_KEY=rzp_test_abcdefGHIJ
+VITE_BACKEND_BASE_URL=http://localhost:8000/api/v1
+```
+
+---
+
+### 🏁 Starting the Project
+
+```bash
+cd techkart
+docker compose build
+docker compose up
+```
+
+Open [http://localhost:5173](http://localhost:5173) in your browser
+
+---
+
+This frontend is fully integrated with the [TechKart backend](../backend/README.md)
+
+---
+
+<h2 id="colab">🤝 Collaborators</h2>
+
+Special thanks to everyone who contributed to this project.
+
+[![Subrata Mondal](https://avatars.githubusercontent.com/u/164600228?v=4&s=100)](https://github.com/subratamondal1029)  
+ **Subrata Mondal**
+
+<h2 id="contribute">📫 Contribute</h2>
+
+Here you will explain how other developers can contribute to your project. For example, explaining how can create their branches, which patterns to follow and how to open an pull request
+
+1. `git clone https://github.com/subratamondal1029/techkart.git`
+2. `git checkout -b feature/NAME`
+3. Follow commit patterns
+4. Open a Pull Request explaining the problem solved or feature made, if exists, append screenshot of visual modifications and wait for the review!
