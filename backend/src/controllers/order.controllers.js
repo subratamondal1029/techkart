@@ -500,7 +500,6 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
 
   const frontendRoute = formateFrontendRoute(route, order._id);
 
-  console.log("order page:", frontendRoute); //TEST: logging the frontend order page url
   const invoice = await genInvoice({ ...order, frontendRoute });
 
   if (!invoice) throw new ApiError(500, "Failed to generate invoice");

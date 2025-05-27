@@ -7,7 +7,6 @@ const deleteFile = async (filePath) => {
   if (filePath && fs.existsSync(filePath)) {
     try {
       await fs.promises.unlink(filePath);
-      console.log(`File deleted: ${filePath}`);
     } catch (err) {
       addToDelete("local", filePath, err.stack || err);
     }

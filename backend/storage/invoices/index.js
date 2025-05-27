@@ -13,6 +13,7 @@ import pdfFonts from "pdfmake/build/vfs_fonts.js";
 // Assign VFS (font file system) correctly
 pdfMake.vfs = pdfFonts.vfs;
 
+// TEST: This data is for testing
 const orderSample = {
   frontendRoute:
     "order/67eccbd95be609023c4e03bd" || "order?id=67eccbd95be609023c4e03bd",
@@ -342,7 +343,6 @@ const genInvoice = async (order) => {
         : await getShipmentDefinition(order);
 
     await createPdf(docDefinition, outputFile);
-    console.log(`PDF is successfully generated at ${outputFile}`); //TEST: only for testing
 
     const file = await uploadFile(
       outputFile,
@@ -359,7 +359,9 @@ const genInvoice = async (order) => {
 
     return file._id;
   } catch (error) {
-    console.log("Error while generating invoice:", error);
+    if (process.env.NODE_ENV === "development") {
+      console.log("Error while generating invoice:", error);
+    }
     throw error;
   }
 };

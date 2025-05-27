@@ -299,7 +299,9 @@ const sendMail = async ({ receivers, subject, body }) => {
       html: body,
     });
 
-    console.log(`Email sent to ${receivers}: ${response.messageId}`);
+    if (process.env.NODE_ENV === "development") {
+      console.log(`Email sent to ${receivers}: ${response.messageId}`);
+    }
   } catch (error) {
     console.error(
       `Error while sending mail "${subject} to ${receivers}": ${error}`
@@ -355,9 +357,11 @@ const sendOrderStatusUpdateMail = async ({
       body,
     });
   } catch (error) {
-    console.log(
-      `Error while sending order status update mail to ${receiver}": ${error}`
-    );
+    if (process.env.NODE_ENV === "development") {
+      console.log(
+        `Error while sending order status update mail to ${receiver}": ${error}`
+      );
+    }
   }
 };
 

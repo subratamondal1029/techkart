@@ -29,9 +29,13 @@ const cloudinaryFileExist = async (publicId) => {
     const result = await cloudinary.api.resource(publicId);
     return result;
   } catch (error) {
-    console.log(error);
+    if (process.env.NODE_ENV === "development") {
+      console.log(error);
+    }
     if (error.error.http_code === 404) {
-      console.log("File not found in Cloudinary.");
+      if (process.env.NODE_ENV === "development") {
+        console.log("File not found in Cloudinary.");
+      }
       return false;
     }
 

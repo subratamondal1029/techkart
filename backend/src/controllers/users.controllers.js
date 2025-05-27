@@ -218,7 +218,6 @@ const googleLoginRedirect = async (req, res, next) => {
 
 const googleLoginCallback = async (req, res) => {
   const { state } = req.query;
-  console.log(`Login Redirect Urls: ${state}`);
   const { successRedirect, failureRedirect } = JSON.parse(state || "{}");
 
   try {
