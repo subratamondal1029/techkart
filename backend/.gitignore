@@ -26,4 +26,3 @@ dist-ssr
 test/test.js
 storage/invoices/*.html
 storage/invoices/*.pdf
-public
