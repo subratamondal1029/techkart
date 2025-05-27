@@ -183,7 +183,6 @@ const Seller = () => {
         await productService.delete(id);
         setProducts(deleteProductState);
       } catch (error) {
-        console.log(error);
         showToast("error", error.message || "Something went wrong");
       }
     });

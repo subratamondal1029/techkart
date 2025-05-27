@@ -47,7 +47,6 @@ const useInfiniteScroll = ({ cb, loaderRef, initialPage = 0 }, ...args) => {
   observerRef.currentInstance = null;
 
   useEffect(() => {
-    // console.log("initialPage", initialPage, "page", page);
     if (!page || page === initialPage) return;
     if (page < initialPage) {
       setPage(initialPage);

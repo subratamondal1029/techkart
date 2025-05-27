@@ -68,10 +68,6 @@ const Delivery = () => {
   });
 
   useEffect(() => {
-    console.log(`${isScanning ? "started" : "stopped"} Scanning`);
-  }, [isScanning]);
-
-  useEffect(() => {
     if (updateError) {
       showToast("error", updateError);
     }

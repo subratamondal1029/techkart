@@ -13,7 +13,6 @@ const cartSlice = createSlice({
       if (state) {
         state?.products?.push({ quantity, product });
       } else {
-        console.log(_id);
         return {
           _id,
           products: [{ quantity, product }],

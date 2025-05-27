@@ -80,7 +80,6 @@ const Search = () => {
   // get data from cache
   useEffect(() => {
     const query = createCacheQuery(params);
-    console.log(query);
     const data = searchCache?.[query];
     if (!data) {
       setProducts([]);
