@@ -12,14 +12,14 @@ import getRules from "../../utils/getRules";
  * @returns {React.ReactElement}
  */
 
-function Input({
+const Input = ({
   type = "text",
   label,
   classname = "",
   name = "",
   rules = { required: true },
   ...props
-}) {
+}) => {
   const Id = useId();
   const { register, formState: { errors } = {} } = useFormContext() || {};
 
@@ -56,6 +56,6 @@ function Input({
       )}
     </div>
   );
-}
+};
 
 export default Input;

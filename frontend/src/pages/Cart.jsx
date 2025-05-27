@@ -16,7 +16,7 @@ import cartService from "../services/cart.service";
 import useLoading from "../hooks/useLoading";
 import showToast from "../utils/showToast";
 
-export default function Cart() {
+const Cart = () => {
   const cart = useSelector((state) => state.cart);
   const [optimisticCart, setOptimisticCart] = useOptimistic(cart);
   const dispatch = useDispatch();
@@ -280,3 +280,5 @@ export default function Cart() {
     </div>
   );
 }
+
+export default Cart;

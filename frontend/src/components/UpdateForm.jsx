@@ -21,7 +21,13 @@ import { X } from "lucide-react";
  * @returns {React.ReactElement} The rendered form element.
  */
 
-const Form = ({ setIsOpen, onSubmit, classname = "", children, ...props }) => {
+const UpdateForm = ({
+  setIsOpen,
+  onSubmit,
+  classname = "",
+  children,
+  ...props
+}) => {
   const methods = useForm();
   const [animation, setAnimation] = useState("animate-card-in");
 
@@ -85,4 +91,4 @@ const Form = ({ setIsOpen, onSubmit, classname = "", children, ...props }) => {
     document.getElementById("portal-root")
   );
 };
-export default Form;
+export default UpdateForm;

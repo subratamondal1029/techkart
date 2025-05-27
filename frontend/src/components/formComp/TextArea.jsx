@@ -14,13 +14,13 @@ import { useState } from "react";
  * }} props
  */
 
-export default function TextArea({
+const TextArea = ({
   label,
   classname = "",
   rules = { required: true },
   name = "",
   ...props
-}) {
+}) => {
   const Id = useId();
   const { register, formState: { errors } = {} } = useFormContext() || {};
   const error = errors?.[name]?.message;
@@ -56,4 +56,6 @@ export default function TextArea({
       )}
     </div>
   );
-}
+};
+
+export default TextArea;

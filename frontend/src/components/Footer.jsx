@@ -2,7 +2,7 @@ import React from "react";
 import { Logo } from "./index";
 import { Link } from "react-router-dom";
 
-export default function Footer() {
+const Footer = () => {
   const thisYear = new Date().getFullYear();
 
   return (
@@ -147,4 +147,6 @@ export default function Footer() {
       </div>
     </footer>
   );
-}
+};
+
+export default Footer;

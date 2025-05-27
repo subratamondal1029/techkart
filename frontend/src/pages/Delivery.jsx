@@ -9,7 +9,6 @@ import orderService from "../services/order.service";
 import DeliveryShimmer from "../components/shimmers/Delivery.shimmer";
 
 const Delivery = () => {
-  // TODO: update the ui
   const html5QrcodeScanner = useRef(null);
   const [isScanning, setIsScanning] = useState(false);
   const [order, setOrder] = useState(null);

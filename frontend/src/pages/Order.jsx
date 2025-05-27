@@ -26,7 +26,7 @@ import { addOrder, updateOrder } from "../store/order.slice";
 import formateDate from "../utils/formateDate";
 import showToast from "../utils/showToast";
 
-export default function Order() {
+const Order = () => {
   const { id } = useParams();
   const existingOrder = useSelector((state) =>
     state.orders.data.find((order) => order._id === id)
@@ -315,4 +315,6 @@ export default function Order() {
       )}
     </>
   );
-}
+};
+
+export default Order;

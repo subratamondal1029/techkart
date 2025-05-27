@@ -9,7 +9,7 @@ import cartService from "../services/cart.service";
 import fileService from "../services/file.service";
 import showToast from "../utils/showToast";
 
-export default function CartPop({ setIsCartOpen }) {
+const CartPop = ({ setIsCartOpen }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const products = useSelector((state) => state.cart?.products);
@@ -122,4 +122,6 @@ export default function CartPop({ setIsCartOpen }) {
       </div>
     </div>
   );
-}
+};
+
+export default CartPop;

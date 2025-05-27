@@ -9,7 +9,7 @@ import authService from "./services/auth.service";
 import cartService from "./services/cart.service";
 import "./App.css";
 
-function App() {
+const App = () => {
   const dispatch = useDispatch();
   const { state } = useLocation();
   window.scrollTo(0, 0);
@@ -88,6 +88,6 @@ function App() {
       )}
     </>
   );
-}
+};
 
 export default App;

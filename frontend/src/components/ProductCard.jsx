@@ -5,7 +5,7 @@ import { Eye } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-export default function ProductCard({ product }) {
+const ProductCard = ({ product }) => {
   const { _id, image, name, price } = product;
   const navigate = useNavigate();
   const isProductInCart = useSelector((state) =>
@@ -56,4 +56,6 @@ export default function ProductCard({ product }) {
       </div>
     </div>
   );
-}
+};
+
+export default ProductCard;
