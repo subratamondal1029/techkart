@@ -180,7 +180,7 @@ const Checkout = () => {
   );
 
   useEffect(() => {
-    if (!products.length) navigate("/");
+    if (!products.length) navigate("/cart");
   }, [products]);
 
   useEffect(() => {

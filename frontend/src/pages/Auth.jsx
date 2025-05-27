@@ -4,14 +4,16 @@ import { Button, ButtonLoading, Input, Logo } from "../components";
 import { FormProvider, useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import authService from "../services/auth.service";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { useLoading } from "../hooks";
 import { useEffect } from "react";
 import showToast from "../utils/showToast";
+import { logout } from "../store/auth.slice";
 
 const Auth = ({ isSignupPage = false }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const { state, pathname, search } = useLocation();
   const [isPassword, setIsPassword] = useState(true);
@@ -52,6 +54,9 @@ const Auth = ({ isSignupPage = false }) => {
 
       await promise;
 
+      if (isLoggedIn) {
+        dispatch(logout());
+      }
       if (state?.redirect) {
         navigate(
           `${state.redirect.startsWith("/") ? "" : "/"}${state.redirect}`,
@@ -69,7 +74,13 @@ const Auth = ({ isSignupPage = false }) => {
     const isUser = state?.isUser === undefined ? true : state?.isUser;
     const isStayReq = state?.isStayReq;
 
-    if (isLoggedIn && !isStayReq) navigate("/");
+    if (isLoggedIn && !isStayReq) {
+      if (state?.redirect) {
+        navigate(
+          `${state.redirect.startsWith("/") ? "" : "/"}${state.redirect}`
+        );
+      } else navigate("/");
+    }
 
     if (isSignUp && !isUser)
       navigate("/login", { state: { ...state, isUser: false } });

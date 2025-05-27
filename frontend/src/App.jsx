@@ -55,6 +55,8 @@ function App() {
       dispatch(login(userData));
       if (userData.label === "user") {
         fetchCart();
+      } else {
+        dispatch(storeCart(null));
       }
     } else {
       dispatch(logout());
