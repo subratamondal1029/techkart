@@ -1,4 +1,3 @@
-import axios from "axios";
 import fs from "fs";
 import path from "path";
 import ApiError from "../../src/utils/apiError.js";
@@ -7,6 +6,7 @@ import {
   deleteLocalFile,
   uploadFile,
 } from "../../src/utils/fileHandler.js";
+import QrCode from "qrcode";
 
 import pdfMake from "pdfmake/build/pdfmake.js";
 import pdfFonts from "pdfmake/build/vfs_fonts.js";
@@ -59,19 +59,12 @@ const calculateDiscount = (order) => {
   return { totalAmount, discountPercentage };
 };
 
-async function getImageBase64(url) {
+async function getImageBase64(filePath) {
   let mimeType = "image/png";
-  let base64;
-  if (url.includes("http")) {
-    const response = await axios.get(url, { responseType: "arraybuffer" });
-    base64 = Buffer.from(response.data).toString("base64");
-    mimeType = response.headers["content-type"];
-  } else {
-    base64 = fs.readFileSync(url).toString("base64");
-  }
+  let base64 = fs.readFileSync(filePath).toString("base64");
+
   return `data:${mimeType};base64,${base64}`;
 }
-
 const logo = await getImageBase64("./public/logo.png");
 
 const getShipmentDefinition = async (order) => ({
@@ -136,9 +129,7 @@ const getShipmentDefinition = async (order) => ({
     },
   },
   images: {
-    qrcode: await getImageBase64(
-      `https://api.qrserver.com/v1/create-qr-code/?&data=${order._id}`
-    ),
+    qrcode: await QrCode.toDataURL(order._id),
     logo,
   },
 });
@@ -218,7 +209,6 @@ const getDeliveryDefinition = async (order) => {
               String(p.quantity),
               `₹${p.product.price}`,
             ]),
-            // ["RGB Gaming Mechanical Keyboard", "2", "₹12999"],
             [
               { text: "Total", colSpan: 1 },
               { text: "", border: [false, false, false, false] },
@@ -253,10 +243,10 @@ const getDeliveryDefinition = async (order) => {
     },
     images: {
       // fill with base64 later
-      qrcode: await getImageBase64(
-        `https://api.qrserver.com/v1/create-qr-code/?&data=${
-          process.env.FRONTEND_BASE_URL || "http://localhost:5173"
-        }/${order.frontendRoute}`
+      qrcode: await QrCode.toDataURL(
+        `${process.env.FRONTEND_BASE_URL || "http://localhost:5173"}/${
+          order.frontendRoute
+        }`
       ),
       logo: logo,
     },
