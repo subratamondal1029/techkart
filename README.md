@@ -12,7 +12,7 @@ TechKart is a full-stack e-commerce platform built with the MERN stack. It inclu
 
 ## 🚀 Getting Started
 
-Please refer to the respective README files inside each folder for detailed instructions on installation, configuration, and running the project:
+Please refer to the respective README files inside each folder for detailed information about the project:
 
 - [Backend README](./backend/README.md)
 - [Frontend README](./frontend/README.md)
@@ -25,7 +25,7 @@ Before you start, make sure you have the following installed:
 
 - [NodeJS](https://nodejs.org/)
 - [Docker](https://www.docker.com/)
-- Make sure port **8000**, **5173**, **6379** and **27017** is available, or update the port in [`docker-compose.yml`](../docker-compose.yml)
+- Make sure port **8000**, **5173**, **6379** and **27017** is available, or update the port in [`docker-compose.yml`](./docker-compose.yml)
 
 ---
 
