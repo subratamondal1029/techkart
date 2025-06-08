@@ -25,7 +25,7 @@ Before you start, make sure you have the following installed:
 
 - [NodeJS](https://nodejs.org/)
 - [Docker](https://www.docker.com/)
-- Make sure port **8000**, **5173**, **6379** and **27017** is available, or update the port in [`docker-compose.yml`](./docker-compose.yml)
+- Make sure port **8000**, **80**, **6379** and **27017** is available, or update the port in [`docker-compose.yml`](./docker-compose.yml)
 
 ---
 
@@ -43,8 +43,8 @@ Use the [`.env.example(frontend)`](./frontend/.env.example) & [`.env.example(bac
 
 ```yaml
 PORT=8000
-ORIGIN=http://localhost:5173
-NODE_ENV=development
+ORIGIN=http://localhost
+NODE_ENV=production
 ```
 
 ---
