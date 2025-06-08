@@ -3,7 +3,6 @@ node_modules
 .dockerignore
 .git
 *.gitignore
-dist
 build
 *.env
 backend/storage
@@ -11,3 +10,6 @@ backend/storage
 .idea
 *.cache
 tmp
+*.pem
+docker-compose(copy)
+backend

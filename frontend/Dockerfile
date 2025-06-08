@@ -8,6 +8,9 @@ RUN pnpm install
 
 COPY . .
 
-EXPOSE 5173
+RUN pnpm run build
+RUN pnpm prune --prod
 
-CMD ["pnpm", "run", "dev"]
+EXPOSE 4173
+
+CMD ["pnpm", "run", "preview"]

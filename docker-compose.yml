@@ -3,13 +3,10 @@ services:
     build: ./frontend
     container_name: techkart-frontend
     ports:
-      - "5173:5173"
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      - "80:4173"
     env_file:
       - ./frontend/.env
-    command: pnpm run dev
+    command: pnpm run preview
 
   backend:
     build: ./backend
@@ -21,7 +18,9 @@ services:
       - /app/node_modules
     env_file:
       - ./backend/.env
-    command: npm run dev
+    environment:
+      - NODE_ENV=production
+    command: npm run start
     depends_on:
       - redis
       - mongo
