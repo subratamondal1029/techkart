@@ -130,7 +130,7 @@ const getShipmentDefinition = async (order) => ({
     },
   },
   images: {
-    qrcode: await QrCode.toDataURL(order._id),
+    qrcode: await QrCode.toDataURL(order._id.toString()),
     logo,
   },
 });
