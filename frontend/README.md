@@ -74,7 +74,7 @@ Before you start, make sure you have the following installed:
 
 - [NodeJS](https://nodejs.org/)
 - [Docker](https://www.docker.com/)
-- Make sure port **5173** is available, or update the port in [`docker-compose.yml`](../docker-compose.yml)
+- Make sure port **80** is available, or update the port in [`docker-compose.yml`](../docker-compose.yml)
 
 ---
 
@@ -113,7 +113,7 @@ docker compose build
 docker compose up
 ```
 
-Open [http://localhost:5173](http://localhost:5173) in your browser
+Open [http://localhost](http://localhost) in your browser
 
 ---
 
