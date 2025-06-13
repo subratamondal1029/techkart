@@ -68,8 +68,8 @@ const Home = () => {
         </Link>
 
         <Link
-          to="/search?category=computer"
-          title="Computer"
+          to="/search?category=televisions"
+          title="Television"
           className="border border-gray-300 bg-gray-50 hover:bg-white hover:shadow-md transition rounded-xl p-4 flex items-center justify-center"
         >
           <Monitor size={28} className="text-gray-700" />
