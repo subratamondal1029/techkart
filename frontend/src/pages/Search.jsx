@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState, useRef } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Button,
@@ -18,6 +18,7 @@ const createCacheQuery = ({ query, category, company, sort, sortBy }) => {
 
 const Search = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [params, setParams] = useState({});
   const [initialPage, setInitialPage] = useState(0);
@@ -62,9 +63,8 @@ const Search = () => {
     const query = searchParams.get("query")?.trim().toLowerCase() || "";
     const category = searchParams.get("category")?.trim().toLowerCase() || "";
     const company = searchParams.get("company")?.trim().toLowerCase() || "";
-    const sort = searchParams.get("sort")?.trim().toLowerCase() || "d";
-    const sortBy =
-      searchParams.get("sortBy")?.trim().toLowerCase() || "createdAt";
+    const sort = searchParams.get("sort")?.trim().toLowerCase() || "";
+    const sortBy = searchParams.get("sortBy")?.trim().toLowerCase() || "";
 
     const newParams = {
       query,
@@ -76,6 +76,15 @@ const Search = () => {
 
     setParams((prev) => ({ ...prev, ...newParams }));
   }, [searchParams]);
+
+  const sortData = (sortBy, sort) => {
+    const searchParams = createCacheQuery({
+      ...params,
+      sortBy,
+      sort,
+    });
+    navigate(`/search?${searchParams}`);
+  };
 
   // get data from cache
   useEffect(() => {
@@ -125,46 +134,13 @@ const Search = () => {
                 name="price"
                 className="w-40 h-10 bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-500 shadow-sm transition-colors duration-200"
                 value={params?.sortBy === "price" ? params?.sort : "Default"}
-                onChange={(e) =>
-                  setParams((prev) => ({
-                    ...prev,
-                    sortBy: "price",
-                    sort: e.target.value,
-                  }))
-                }
+                onChange={(e) => {
+                  sortData("price", e.target.value);
+                }}
               >
                 <option hidden>Default</option>
                 <option value="a">Low to High</option>
                 <option value="d">High to Low</option>
-              </select>
-            </div>
-
-            {/* Sort Filter */}
-            <div className="flex items-center space-x-3">
-              <label
-                htmlFor="sortBy"
-                className="text-sm font-medium text-gray-700 whitespace-nowrap"
-              >
-                Sort:
-              </label>
-              <select
-                id="sortBy"
-                name="sortBy"
-                className="w-40 h-10 bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-500 shadow-sm transition-colors duration-200"
-                value={
-                  params?.sortBy === "createdAt" ? params?.sort : "Default"
-                }
-                onChange={(e) =>
-                  setParams((prev) => ({
-                    ...prev,
-                    sortBy: "createdAt",
-                    sort: e.target.value,
-                  }))
-                }
-              >
-                <option hidden>Default</option>
-                <option value="d">Newest</option>
-                <option value="a">Oldest</option>
               </select>
             </div>
           </div>

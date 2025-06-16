@@ -8,7 +8,8 @@ RUN pnpm install
 
 COPY . .
 
-RUN pnpm run build
+ARG BUILD=true
+RUN if ["$BUILD" = "true"]; then pnpm run build; fi
 
 EXPOSE 4173
 

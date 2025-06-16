@@ -1,6 +1,9 @@
 services:
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        BUILD: "false"
     container_name: techkart-frontend
     ports:
       - "5173:5173"
@@ -12,7 +15,10 @@ services:
     command: pnpm run dev
 
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      args:
+        BUILD: "false"
     container_name: techkart-backend
     ports:
       - "8000:8000"
