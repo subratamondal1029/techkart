@@ -12,10 +12,10 @@ const productSlice = createSlice({
 
       const uniqueData = [
         ...state.data,
-        ...newItems?.filter(
+        ...(newItems?.filter(
           (newItem) =>
             !state.data.some((existing) => existing._id === newItem._id)
-        ),
+        ) || []),
       ];
 
       return {
