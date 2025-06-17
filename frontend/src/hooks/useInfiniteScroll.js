@@ -17,7 +17,7 @@ import useLoading from "./useLoading";
  *   - `setPage` (Function): A function to manually set the page number.
  */
 
-const useInfiniteScroll = ({ cb, loaderRef, initialPage = 0 }, ...args) => {
+const useInfiniteScroll = ({ cb, initialPage }, ...args) => {
   const [page, setPage] = useState(initialPage);
   const [fetchData, isLoading, error] = useLoading(cb);
   const isLoadingRef = useRef(isLoading);
@@ -53,7 +53,7 @@ const useInfiniteScroll = ({ cb, loaderRef, initialPage = 0 }, ...args) => {
       return;
     }
     fetchData(page, ...args);
-  }, [page, initialPage]);
+  }, [page, initialPage, fetchData, args]);
 
   const retry = useCallback(() => fetchData(page), [fetchData, page]);
 

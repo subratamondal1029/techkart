@@ -1,12 +1,7 @@
-import React, { useCallback, useEffect, useState, useRef } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  Button,
-  LoadingError,
-  ProductCard,
-  ProductNotFound,
-} from "../components";
+import { LoadingError, ProductCard, ProductNotFound } from "../components";
 import ProductCardShimmer from "../components/shimmers/ProductCard.shimmer";
 import useInfiniteScroll from "../hooks/useInfiniteScroll";
 import productService from "../services/product.service";
@@ -22,23 +17,48 @@ const Search = () => {
   const [searchParams] = useSearchParams();
   const [params, setParams] = useState({});
   const [initialPage, setInitialPage] = useState(0);
-  const totalPages = useRef(1);
+  const totalPages = useRef(2);
   const searchCache = useSelector((state) => state.search.cache);
   const [products, setProducts] = useState([]);
   const [isEmptyResponse, setIsEmptyResponse] = useState(false);
 
+  // get products from cache
+  const fetchProductFromCache = useCallback(
+    async (page) => {
+      const query = createCacheQuery(params);
+      const data = searchCache?.[query]?.[page];
+
+      let products = [];
+
+      if (data) {
+        products = Object.values(data).flat(1);
+      }
+
+      return { products, totalPages: page + 1 };
+    },
+    [params, searchCache]
+  );
+
   const fetchProducts = useCallback(
     async (page) => {
       if (!page) return;
-      console.log("Fetching products", page);
-      const { data } = await productService.getMany({
-        ...params,
-        page: page,
-        sortBy: params.sortBy || "createdAt",
-        sort: params.sort || "d",
-      });
+      let data;
 
-      totalPages.current = Number(data.totalPages) || 1;
+      const cacheData = await fetchProductFromCache(page);
+      data = cacheData;
+
+      if (cacheData?.products?.length === 0) {
+        const { data: DBData } = await productService.getMany({
+          ...params,
+          page,
+        });
+        data = DBData;
+      }
+
+      totalPages.current = Number(data?.totalPages) || 1;
+      console.log(
+        `Total Available Pages: ${totalPages.current} and current page is ${page}`
+      );
 
       if (data.products.length !== 0) {
         setIsEmptyResponse(false);
@@ -54,8 +74,10 @@ const Search = () => {
       } else {
         setIsEmptyResponse(true);
       }
+
+      setInitialPage(page);
     },
-    [params]
+    [dispatch, fetchProductFromCache, params]
   );
 
   // Store all request params in state
@@ -75,7 +97,15 @@ const Search = () => {
     };
 
     setParams((prev) => ({ ...prev, ...newParams }));
+    // FIXME: initial page is not taking
+    setInitialPage(0);
   }, [searchParams]);
+
+  const [observerRef, page, isProductsLoading, productError, productRetry] =
+    useInfiniteScroll({
+      cb: fetchProducts,
+      initialPage,
+    });
 
   const sortData = (sortBy, sort) => {
     const searchParams = createCacheQuery({
@@ -86,33 +116,16 @@ const Search = () => {
     navigate(`/search?${searchParams}`);
   };
 
-  // get data from cache
   useEffect(() => {
     const query = createCacheQuery(params);
-    const data = searchCache?.[query];
-    if (!data) {
-      setProducts([]);
-      setIsEmptyResponse(false);
-      return;
-    }
+    const cache = searchCache?.[query];
 
-    const lastPage = Number(Object.keys(data).at(-1));
-    setInitialPage(lastPage);
-    const products = Object.values(data).flat(1);
+    if (!cache) return;
+
+    const products = Object.values(cache).flat(1);
     setProducts(products);
-  }, [searchCache, params]);
-
-  const [observerRef, page, isProductsLoading, productError, productRetry] =
-    useInfiniteScroll({
-      cb: fetchProducts,
-      initialPage,
-    });
-
-  useEffect(() => {
-    if (products.length === 0 && !isEmptyResponse) {
-      productRetry();
-    }
-  }, [params?.query, products]);
+    setInitialPage(Number(Object.keys(cache).at(-1)));
+  }, [params, searchCache, setProducts]);
 
   return (
     <div className="w-full min-h-screen">
