@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -18,12 +18,12 @@ import { LANDING_IMAGE_ID } from "../../constants";
 
 const Home = () => {
   const dispatch = useDispatch();
-  const { page: initialPage, data: products } = useSelector(
+  const { page: storedPage, data: products } = useSelector(
     (state) => state.products
   );
-  const totalPages = useRef(1);
+  const totalPages = useRef(storedPage + 1 || 2);
 
-  const fetchProducts = async (page) => {
+  const fetchProducts = async ({ page }) => {
     const { data } = await productService.getMany({
       page,
 
@@ -34,16 +34,17 @@ const Home = () => {
     totalPages.current = Number(data?.totalPages) || 1;
     const products = data.products;
     console.log(`Total product response: ${products.length}`);
-
+    if (products.length === 0) return;
     dispatch(storeProducts({ page, data: products }));
   };
 
-  const [loaderRef, page, isLoading, error, retry, setPage] = useInfiniteScroll(
-    {
-      cb: fetchProducts,
-      initialPage,
-    }
-  );
+  const {
+    sentinelRef: loaderRef,
+    page,
+    isLoading,
+    error,
+    retry,
+  } = useInfiniteScroll(fetchProducts, {}, storedPage + 1);
 
   return (
     <main>
@@ -88,7 +89,7 @@ const Home = () => {
           className="text-center font-bold text-2xl my-8 uppercase"
           id="products"
         >
-          What's New
+          What&apos;s New
         </h1>
         <div className="w-full flex flex-wrap items-start justify-evenly gap-3 gap-y-8">
           {products.map((product) => (
@@ -114,7 +115,7 @@ const Home = () => {
             </div>
           </div>
         ) : (
-          (page !== totalPages.current || isLoading) && (
+          (page - 1 !== totalPages.current || isLoading) && (
             <div className="w-full flex justify-center items-center">
               <LoaderCircleIcon
                 size={40}

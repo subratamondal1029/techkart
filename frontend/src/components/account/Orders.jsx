@@ -13,18 +13,22 @@ const Orders = () => {
   const { page: initialPage, data: orders } = useSelector(
     (state) => state.orders
   );
-  const totalPages = useRef(1);
+  const totalPages = useRef(initialPage + 1 || 2);
 
-  const fetchOrders = async (page) => {
+  const fetchOrders = async ({ page }) => {
     const { data } = await orderService.getMany({ page });
     totalPages.current = Number(data?.totalPages) || 1;
+    if (data?.orders?.length === 0) return;
     dispatch(storeOrders({ data: data.orders, page }));
   };
 
-  const [loaderRef, page, isLoading, error, retry] = useInfiniteScroll({
-    cb: fetchOrders,
-    initialPage,
-  });
+  const {
+    sentinelRef: loaderRef,
+    page,
+    isLoading,
+    error,
+    retry,
+  } = useInfiniteScroll(fetchOrders, {}, initialPage + 1);
 
   return (
     <div className="w-full md:w-3/4 space-y-5">
@@ -79,7 +83,7 @@ const Orders = () => {
 
       {error ? (
         <LoadingError error={error} retry={retry} />
-      ) : page !== totalPages.current || isLoading ? (
+      ) : page - 1 < totalPages.current || isLoading ? (
         <div className="w-full flex justify-center items-center">
           <LoaderCircle size={40} className="animate-spin" ref={loaderRef} />
         </div>

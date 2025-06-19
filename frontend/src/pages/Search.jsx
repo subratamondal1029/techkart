@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { LoadingError, ProductCard, ProductNotFound } from "../components";
@@ -6,6 +6,7 @@ import ProductCardShimmer from "../components/shimmers/ProductCard.shimmer";
 import useInfiniteScroll from "../hooks/useInfiniteScroll";
 import productService from "../services/product.service";
 import { addQuery } from "../store/search.slice";
+import { LoaderCircleIcon } from "lucide-react";
 
 const createCacheQuery = ({ query, category, company, sort, sortBy }) => {
   return `query=${query}&category=${category}&company=${company}&sort=${sort}&sortBy=${sortBy}`;
@@ -15,97 +16,50 @@ const Search = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [params, setParams] = useState({});
-  const [initialPage, setInitialPage] = useState(0);
-  const totalPages = useRef(2);
   const searchCache = useSelector((state) => state.search.cache);
-  const [products, setProducts] = useState([]);
   const [isEmptyResponse, setIsEmptyResponse] = useState(false);
 
-  // get products from cache
-  const fetchProductFromCache = useCallback(
-    async (page) => {
-      const query = createCacheQuery(params);
-      const data = searchCache?.[query]?.[page];
-
-      let products = [];
-
-      if (data) {
-        products = Object.values(data).flat(1);
-      }
-
-      return { products, totalPages: page + 1 };
-    },
-    [params, searchCache]
+  const params = useMemo(
+    () => ({
+      query: searchParams.get("query")?.trim().toLowerCase() || "",
+      category: searchParams.get("category")?.trim().toLowerCase() || "",
+      company: searchParams.get("company")?.trim().toLowerCase() || "",
+      sort: searchParams.get("sort")?.trim().toLowerCase() || "",
+      sortBy: searchParams.get("sortBy")?.trim().toLowerCase() || "",
+    }),
+    [searchParams]
   );
 
-  const fetchProducts = useCallback(
-    async (page) => {
-      if (!page) return;
-      let data;
+  const { storedProducts, storedInitialPage } = useMemo(() => {
+    const query = createCacheQuery(params);
+    const cache = searchCache?.[query];
 
-      const cacheData = await fetchProductFromCache(page);
-      data = cacheData;
+    if (!cache) return { storedInitialPage: 1, storedProducts: [] };
+    const products = Object.values(cache).flat(1);
+    const initialPage = Number(Object.keys(cache).at(-1)) + 1;
 
-      if (cacheData?.products?.length === 0) {
-        const { data: DBData } = await productService.getMany({
-          ...params,
-          page,
-        });
-        data = DBData;
-      }
+    return { storedInitialPage: initialPage, storedProducts: products };
+  }, [params]);
 
-      totalPages.current = Number(data?.totalPages) || 1;
-      console.log(
-        `Total Available Pages: ${totalPages.current} and current page is ${page}`
-      );
+  const [products, setProducts] = useState(storedProducts);
+  const initialPage = useRef(storedInitialPage);
+  const totalPages = useRef(storedInitialPage + 1 || 2);
 
-      if (data.products.length !== 0) {
-        setIsEmptyResponse(false);
-
-        // store data in cache
-        dispatch(
-          addQuery({
-            page,
-            query: createCacheQuery(params),
-            data: data.products,
-          })
-        );
-      } else {
-        setIsEmptyResponse(true);
-      }
-
-      setInitialPage(page);
-    },
-    [dispatch, fetchProductFromCache, params]
-  );
-
-  // Store all request params in state
   useEffect(() => {
-    const query = searchParams.get("query")?.trim().toLowerCase() || "";
-    const category = searchParams.get("category")?.trim().toLowerCase() || "";
-    const company = searchParams.get("company")?.trim().toLowerCase() || "";
-    const sort = searchParams.get("sort")?.trim().toLowerCase() || "";
-    const sortBy = searchParams.get("sortBy")?.trim().toLowerCase() || "";
+    setProducts([]);
+    setIsEmptyResponse(false);
+    initialPage.current = 1;
+  }, [params]);
 
-    const newParams = {
-      query,
-      category,
-      company,
-      sort,
-      sortBy,
-    };
+  useEffect(() => {
+    const query = createCacheQuery(params);
+    const cache = searchCache?.[query];
 
-    setParams((prev) => ({ ...prev, ...newParams }));
-    // FIXME: initial page is not taking
-    setInitialPage(0);
-  }, [searchParams]);
+    if (!cache) return;
 
-  const [observerRef, page, isProductsLoading, productError, productRetry] =
-    useInfiniteScroll({
-      cb: fetchProducts,
-      initialPage,
-    });
+    const products = Object.values(cache).flat(1);
+    setProducts(products);
+  }, [params, searchCache, setProducts]);
 
   const sortData = (sortBy, sort) => {
     const searchParams = createCacheQuery({
@@ -116,16 +70,40 @@ const Search = () => {
     navigate(`/search?${searchParams}`);
   };
 
-  useEffect(() => {
-    const query = createCacheQuery(params);
-    const cache = searchCache?.[query];
+  const fetchProducts = async ({ page, ...args }) => {
+    if (!page) return;
 
-    if (!cache) return;
+    const { data } = await productService.getMany({
+      ...args,
+      page,
+    });
 
-    const products = Object.values(cache).flat(1);
-    setProducts(products);
-    setInitialPage(Number(Object.keys(cache).at(-1)));
-  }, [params, searchCache, setProducts]);
+    totalPages.current = Number(data?.totalPages) || 1;
+
+    if (data.products.length !== 0) {
+      setIsEmptyResponse(false);
+
+      // store data in cache
+      dispatch(
+        addQuery({
+          page,
+          query: createCacheQuery(args),
+          data: data.products,
+        })
+      );
+    } else {
+      if (products.length > 0) return;
+      setIsEmptyResponse(true);
+    }
+  };
+
+  const {
+    sentinelRef: observerRef,
+    page,
+    isLoading: isProductsLoading,
+    error: productError,
+    retry: productRetry,
+  } = useInfiniteScroll(fetchProducts, params, initialPage.current);
 
   return (
     <div className="w-full min-h-screen">
@@ -168,13 +146,22 @@ const Search = () => {
       {productError ? (
         <LoadingError error={productError} retry={productRetry} />
       ) : (
-        (page !== totalPages.current || isProductsLoading) && (
+        (page - 1 < totalPages.current || isProductsLoading) &&
+        (page === 1 ? (
           <div className="w-full flex flex-wrap items-start justify-evenly gap-3 gap-y-10">
             {Array.from({ length: 10 }).map((_, i) => (
               <ProductCardShimmer key={i} ref={i === 0 ? observerRef : null} />
             ))}
           </div>
-        )
+        ) : (
+          <div className="w-full flex justify-center items-center">
+            <LoaderCircleIcon
+              size={40}
+              className="animate-spin"
+              ref={observerRef}
+            />
+          </div>
+        ))
       )}
     </div>
   );
