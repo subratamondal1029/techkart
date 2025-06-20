@@ -14,7 +14,7 @@ import authService from "../services/auth.service";
 import { toast } from "react-toastify";
 import useLoading from "../hooks/useLoading";
 import { storeCart } from "../store/cart.slice";
-import { storeOrders } from "../store/order.slice";
+import { clearOrders } from "../store/order.slice";
 
 const Header = () => {
   const { isLoggedIn, userData } = useSelector((state) => state.auth);
@@ -52,7 +52,7 @@ const Header = () => {
     await logoutReq;
     dispatch(logout());
     dispatch(storeCart(null));
-    dispatch(storeOrders([]));
+    dispatch(clearOrders());
   });
 
   const handleSearch = (value) => {

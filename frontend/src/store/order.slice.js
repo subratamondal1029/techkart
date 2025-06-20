@@ -47,8 +47,15 @@ const orderSlice = createSlice({
         Object.assign(state.data[index], action.payload);
       }
     },
+    clearOrders: () => {
+      return {
+        page: 0,
+        data: [],
+      };
+    },
   },
 });
 
-export const { storeOrders, addOrder, updateOrder } = orderSlice.actions;
+export const { storeOrders, addOrder, updateOrder, clearOrders } =
+  orderSlice.actions;
 export default orderSlice.reducer;
