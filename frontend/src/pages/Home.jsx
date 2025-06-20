@@ -98,7 +98,9 @@ const Home = () => {
           ))}
         </div>
 
-        {products.length === 0 && <ProductNotFound />}
+        {products.length === 0 && (
+          <ProductNotFound message="Sorry, there are no products available at the moment. Please check back soon for new arrivals!" />
+        )}
 
         {error ? (
           <div

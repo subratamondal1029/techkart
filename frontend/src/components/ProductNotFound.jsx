@@ -1,7 +1,6 @@
-import React from "react";
 import Image from "./Image";
 
-const ProductNotFound = () => {
+const ProductNotFound = ({ message }) => {
   return (
     <div className="flex flex-col items-center justify-center min-h-60 py-10">
       <Image
@@ -13,7 +12,8 @@ const ProductNotFound = () => {
         No Products Found
       </h2>
       <p className="text-gray-500 mb-4 text-center">
-        We couldn't find any products matching your search or filter.
+        {message ||
+          "We couldn't find any products matching your search or filter."}
       </p>
     </div>
   );

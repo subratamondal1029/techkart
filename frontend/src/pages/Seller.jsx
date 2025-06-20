@@ -43,6 +43,10 @@ const Seller = () => {
   const parameterQuery = useMemo(() => {
     return `page=${params.page}&query=${params.query}&sortBy=${params.sortBy}&sort=${params.sort}`;
   }, [params]);
+  const notFoundMessage = useMemo(() => {
+    if (params.query === "")
+      return "You haven’t added any products yet. Start by adding your first product to showcase it to customers!";
+  }, [params.query]);
 
   const setPage = (page) => {
     setParams((prev) => ({ ...prev, page }));
@@ -256,7 +260,7 @@ const Seller = () => {
               totalPages={totalPages}
             >
               {optimisticProducts?.[parameterQuery]?.length === 0 ? (
-                <ProductNotFound />
+                <ProductNotFound message={notFoundMessage} />
               ) : (
                 <div className="border-t border-gray-300 py-2 min-h-96">
                   <div className="hidden md:grid grid-cols-8 gap-4 px-2 text-sm font-semibold mb-2">
