@@ -9,7 +9,7 @@ RUN pnpm install
 COPY . .
 
 ARG BUILD=true
-RUN if ["$BUILD" = "true"]; then pnpm run build; fi
+RUN if [ "$BUILD" = "true" ]; then pnpm run build; fi
 
 EXPOSE 4173
 
