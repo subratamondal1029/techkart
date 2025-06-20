@@ -10,7 +10,7 @@ import {
   RotateCcw,
   Info,
 } from "lucide-react";
-import { Button, Image, ProductCard } from "../components";
+import { Button, Image, ProductCard, ProductNotFound } from "../components";
 import useInfiniteScroll from "../hooks/useInfiniteScroll";
 import productService from "../services/product.service";
 import { storeProducts } from "../store/product.slice";
@@ -26,12 +26,13 @@ const Home = () => {
   const fetchProducts = async ({ page }) => {
     const { data } = await productService.getMany({
       page,
-
       sortBy: "createdAt",
       sort: "d",
     });
 
-    totalPages.current = Number(data?.totalPages) || 1;
+    const pages = Number(data?.totalPages);
+    totalPages.current = isNaN(pages) ? 1 : pages;
+
     const products = data.products;
     console.log(`Total product response: ${products.length}`);
     if (products.length === 0) return;
@@ -96,6 +97,9 @@ const Home = () => {
             <ProductCard key={product?._id} product={product} />
           ))}
         </div>
+
+        {products.length === 0 && <ProductNotFound />}
+
         {error ? (
           <div
             id="alert-additional-content-2"
@@ -115,7 +119,7 @@ const Home = () => {
             </div>
           </div>
         ) : (
-          (page - 1 !== totalPages.current || isLoading) && (
+          (page - 1 < totalPages.current || isLoading) && (
             <div className="w-full flex justify-center items-center">
               <LoaderCircleIcon
                 size={40}

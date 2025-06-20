@@ -17,7 +17,9 @@ const Orders = () => {
 
   const fetchOrders = async ({ page }) => {
     const { data } = await orderService.getMany({ page });
-    totalPages.current = Number(data?.totalPages) || 1;
+    const pages = Number(data?.totalPages);
+
+    totalPages.current = isNaN(pages) ? 1 : pages;
     if (data?.orders?.length === 0) return;
     dispatch(storeOrders({ data: data.orders, page }));
   };
@@ -81,22 +83,24 @@ const Orders = () => {
         </div>
       ))}
 
+      {orders.length === 0 && (
+        <div className="flex justify-center items-center flex-col space-y-2">
+          <p className="text-gray-500 mt-2">No orders found</p>
+          <Link
+            className="inline-block text-sm text-gray-600 transition hover:text-gray-700 hover:underline hover:underline-offset-4"
+            to="/"
+          >
+            Continue shopping →
+          </Link>
+        </div>
+      )}
+
       {error ? (
         <LoadingError error={error} retry={retry} />
-      ) : page - 1 < totalPages.current || isLoading ? (
-        <div className="w-full flex justify-center items-center">
-          <LoaderCircle size={40} className="animate-spin" ref={loaderRef} />
-        </div>
       ) : (
-        orders.length === 0 && (
-          <div className="flex justify-center items-center flex-col space-y-2">
-            <p className="text-gray-500 mt-2">No orders found</p>
-            <Link
-              className="inline-block text-sm text-gray-600 transition hover:text-gray-700 hover:underline hover:underline-offset-4"
-              to="/"
-            >
-              Continue shopping →
-            </Link>
+        (page - 1 < totalPages.current || isLoading) && (
+          <div className="w-full flex justify-center items-center">
+            <LoaderCircle size={40} className="animate-spin" ref={loaderRef} />
           </div>
         )
       )}

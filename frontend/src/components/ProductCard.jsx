@@ -9,7 +9,7 @@ const ProductCard = ({ product }) => {
   const { _id, image, name, price } = product;
   const navigate = useNavigate();
   const isProductInCart = useSelector((state) =>
-    state.cart?.products?.some(({ product }) => product._id === _id)
+    state.cart?.products?.some(({ product }) => product?._id === _id)
   );
 
   const handleClick = () => {
