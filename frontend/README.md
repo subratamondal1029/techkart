@@ -101,16 +101,9 @@ VITE_BACKEND_BASE_URL=http://localhost:8000/api/v1
 
 ```bash
 cd techkart
-docker cp ./backend/mongodb_data/ techkart-mongo:./backup
-# will see "Successfully copied 28.2kB to techkart-mongo:./backup"
-docker exec -it techkart-mongo bash # enter in the container shell
-mongorestore --uri="mongodb://localhost:27017" --db="techkart" ./backup/techkart/
-# will see "47 document(s) restored successfully."
-rm -rf ./backup/* #optional
-
-exit
-docker compose build
-docker compose up
+docker compose up -d --build # build and up containers
+mongorestore --uri="mongodb://localhost:27017" --db="techkart" ./backup/db/techkart/ # restore mongoDB backup
+# 528 document(s) restored successfully. 0 document(s) failed to restore.
 ```
 
 Open [http://localhost](http://localhost) in your browser
@@ -125,8 +118,8 @@ This frontend is fully integrated with the [TechKart backend](../backend/README.
 
 Special thanks to everyone who contributed to this project.
 
-[![Subrata Mondal](https://avatars.githubusercontent.com/u/164600228?v=4&s=100)](https://github.com/subratamondal1029)  
- **Subrata Mondal**
+[![Subrata Mondal](https://avatars.githubusercontent.com/u/164600228?v=4&s=100)](https://github.com/subratamondal1029)
+**Subrata Mondal**
 
 <h2 id="contribute">📫 Contribute</h2>
 

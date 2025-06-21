@@ -143,16 +143,9 @@ NODE_ENV=development
 
 ```bash
 cd techkart
-docker cp ./backend/mongodb_data/ techkart-mongo:./backup
-# will see "Successfully copied 28.2kB to techkart-mongo:./backup"
-docker exec -it techkart-mongo bash # enter in the container shell
-mongorestore --uri="mongodb://localhost:27017" --db="techkart" ./backup/techkart/
-# will see "47 document(s) restored successfully."
-rm -rf ./backup/* #optional
-
-exit
-docker compose build
-docker compose up
+docker compose up -d --build # build and up containers
+mongorestore --uri="mongodb://localhost:27017" --db="techkart" ./backup/db/techkart/ # restore mongoDB backup
+# 528 document(s) restored successfully. 0 document(s) failed to restore.
 ```
 
 <h2 id="routes">📍 API Endpoints</h2>
