@@ -20,6 +20,9 @@ services:
       - ./backend/.env
     environment:
       - NODE_ENV=production
+      - ORIGIN=http://localhost
+      - FRONTEND_BASE_URL=http://localhost
+      - MONGODB_URI=mongodb://techkart-mongo:27017
     command: npm run start
     depends_on:
       - redis

@@ -27,6 +27,11 @@ services:
       - /app/node_modules
     env_file:
       - ./backend/.env
+    environment:
+      - NODE_ENV=development
+      - ORIGIN=http://localhost:5173
+      - FRONTEND_BASE_URL=http://localhost:5173
+      - MONGODB_URI=mongodb://global-mongo:27017
     command: npm run dev
     networks:
       - mongo-net
