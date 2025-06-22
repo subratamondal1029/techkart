@@ -21,8 +21,12 @@ const Image = ({ src, alt = "", className = "", size, ...props }) => {
     setLoaded(false);
   };
 
+  const srcRef = useRef(src);
   useEffect(() => {
-    src = src?.includes("http") ? src : fileService.get(src);
+    srcRef.current =
+      src?.includes("/api") || src?.includes("http")
+        ? src
+        : fileService.get(src);
   }, [src]);
 
   useEffect(() => {
@@ -30,7 +34,7 @@ const Image = ({ src, alt = "", className = "", size, ...props }) => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          imageElm.src = src;
+          imageElm.src = srcRef.current;
           observer.unobserve(imageElm);
         }
       });

@@ -2,8 +2,7 @@ services:
   frontend:
     build:
       context: ./frontend
-      args:
-        BUILD: "false"
+      target: dev
     container_name: techkart-frontend
     ports:
       - "5173:5173"

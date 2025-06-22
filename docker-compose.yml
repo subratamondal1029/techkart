@@ -1,18 +1,21 @@
 services:
-  frontend:
-    build: ./frontend
-    container_name: techkart-frontend
+  nginx:
+    build:
+      context: ./frontend
+      target: prod
+    container_name: techkart-server
     ports:
-      - "80:4173"
+      - "80:80"
     env_file:
       - ./frontend/.env
-    command: pnpm run preview
+    depends_on:
+      - backend
 
   backend:
     build: ./backend
     container_name: techkart-backend
-    ports:
-      - "8000:8000"
+    expose:
+      - 8000
     volumes:
       - ./backend:/app
       - /app/node_modules
@@ -22,7 +25,7 @@ services:
       - NODE_ENV=production
       - ORIGIN=http://localhost
       - FRONTEND_BASE_URL=http://localhost
-      - MONGODB_URI=mongodb://techkart-mongo:27017
+      - MONGODB_URI=mongodb://mongo:27017
     command: npm run start
     depends_on:
       - redis
@@ -37,16 +40,16 @@ services:
   redis:
     image: redis:alpine
     container_name: techkart-redis
-    ports:
-      - "6379:6379"
+    expose:
+      - 6379
     volumes:
       - redis_data:/data
 
   mongo:
     image: mongo
     container_name: techkart-mongo
-    ports:
-      - "27017:27017"
+    expose:
+      - 27017
     volumes:
       - mongo_data:/data/db
 
