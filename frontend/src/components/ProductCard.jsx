@@ -31,7 +31,7 @@ const ProductCard = ({ product }) => {
       )}
 
       <Image
-        className="rounded-xl"
+        className="rounded-xl min-h-64"
         src={fileService.get(image)}
         alt="product image"
       />
