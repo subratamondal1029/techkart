@@ -69,12 +69,12 @@ const Account = () => {
           <div>
             <ImageUpload
               src={optimisticData?.avatar}
-              alt="avatar"
+              alt="profile picture"
               onUpdate={updateAvatar}
               placeholder={
                 <User2Icon className="text-gray-100 bg-black p-4 w-full h-full" />
               }
-              classname="max-w-32"
+              classname="max-w-32 min-h-32"
             />
             <h1 className="font-bold text-xl mt-5 text-center text-gray-900">
               {optimisticData?.name}
