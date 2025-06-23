@@ -25,7 +25,7 @@ Before you start, make sure you have the following installed:
 
 - [NodeJS](https://nodejs.org/)
 - [Docker](https://www.docker.com/)
-- Make sure port **8000**, **80**, **6379** and **27017** is available, or update the port in [`docker-compose.yml`](./docker-compose.yml)
+- Make sure port **80** is available, or update the port in [`docker-compose.yml`](./docker-compose.yml)
 
 ---
 
