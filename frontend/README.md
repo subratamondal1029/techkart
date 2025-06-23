@@ -102,8 +102,11 @@ VITE_BACKEND_BASE_URL=http://localhost:8000/api/v1
 ```bash
 cd techkart
 docker compose up -d --build # build and up containers
-mongorestore --uri="mongodb://localhost:27017" --db="techkart" ./backup/db/techkart/ # restore mongoDB backup
+docker cp ./backup/db/* techkart-mongo:./backup/ # copy mongoDB backup
+docker exec -it techkart-mongo bash # connect to mongoDB container
+mongorestore --uri="mongodb://localhost:27017" --db="techkart" ./backup/ # restore mongoDB backup
 # 528 document(s) restored successfully. 0 document(s) failed to restore.
+rm -rf backup/* # remove mongoDB backup (optional)
 ```
 
 Open [http://localhost](http://localhost) in your browser
