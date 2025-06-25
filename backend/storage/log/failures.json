@@ -1,0 +1,48 @@
+{
+  "deleteFiles": [
+    {
+      "default": true,
+      "type": "local",
+      "path": "path_to_local_file_or_DB_id_or_cloudinary_public_id",
+      "error": "error_message",
+      "created_at": "2023-03-22T15:03:17.000Z",
+      "solved": false,
+      "solvedAt": "2023-03-22T15:03:17.000Z",
+      "attempted": true,
+      "attemptError": "error_message"
+    },
+    {
+      "default": false,
+      "type": "local",
+      "path": "/home/subrata/work/techkart/backend/storage/temp/professional_photo2_67e411b8c090932e2a16a4fb_1743002608747.png",
+      "error": "Error: ENOENT: no such file or directory, unlink 'gsfdh'",
+      "created_at": "2025-03-26T15:23:28.765Z",
+      "solved": false,
+      "solvedAt": null,
+      "attempted": false,
+      "attemptError": null
+    },
+    {
+      "default": false,
+      "type": "local",
+      "path": "/home/subrata/work/techkart/backend/storage/temp/pc_67e411b8c090932e2a16a4fb_1743048189913.png",
+      "error": "Error: Unauthorized File Update Attempt\n    at file:///home/subrata/work/techkart/backend/src/controllers/file.controllers.js:90:7\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+      "created_at": "2025-03-27T04:03:09.984Z",
+      "solved": false,
+      "solvedAt": null,
+      "attempted": false,
+      "attemptError": null
+    },
+    {
+      "default": false,
+      "type": "local",
+      "path": "/home/subrata/work/techkart/backend/storage/temp/pc_67e411b8c090932e2a16a4fb_1743048378670.png",
+      "error": "Error: File Document Not available to Update in DB\n    at file:///home/subrata/work/techkart/backend/src/controllers/file.controllers.js:79:5\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+      "created_at": "2025-03-27T04:06:18.798Z",
+      "solved": false,
+      "solvedAt": null,
+      "attempted": false,
+      "attemptError": null
+    }
+  ]
+}

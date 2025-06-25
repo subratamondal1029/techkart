@@ -1,0 +1,15 @@
+node_modules
+*.log
+.dockerignore
+.git
+*.gitignore
+build
+*.env
+backend/storage
+*.vscode
+.idea
+*.cache
+tmp
+*.pem
+docker-compose(copy)
+backend

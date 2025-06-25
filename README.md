@@ -1,96 +1,78 @@
-# Tech kart
-## E-Commerce Website
+# TechKart Full-Stack E-commerce Platform
 
-### About Me
-I am Subrata Mondal, a front-end web developer with knowledge of HTML, CSS, and JavaScript, specializing in frameworks like React and Tailwind. I created an e-commerce website using these skills, with React and Tailwind for the frontend and Appwrite for the backend.
+TechKart is a full-stack e-commerce platform built with the MERN stack. It includes both backend APIs and a modern React frontend to provide a complete shopping experience.
 
-## Description
-This single-page application (SPA) includes multiple pages:
-- **Home Page**: Displays products for users to browse.
-- **Product Detail Page**: Shows detailed information about a product.
-- **Login/Signup**: Users can sign in, sign up, or use Google login.
-- **Cart**: Users can add products to the cart, view a cart preview, and adjust quantities or remove items.
-- **Checkout Page**: Users fill in their contact information, and the address is auto-filled based on the postal code using the Indian Postal API. Razorpay is integrated for payment processing.
-- **Order Confirmation and Details**: After checkout, users are redirected to an order details page to see the order status and cancel orders if needed.
-- **Account Page**: Users can view their order history and personal information.
-- **Product Search**: Users can search for products by typing keywords or by category.
+## 📂 Project Structure
 
-Additional features include:
-- **Shipment Master Dashboard**: 
-  - Manage orders and update their status to "shipped".
-  - Generate and download invoices with QR codes.
-  - Store shipment invoices in Appwrite storage.
-- **Delivery Boy Dashboard**:
-  - Confirm deliveries by scanning QR codes.
-  - Generate and store delivery invoices in Appwrite storage.
-  - Allow users to download delivery invoices from the order details page once the order is delivered.
-- **Seller Page**: Allows sellers to add products to the list, including images.
+- [Backend (API)](./backend)  
+  Node.js + Express backend with RESTful APIs, authentication, product & order management, payment integration, and more.
 
-## Test Users
-- **User**: `subrata@techkart.com` | Password: `subratalog`
-- **Shipment Master**: `shipment@techkart.com` | Password: `shipmentlog`
-- **Delivery Boy**: `delivery@techkart.com` | Password: `deliverylog`
+- [Frontend (Client)](./frontend)  
+  React-based frontend with Redux Toolkit, infinite scrolling, optimistic UI updates, QR code scanning, and responsive design.
 
-## Features
+## 🚀 Getting Started
 
-### User Features
-- **User Registration and Login**: Users can sign up, sign in, and use Google login.
-- **Home Page**: Displays a list of products for users to browse.
-- **Product Detail Page**: Shows detailed information about each product.
-- **Shopping Cart**: Users can add products to their cart, view a cart preview, and adjust quantities or remove items.
-- **Checkout**: Users can fill in their contact information, and the address is auto-filled based on the postal code using the Indian Postal API. Razorpay is integrated for payment processing.
-- **Order Confirmation and Details**: After checkout, users are redirected to an order details page to see the order status and cancel orders if needed.
-- **Account Page**: Users can view their order history and personal information.
-- **Product Search**: Users can search for products by typing keywords or by category.
+Please refer to the respective README files inside each folder for detailed information about the project:
 
-### Additional Features
-- **Shipment Master Dashboard**: 
-  - Manage orders and update their status to "shipped".
-  - Generate and download invoices with QR codes.
-  - Store shipment invoices in Appwrite storage.
-- **Delivery Boy Dashboard**:
-  - Confirm deliveries by scanning QR codes.
-  - Generate and store delivery invoices in Appwrite storage.
-  - Allow users to download delivery invoices from the order details page once the order is delivered.
-- **Seller Page**: Allows sellers to add products to the list, including images.
+- [Backend README](./backend/README.md)
+- [Frontend README](./frontend/README.md)
 
-## Technologies Used
+---
 
-### Frontend
-- **React**: ^18.3.1
-- **Tailwind CSS**: ^3.4.7
-- **Redux Toolkit**: @reduxjs/toolkit ^2.2.7
-- **Appwrite**: ^15.0.0
-- **HTML5 QR Code**: ^2.3.8
-- **jsPDF**: ^2.5.1
-- **jsPDF AutoTable**: ^3.8.2
-- **Lucide React**: ^0.424.0
-- **QRCode**: ^1.5.4
-- **React Hook Form**: ^7.52.1
-- **React Redux**: ^9.1.2
-- **React Router DOM**: ^6.26.0
-- **React Toastify**: ^10.0.5
+### 📋 Prerequisites for 🚀 Running the Project Locally
 
-### Backend
-- **Appwrite**: Used for database, storage, authentication, and cloud functions for Razorpay payment integration with JavaScript.
+Before you start, make sure you have the following installed:
 
-## Usage
-This is a web application. Simply land on the webpage and start using it. For additional features, users need to log in.
+- [NodeJS](https://nodejs.org/)
+- [Docker](https://www.docker.com/)
+- Make sure port **80** is available, or update the port in [`docker-compose.yml`](./docker-compose.yml)
 
-## Testing
-For testing and debugging, the following tools are used:
-- **Postman**: For testing API endpoints.
-- **Appwrite Function Logs**: For monitoring and debugging Appwrite cloud functions with Razorpay integration.
-- **Browser Dev Tools**: For testing and debugging in the browser.
-- **Redux DevTools Extension**: For debugging Redux state management.
-- **ChatGPT and Google**: For additional troubleshooting and debugging assistance.
+---
 
-## License
-This project is a personal project by Subrata Mondal and is not formally licensed.
+### 🔄 Cloning the Repository
 
-## Contact Information
-For any questions or issues, you can reach out to Subrata Mondal through the following channels:
-- **Phone**: +91 9832674420
-- **Email**: [subratamondal1020@outlook.com](mailto:subratamondal1020@outlook.com)
-- **Portfolio Website**: [subratamondal](https://subratamondal.vercel.app)
-- **GitHub Issues**: Users can raise issues on the GitHub repository.
+```bash
+git clone git@github.com:subratamondal1029/techkart.git
+```
+
+---
+
+### ⚙️ Configuring Environment Variables
+
+Use the [`.env.example(frontend)`](./frontend/.env.example) & [`.env.example(backend)`](./backend/.env.example) file as a template to create your own `.env` files:
+
+```yaml
+PORT=8000
+ORIGIN=http://localhost
+NODE_ENV=production
+```
+
+---
+
+### 🏁 Starting the Project
+
+```bash
+cd techkart
+docker compose up -d --build # build and up containers
+docker cp ./backup/db/* techkart-mongo:./backup/ # copy mongoDB backup
+docker exec -it techkart-mongo bash # connect to mongoDB container
+mongorestore --uri="mongodb://localhost:27017" --db="techkart" ./backup/ # restore mongoDB backup
+# 528 document(s) restored successfully. 0 document(s) failed to restore.
+rm -rf backup/* # remove mongoDB backup (optional)
+```
+
+## 🤝 Collaborators
+
+Special thanks to everyone who contributed to this project.
+
+[![Subrata Mondal](https://avatars.githubusercontent.com/u/164600228?v=4&s=100)](https://github.com/subratamondal1029)  
+ **Subrata Mondal**
+
+## 📫 Contribute
+
+Here you will explain how other developers can contribute to your project. For example, explaining how can create their branches, which patterns to follow and how to open an pull request
+
+1. `git clone https://github.com/subratamondal1029/techkart.git`
+2. `git checkout -b feature/NAME`
+3. Follow commit patterns
+4. Open a Pull Request explaining the problem solved or feature made, if exists, append screenshot of visual modifications and wait for the review!
