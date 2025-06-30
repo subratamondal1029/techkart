@@ -146,10 +146,31 @@ cd techkart
 docker compose up -d --build # build and up containers
 docker cp ./backup/db/* techkart-mongo:./backup/ # copy mongoDB backup
 docker exec -it techkart-mongo bash # connect to mongoDB container
-mongorestore --uri="mongodb://localhost:27017" --db="techkart" ./backup/ # restore mongoDB backup
-# 528 document(s) restored successfully. 0 document(s) failed to restore.
+mongorestore --uri="mongodb://localhost:27017" --db="techkart" ./backup/techkart/ # restore mongoDB backup
+# 537 document(s) restored successfully. 0 document(s) failed to restore.
+# if error "0 document(s) restored successfully. 537 document(s) failed to restore. then"
+mongosh
+use techkart
+db.dropDatabase()
+exit
+mongorestore --uri="mongodb://localhost:27017" --db="techkart" ./backup/techkart/ # restore mongoDB backup
+
+
 rm -rf backup/* # remove mongoDB backup (optional)
 ```
+
+### 🧪 Testing User Credentials
+
+Use the following test accounts to log in and explore the platform features:
+
+| Role     | Email                | Password     |
+| -------- | -------------------- | ------------ |
+| user     | subrata@user.com     | @1Iamsubrata |
+| seller   | subrata@seller.com   | @1Iamsubrata |
+| shipment | subrata@shipment.com | @1Iamsubrata |
+| delivery | subrata@delivery.com | @1Iamsubrata |
+
+> **Note:** These credentials are for testing purposes only. You can also create your own account to explore the full experience.
 
 <h2 id="routes">📍 API Endpoints</h2>
 
