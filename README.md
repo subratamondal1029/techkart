@@ -54,7 +54,7 @@ NODE_ENV=production
 ```bash
 cd techkart
 docker compose up -d --build # build and up containers
-docker cp ./backup/db/* techkart-mongo:./backup/ # copy mongoDB backup
+docker cp ./backup/db/ techkart-mongo:./backup/ # copy mongoDB backup
 docker exec -it techkart-mongo bash # connect to mongoDB container
 mongorestore --uri="mongodb://localhost:27017" --db="techkart" ./backup/techkart/ # restore mongoDB backup
 # 537 document(s) restored successfully. 0 document(s) failed to restore.
