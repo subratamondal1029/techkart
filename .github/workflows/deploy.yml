@@ -20,8 +20,9 @@ jobs:
       - name: Deploy via SSH
         run: |
           ssh -o StrictHostKeyChecking=no -i key.pem ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-            cd ~/your_project_folder
+            cd ~/techkart
             git pull origin main
+            sudo su
             docker compose down
             docker compose up -d --build
           EOF
