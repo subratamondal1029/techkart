@@ -23,8 +23,8 @@ services:
       - ./backend/.env
     environment:
       - NODE_ENV=production
-      - ORIGIN=http://localhost
-      - FRONTEND_BASE_URL=http://localhost
+      - ORIGIN=https://techkart.dedyn.io
+      - FRONTEND_BASE_URL=https://techkart.dedyn.io
       - MONGODB_URI=mongodb://mongo:27017
     command: npm run start
     depends_on:
