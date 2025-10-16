@@ -73,12 +73,12 @@ rm -rf backup/* # remove mongoDB backup (optional)
 
 Use the following test accounts to log in and explore the platform features:
 
-| Role     | Email                | Password     |
-| -------- | -------------------- | ------------ |
-| user     | subrata@user.com     | @1Iamsubrata |
-| seller   | subrata@seller.com   | @1Iamsubrata |
-| shipment | subrata@shipment.com | @1Iamsubrata |
-| delivery | subrata@delivery.com | @1Iamsubrata |
+| Role     | Email                | Password      |
+| -------- | -------------------- | ------------- |
+| user     | subrata@user.com     | @1Iamuser     |
+| seller   | subrata@seller.com   | @1Iamseller   |
+| shipment | subrata@shipment.com | @1Iamshipment |
+| delivery | subrata@delivery.com | @1Iamdelivery |
 
 > **Note:** These credentials are for testing purposes only. You can also create your own account to explore the full experience.
 
